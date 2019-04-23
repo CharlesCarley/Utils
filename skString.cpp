@@ -607,7 +607,7 @@ void skString::encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
         m_data[i] = (m_data[i] + ((i % 3 ? -1 : 1) * LB[i % b1])) % 256;
 
     r = m_size % 2;
-    sh = new SKuint16[m_size+r];
+    sh = new SKuint16[m_size+r+1];
     sh[m_size + r] = 0;
 
     for (i = 0; i < m_size; i += 2) {
@@ -620,6 +620,7 @@ void skString::encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
         sh[i] = ((SKuint16)sh[i]) + UB[i % b2] % 65536;
 
     alloc((j * 2) + r, sh);
+    delete[]sh;
 }
 
 
