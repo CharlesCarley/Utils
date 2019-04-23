@@ -73,13 +73,9 @@ struct skSort {
     }
 };
 
-
-
 template <typename T, typename C>
 class skQSort {
-
 public:
-
     typedef int(*Function)(T a, T b);
     typedef typename C::ReferenceType ReferenceType;
 
