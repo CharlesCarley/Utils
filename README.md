@@ -1,3 +1,3 @@
 # Utils
 
-Utils is a small general purpose utility library. 
+Utils is a small general purpose utility library in C++. 
