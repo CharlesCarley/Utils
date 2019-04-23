@@ -1,11 +1,3 @@
-# ------------------------------------------------------------------------------
-#   $Id: CMakeLists.txt 9 2019-03-09 00:08:08Z Charlie $
-#
-#   Copyright (c) Charles Carley.
-#   
-#   All Rights Reserved.
-#
-# -----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.0)
 
 
@@ -61,5 +53,5 @@ set(Utils_HDR
 )
 
 
-include_directories(..)
+include_directories(../ .)
 add_library(Utils ${Utils_SRC} ${Utils_HDR})
