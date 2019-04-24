@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(Utils)
 
-set(CMAKE_MODULE_PATH 
-    ${CMAKE_SOURCE_DIR}/CMake
+list(APPEND CMAKE_MODULE_PATH 
+    ${Utils_SOURCE_DIR}/CMake
     )
 
 include(ConfigureUtils)

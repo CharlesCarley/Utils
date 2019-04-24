@@ -26,11 +26,11 @@
 #ifndef _skConfig_h_
 #define _skConfig_h_
 
-#define Utils_USE_MEMORY_ALLOCATOR 1
+/* #undef Utils_USE_MEMORY_ALLOCATOR */
 #define Utils_USE_DEBUG_ASSERT     1
 /* #undef Utils_USE_ITERATOR_DEBUG */
 #define Utils_USE_STD_STRING_FUNCS 1
-#define Utils_USE_SIGNED_SIZE_T    1
+/* #undef Utils_USE_SIGNED_SIZE_T */
 /* #undef Utils_OP_CHECKS */
 /* #undef Utils_USE_COMPILER_CHECKS */
 
