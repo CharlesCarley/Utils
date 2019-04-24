@@ -182,11 +182,15 @@ public:
         if (ns <= L)
         {
             if (ns < m_size)
-                for (SKuint16 i = ns; i < m_size; i++)
+            {
+                SKuint16 i;
+                for (i = ns; i < m_size; i++)
                     m_data[i].~T();
+            }
             m_size = ns;
         }
     }
+
 
     skFixedArray& operator = (const skFixedArray& rhs)
     {
@@ -194,8 +198,7 @@ public:
         {
             SKuint16 i;
             m_size = 0;
-
-            for (i = 0; i < L && i < rhs.m_size; ++i, ++m_size)
+            for (i = 0;  i < rhs.m_size && i < L; ++i, ++m_size)
                 m_data[i] = rhs.m_data[i];
         }
         return *this;

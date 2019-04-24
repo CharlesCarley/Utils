@@ -26,39 +26,39 @@
 #ifndef _skConfig_h_
 #define _skConfig_h_
 
-/* #undef SidFramework_USE_MEMORY_ALLOCATOR */
-#define SidFramework_USE_DEBUG_ASSERT          1
-/* #undef SidFramework_USE_ITERATOR_DEBUG */
-#define SidFramework_USE_STD_STRING_FUNCS      1
-/* #undef SidFramework_USE_SIGNED_SIZE_T */
-/* #undef SidFramework_USE_WIN32_APPLICATION */
-/* #undef SidFramework_BLD_ANDROID */
-/* #undef SidFramework_OP_CHECKS */
+/* #undef SKC_USE_MEMORY_ALLOCATOR */
+#define SKC_USE_DEBUG_ASSERT          1
+/* #undef SKC_USE_ITERATOR_DEBUG */
+#define SKC_USE_STD_STRING_FUNCS      1
+/* #undef SKC_USE_SIGNED_SIZE_T */
+/* #undef SKC_USE_WIN32_APPLICATION */
+/* #undef SKC_BLD_ANDROID */
+/* #undef SKC_OP_CHECKS */
 
-#ifdef SidFramework_BLD_ANDROID
+#ifdef SKC_BLD_ANDROID
 #define SID_GLES 1
 #endif
 
-#ifdef SidFramework_USE_DEBUG_ASSERT
+#ifdef SKC_USE_DEBUG_ASSERT
 #define SID_DEBUG_ASSERT 1
 #endif
 
-#ifdef SidFramework_USE_SIGNED_SIZE_T
+#ifdef SKC_USE_SIGNED_SIZE_T
 #define SK_USE_SIGNED_SIZE_T 1
 #endif
 
-#ifdef SidFramework_USE_STD_STRING_FUNCS
+#ifdef SKC_USE_STD_STRING_FUNCS
 #define SK_USE_STD_STRING_FUNCS 1
 #endif
 
 
-#define SK_ALLOCATOR SidFramework_USE_MEMORY_ALLOCATOR
+#define SK_ALLOCATOR SKC_USE_MEMORY_ALLOCATOR
 
-#ifdef SidFramework_USE_ITERATOR_DEBUG
+#ifdef SKC_USE_ITERATOR_DEBUG
 # define SK_ITERATOR_DEBUG 1
 #endif
 
-#ifdef SidFramework_USE_STD_STRING_FUNCTIONS
+#ifdef SKC_USE_STD_STRING_FUNCTIONS
 # define SK_STD_STRING_FUNC 1
 #endif
 
@@ -79,7 +79,7 @@
 #define SK_PLATFORM_CYGWIN   4
 #define SK_PLATFORM_ANDROID  5 
 
-#if defined SidFramework_BLD_ANDROID
+#if defined SKC_BLD_ANDROID
 #   define SID_ANDROID
 #   define SK_PLATFORM          SK_PLATFORM_ANDROID
 #   define SK_SUB_PLATFORM		SK_PLATFORM_LINUX
