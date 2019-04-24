@@ -26,39 +26,38 @@
 #ifndef _skConfig_h_
 #define _skConfig_h_
 
-/* #undef SKC_USE_MEMORY_ALLOCATOR */
-#define SKC_USE_DEBUG_ASSERT          1
-/* #undef SKC_USE_ITERATOR_DEBUG */
-#define SKC_USE_STD_STRING_FUNCS      1
-/* #undef SKC_USE_SIGNED_SIZE_T */
-/* #undef SKC_USE_WIN32_APPLICATION */
-/* #undef SKC_BLD_ANDROID */
-/* #undef SKC_OP_CHECKS */
+#define Utils_USE_MEMORY_ALLOCATOR 1
+#define Utils_USE_DEBUG_ASSERT     1
+/* #undef Utils_USE_ITERATOR_DEBUG */
+#define Utils_USE_STD_STRING_FUNCS 1
+#define Utils_USE_SIGNED_SIZE_T    1
+/* #undef Utils_OP_CHECKS */
+/* #undef Utils_USE_COMPILER_CHECKS */
 
-#ifdef SKC_BLD_ANDROID
+#ifdef Utils_BLD_ANDROID
 #define SID_GLES 1
 #endif
 
-#ifdef SKC_USE_DEBUG_ASSERT
+#ifdef Utils_USE_DEBUG_ASSERT
 #define SID_DEBUG_ASSERT 1
 #endif
 
-#ifdef SKC_USE_SIGNED_SIZE_T
+#ifdef Utils_USE_SIGNED_SIZE_T
 #define SK_USE_SIGNED_SIZE_T 1
 #endif
 
-#ifdef SKC_USE_STD_STRING_FUNCS
+#ifdef Utils_USE_STD_STRING_FUNCS
 #define SK_USE_STD_STRING_FUNCS 1
 #endif
 
 
-#define SK_ALLOCATOR SKC_USE_MEMORY_ALLOCATOR
+#define SK_ALLOCATOR Utils_USE_MEMORY_ALLOCATOR
 
-#ifdef SKC_USE_ITERATOR_DEBUG
+#ifdef Utils_USE_ITERATOR_DEBUG
 # define SK_ITERATOR_DEBUG 1
 #endif
 
-#ifdef SKC_USE_STD_STRING_FUNCTIONS
+#ifdef Utils_USE_STD_STRING_FUNCTIONS
 # define SK_STD_STRING_FUNC 1
 #endif
 
@@ -73,13 +72,21 @@
 #define SK_ACCESSVIOLATION() {struct XYX {int x;}; XYZ *x; x->x;}
 #endif
 
+
+#ifdef Utils_USE_COMPILER_CHECKS
+    #define SK_ASSERTCOMP(x, n) typedef bool x[(n) ? 1 : -1];
+#else
+    #define SK_ASSERTCOMP(x, n)
+#endif
+
+
 #define SK_PLATFORM_WIN32    0
 #define SK_PLATFORM_LINUX    2
 #define SK_PLATFORM_APPLE    3
 #define SK_PLATFORM_CYGWIN   4
 #define SK_PLATFORM_ANDROID  5 
 
-#if defined SKC_BLD_ANDROID
+#if defined Utils_BLD_ANDROID
 #   define SID_ANDROID
 #   define SK_PLATFORM          SK_PLATFORM_ANDROID
 #   define SK_SUB_PLATFORM		SK_PLATFORM_LINUX
@@ -178,6 +185,15 @@ typedef __int64          SKint64;
 typedef unsigned __int64 SKuint64;
 #endif
 
+#if SK_ARCH == SK_ARCH_64
+typedef SKuint64    SKuintPtr;
+typedef SKint64     SKintPtr;
+#else
+typedef SKuint32    SKuintPtr;
+typedef SKint32     SKintPtr;
+#endif
+
+
 #ifdef SK_USE_SIGNED_SIZE_T
 typedef signed int     SKhash;
 typedef signed int     SKsize;
@@ -186,11 +202,18 @@ typedef signed int     SKsize;
 #define SK_NPOS -1
 // ((1/2) - 1 unsigned int MAX
 #define SK_MAX  0x7FFFFFFE
+
 #else
+
+
 typedef unsigned int   SKhash;
 typedef unsigned int   SKsize;
 
-// unsigned int MAX for no position 
+// using unsigned int MAX for no position
+// even though it should be ((SKuintPtr)-1) 
+// to take into account SK_ARCH_64. 
+// I'm imposing this limit, which I could be 
+// wrong but I've never needed even half that.
 #define SK_NPOS        0xFFFFFFFF
 #define SK_NPOS16      0xFFFF
 // unsigned int MAX - 1
@@ -198,13 +221,6 @@ typedef unsigned int   SKsize;
 #define SK_MAX16       0xFFFE
 #endif
 
-#if SK_ARCH == SK_ARCH_64
-typedef SKuint64    SKuintPtr;
-typedef SKint64     SKintPtr;
-#else
-typedef SKuint32    SKuintPtr;
-typedef SKint32     SKintPtr;
-#endif
 
 #if SK_ITERATOR_DEBUG == 1
 #define SK_ITER_DEBUG(x) SK_ASSERT(x)

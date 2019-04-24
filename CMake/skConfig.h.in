@@ -26,40 +26,38 @@
 #ifndef _skConfig_h_
 #define _skConfig_h_
 
-/* #undef SKC_USE_MEMORY_ALLOCATOR */
-#define SKC_USE_DEBUG_ASSERT          1
-/* #undef SKC_USE_ITERATOR_DEBUG */
-#define SKC_USE_STD_STRING_FUNCS      1
-/* #undef SKC_USE_SIGNED_SIZE_T */
-/* #undef SKC_USE_WIN32_APPLICATION */
-/* #undef SKC_BLD_ANDROID */
-/* #undef SKC_OP_CHECKS */
-/* #undef SKC_USE_COMPILER_CHECKS */
+#cmakedefine Utils_USE_MEMORY_ALLOCATOR @Utils_USE_MEMORY_ALLOCATOR@
+#cmakedefine Utils_USE_DEBUG_ASSERT     1
+#cmakedefine Utils_USE_ITERATOR_DEBUG   1
+#cmakedefine Utils_USE_STD_STRING_FUNCS 1
+#cmakedefine Utils_USE_SIGNED_SIZE_T    1
+#cmakedefine Utils_OP_CHECKS            1
+#cmakedefine Utils_USE_COMPILER_CHECKS  1
 
-#ifdef SKC_BLD_ANDROID
+#ifdef Utils_BLD_ANDROID
 #define SID_GLES 1
 #endif
 
-#ifdef SKC_USE_DEBUG_ASSERT
+#ifdef Utils_USE_DEBUG_ASSERT
 #define SID_DEBUG_ASSERT 1
 #endif
 
-#ifdef SKC_USE_SIGNED_SIZE_T
+#ifdef Utils_USE_SIGNED_SIZE_T
 #define SK_USE_SIGNED_SIZE_T 1
 #endif
 
-#ifdef SKC_USE_STD_STRING_FUNCS
+#ifdef Utils_USE_STD_STRING_FUNCS
 #define SK_USE_STD_STRING_FUNCS 1
 #endif
 
 
-#define SK_ALLOCATOR SKC_USE_MEMORY_ALLOCATOR
+#define SK_ALLOCATOR Utils_USE_MEMORY_ALLOCATOR
 
-#ifdef SKC_USE_ITERATOR_DEBUG
+#ifdef Utils_USE_ITERATOR_DEBUG
 # define SK_ITERATOR_DEBUG 1
 #endif
 
-#ifdef SKC_USE_STD_STRING_FUNCTIONS
+#ifdef Utils_USE_STD_STRING_FUNCTIONS
 # define SK_STD_STRING_FUNC 1
 #endif
 
@@ -75,7 +73,7 @@
 #endif
 
 
-#ifdef SKC_USE_COMPILER_CHECKS
+#ifdef Utils_USE_COMPILER_CHECKS
     #define SK_ASSERTCOMP(x, n) typedef bool x[(n) ? 1 : -1];
 #else
     #define SK_ASSERTCOMP(x, n)
@@ -88,7 +86,7 @@
 #define SK_PLATFORM_CYGWIN   4
 #define SK_PLATFORM_ANDROID  5 
 
-#if defined SKC_BLD_ANDROID
+#if defined Utils_BLD_ANDROID
 #   define SID_ANDROID
 #   define SK_PLATFORM          SK_PLATFORM_ANDROID
 #   define SK_SUB_PLATFORM		SK_PLATFORM_LINUX

@@ -1,4 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
+project(Utils)
+
+set(CMAKE_MODULE_PATH 
+    ${CMAKE_SOURCE_DIR}/CMake
+    )
+
+include(ConfigureUtils)
 
 
 set(Utils_SRC
@@ -50,6 +57,8 @@ set(Utils_HDR
     skValue.h
     skParser.h
     Config/skConfig.h
+    CMake/skConfig.h.in
+    CMake/ConfigureUtils.cmake
 )
 
 
