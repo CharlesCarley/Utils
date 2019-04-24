@@ -39,105 +39,104 @@ class skParser : public skAllocObject
 {
 public:
     typedef SKint16 Index;
+    typedef SKint16 Token;
 
-    typedef union StackPrimitive {
+
+    union StackPrimitive {
         long                ival;
         double              dval;
         char*               sval;
         void*               pval;
-    } StackPrimitive;
+    };
 
-    typedef struct Symbol {
+    struct Symbol {
         Index           m_index;
         Index           m_kind;
         const char*     m_symbol;
-    } Symbol;
+    };
 
-    typedef struct SymbolTable {
+    struct SymbolTable {
         Index       m_count;
         Symbol*     m_symbols;
-    } SymbolTable;
+    };
 
 
-    typedef struct Rule {
+    struct Rule {
         Index   m_index;
         Index   m_nonterminal;
         Index   m_count;
         Symbol* m_symbols;
-    } Rule;
+    };
 
-    typedef struct RuleTable {
+    struct RuleTable {
         Index   m_count;
         Rule*   m_rules;
-    } RuleTable;
+    };
 
-    typedef struct DFAEdge {
+    struct DFAEdge {
         Index   m_char;
         Index   m_target;
-    } DFAEdge;
+    };
 
-    typedef struct DFAState {
+    struct DFAState {
 
         Index		m_accept;
         Index       m_edgeCount;
         DFAEdge*    m_edges;
-    } DFAState;
+    };
 
-    typedef struct DFATable {
+    struct DFATable {
 
         Index       m_count;
         Index       m_initial;
         DFAState*   m_states;
-    } DFATable;
+    };
 
-    typedef struct LALRAction {
+    struct LALRAction {
         Index m_symbolIndex;
         Index m_action;
         Index m_value;
-    } LALRAction;
+    };
 
-    typedef struct LALRState {
+    struct LALRState {
         Index       m_count;
         LALRAction* m_action;
-    } LALRState;
+    };
 
-    typedef struct LALRTable {
+    struct LALRTable {
 
         Index       m_count;
         Index       m_initial;
         LALRState*  m_states;
-    } LALRTable;
+    };
 
-    typedef struct CharacterSet {
+    struct CharacterSet {
         Index     m_count;
         Index*    m_chars;
-    } CharacterSet;
+    };
 
-    typedef struct CharacterSetTable {
+    struct CharacterSetTable {
         SKint16             m_count;
         SKint16             m_isExpanded;
         const CharacterSet* m_chars;
-    } CharacterSetTable;
+    };
 
-
-    typedef SKint16 Token;
-
-    typedef struct StackItem {
+    struct StackItem {
         Symbol*             m_symbol;
         SKint16             m_state;
         StackPrimitive      m_primitive;
         skString            m_buffer;
         void*               m_ptr;
-    } StackItem;
+    };
 
-    typedef enum Action {
+    enum Action {
         ACTION_SHIFT = 1,
         ACTION_REDUCE,
         ACTION_GOTO,
         ACTION_ACCEPT
-    } Action;
+    };
 
-    typedef enum SymbolKind {
+    enum SymbolKind {
         SM_NONTERMINAL = 0,
         SM_TERMINAL,
         SM_WHITESPACE,
@@ -146,18 +145,18 @@ public:
         SM_COMMENT_END,
         SM_COMMENT_LINE,
         SM_ERROR
-    } SymbolKind;
+    };
 
-    typedef enum ParseResult {
+    enum ParseResult {
         PR_SHIFT = 1,
         PR_REDUCE,
         PR_REDUCE_TRIMMED,
         PR_ACCEPT,
         PR_SYNTAX_ERROR,
         PR_INTERNAL_ERROR
-    } ParseResult;
+    };
 
-    typedef enum Message {
+    enum Message {
         MESSAGE_TOKEN_READ = 1,
         MESSAGE_REDUCTION,
         MESSAGE_ACCEPT,
@@ -167,8 +166,7 @@ public:
         MESSAGE_UNTERMINATED_ERROR,
         MESSAGE_UNMATCHED_ERROR,
         MESSAGE_INTERNAL_ERROR
-    } Message;
-
+    };
 
 public:
 
@@ -179,11 +177,9 @@ public:
     void initialize(SKuint32 stackSize, skStream* in);
 
 protected:
-    virtual SKint16		execRule(SKuint8 rule)		    { return 0; }
-    virtual SKint16     tokenAccepted(SKint16 act)      { return 0; }
-    
-    virtual SKint32  handleBlockComment(char *inp, SKint32 from, SKint32 len, SKint32 &out, skString *bo)
-    { return -1; };
+    virtual SKint16		execRule(SKuint8 rule) = 0;
+    virtual SKint16     tokenAccepted(SKint16 act) = 0;
+    virtual SKint32     handleBlockComment(char *inp, SKint32 from, SKint32 len, SKint32 &out, skString *bo) { return -1; }
 
     Message parseImpl(void);
 
