@@ -45,40 +45,58 @@ public:
     SK_DECLARE_TYPE(T);
     SK_IMPLEMENT_QSORT(T, SelfType);
 
+    const SKuint16 LIMIT = L;
 
 public:
-    skFixedArray()
-        : m_size(0)
+    skFixedArray() :
+        m_size(0)
     {
     }
 
     skFixedArray(const skFixedArray& rhs)
         : m_size(0)
     {
-        if (rhs.size()) {
+        if (rhs.size())
+        {
             SKuint16 i, os = rhs.size();
-            const T* cp = rhs.ptr();
-            for (i = 0; i < L && i < os; ++i, ++m_size) 
+            ConstPointerType cp = rhs.ptr();
+            for (i = 0; i < L && i < os; ++i, ++m_size)
                 m_data[i] = cp[i];
         }
     }
 
-    skFixedArray(const T* rhs)
+    template <const SKuint16 R>
+    skFixedArray(const skFixedArray<T, R>& rhs)
         : m_size(0)
     {
-        if (rhs) {
+        if (rhs.size())
+        {
+            SKuint16 i, os = rhs.size();
+            ConstPointerType cp = rhs.ptr();
+            for (i = 0; i < L && i < os; ++i, ++m_size)
+                m_data[i] = cp[i];
+        }
+    }
+
+
+    skFixedArray(ConstPointerType rhs)
+        : m_size(0)
+    {
+        if (rhs)
+        {
             SKuint16 i;
-            for (i = 0; i < L && rhs[i]; ++i, ++m_size) 
+            for (i = 0; i < L && rhs[i]; ++i, ++m_size)
                 m_data[i] = rhs[i];
         }
     }
 
-    skFixedArray(const T* rhs, SKuint16 size)
+    skFixedArray(ConstPointerType rhs, SKuint16 size)
         : m_size(0)
     {
-        if (rhs) {
+        if (rhs)
+        {
             SKuint16 i;
-            for (i = 0; i < L && i < size && rhs[i]; ++i, ++m_size) 
+            for (i = 0; i < L && i < size && rhs[i]; ++i, ++m_size)
                 m_data[i] = rhs[i];
         }
     }
@@ -87,6 +105,7 @@ public:
     {
         if (m_size >= L)
             return;
+
         m_data[m_size++] = rhs;
     }
 
@@ -97,33 +116,38 @@ public:
             return;
 
         SKuint16 l;
-        for (l=m_size; l<A && l < L; ++l)
+        for (l = m_size; l < A && l < L; ++l)
             m_data[m_size++] = rhs[l];
     }
 
     void pop_back(void)
     {
-        if (m_size > 0) {
+        if (m_size > 0)
+        {
             m_data[m_size].~T();
             m_size--;
         }
     }
 
-    SKsize find(ConstReferenceType v)
+    SKuint16 find(ConstReferenceType v)
     {
-        for (SKsize i = 0; i < m_size; i++) {
+        SKuint16 i;
+        for (i = 0; i < m_size; i++)
+        {
             if (m_data[i] == v)
                 return i;
         }
-        return SK_NPOS;
+        return SK_NPOS16;
     }
 
-    void remove(SKsize pos)
+    void remove(SKuint16 pos)
     {
-        if (m_size > 0) {
-            if (pos != SK_NPOS) {
+        if (m_size > 0)
+        {
+            if (pos < SK_NPOS16)
+            {
                 skSwap(m_data[pos], m_data[m_size - 1]);
-                m_data[m_size-1].~T();
+                m_data[m_size - 1].~T();
                 m_size--;
             }
         }
@@ -155,9 +179,10 @@ public:
 
     void resize(SKuint16 ns)
     {
-        if (ns <= L) {
+        if (ns <= L)
+        {
             if (ns < m_size)
-                for (SKuint16 i = ns; i < m_size; i++) 
+                for (SKuint16 i = ns; i < m_size; i++)
                     m_data[i].~T();
             m_size = ns;
         }
@@ -165,7 +190,8 @@ public:
 
     skFixedArray& operator = (const skFixedArray& rhs)
     {
-        if (this != &rhs && rhs.m_size > 0) {
+        if (this != &rhs && rhs.m_size > 0)
+        {
             SKuint16 i;
             m_size = 0;
 
@@ -177,40 +203,49 @@ public:
 
     void clear(void)
     {
-        for (SKuint16 i = 0; i < m_size; i++)
+        SKuint16 i;
+        for (i = 0; i < m_size; i++)
             m_data[i].~T();
         m_size = 0;
     }
 
-    SK_INLINE T*        ptr(void)               { return &m_data[0]; }
-    SK_INLINE const T*  ptr(void) const         { return &m_data[0]; }
-    SK_INLINE bool      empty(void) const       { return m_size == 0; }
-    SK_INLINE SKuint16  size(void) const        { return m_size; }
-    SK_INLINE SKuint16  capacity(void) const    { return L; }
 
-    SK_INLINE const T operator [](SKuint16 i) const
+    void fill(ConstReferenceType v)
     {
-        SK_ASSERT(i < m_size && i < L);
-        return m_data[i];
+        skFill<T>(m_data, v, L);
     }
 
-    SK_INLINE const T& at(SKuint16 i) const
+    SK_INLINE PointerType       ptr(void)               { return &m_data[0]; }
+    SK_INLINE ConstPointerType  ptr(void) const         { return &m_data[0]; }
+    SK_INLINE bool              empty(void) const       { return m_size == 0; }
+    SK_INLINE SKuint16          size(void) const        { return m_size; }
+    SK_INLINE SKuint16          capacity(void) const    { return L; }
+
+    SK_INLINE ConstReferenceType operator [](SKuint16 i) const
     {
         SK_ASSERT(i < m_size && i < L);
         return m_data[i];
     }
 
-    SK_INLINE T& operator [](SKuint16 i)
+    SK_INLINE ConstReferenceType at(SKuint16 i) const
     {
         SK_ASSERT(i < m_size && i < L);
         return m_data[i];
     }
-    
-    SK_INLINE T  at(SKuint16 i)
+
+    SK_INLINE ReferenceType operator [](SKuint16 i)
     {
         SK_ASSERT(i < m_size && i < L);
         return m_data[i];
     }
+
+
+    SK_INLINE ReferenceType at(SKuint16 i)
+    {
+        SK_ASSERT(i < m_size && i < L);
+        return m_data[i];
+    }
+
 
     SK_INLINE Iterator iterator(void)
     {
@@ -229,11 +264,11 @@ public:
 
     SK_INLINE ConstReverseIterator reverseIterator(void) const
     {
-        return m_size > 0 ? ConstReverseIterator((PointerType)&m_data[0], m_size) : ConstReverseIterator();
+        return m_size > 0 ? ConstReverseIterator((PointerType)ptr(), m_size) : ConstReverseIterator();
     }
 
 private:
-    T           m_data[L];
+    ValueType   m_data[L];
     SKuint16    m_size;
 };
 

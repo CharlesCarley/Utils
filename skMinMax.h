@@ -32,7 +32,9 @@
 template <typename T>
 SK_INLINE void skSwap(T& a, T& b)
 {
-    T c(a); a = b; b = c;
+    T c(a); 
+    a = b; 
+    b = c;
 }
 
 template <typename T>

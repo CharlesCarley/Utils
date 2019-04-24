@@ -190,10 +190,12 @@ typedef signed int     SKsize;
 typedef unsigned int   SKhash;
 typedef unsigned int   SKsize;
 
-// unsigned int MAX for no array index
+// unsigned int MAX for no position 
 #define SK_NPOS        0xFFFFFFFF
+#define SK_NPOS16      0xFFFF
 // unsigned int MAX - 1
 #define SK_MAX         0xFFFFFFFE
+#define SK_MAX16       0xFFFE
 #endif
 
 #if SK_ARCH == SK_ARCH_64
