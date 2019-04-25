@@ -167,7 +167,7 @@ public:
 
     void insert(const Key& key, const Value& val)
     {
-        if (m_size*2 >= m_capacity)
+        if (2*m_size >= m_capacity)
             reserve(m_size == 0 ? 16 : m_capacity * 2);
 
         if (find(key) != SK_NPOS)
@@ -179,6 +179,7 @@ public:
         while (m_index[mapping] != SK_NPOS && i < m_capacity)
             mapping = probe(mapping, i++);
 
+        SK_ASSERT(i < m_capacity);
 
         m_data[m_size] = Pair(key, val, mapping);
         m_index[mapping] = m_size;
