@@ -151,6 +151,7 @@ public:
             delete[]m_data;
             delete[]m_index;
         }
+        m_index = 0;
         m_data = 0;
         m_size = 0;
         m_capacity = 0;
@@ -168,7 +169,7 @@ public:
         else
         {
             if (nr > m_capacity)
-                _rehash(nr);
+                rehash(nr);
         }
 
         m_capacity = nr;
@@ -239,11 +240,8 @@ public:
         {
             mapping = probe(mapping, i++);
 
-            if (m_index[mapping] == SK_NPOS)
-                continue;
-
             idx = m_index[mapping];
-            if (idx > m_size)
+            if (m_index[mapping] == SK_NPOS || idx > m_size)
                 continue;
 
             if (m_data[idx].hash == mapping && m_data[idx].first == k)
@@ -318,22 +316,18 @@ private:
         skSwap(m_data[k3], m_data[k4]);
     }
 
-    void _rehash(SKsize nr)
+    void rehash(SKsize nr)
     {
-        // yikes!
-
-        Pair* data     = new Pair[nr];
+        Pair* data = new Pair[nr];
         SKsize* index = new SKsize[nr];
         skMemset(index, SK_NPOS, nr * sizeof(SKsize));
 
         SKsize i = 0;
         for (i = 0; i < m_size; ++i)
         {
-
             SKhash mapping = hash(m_data[i].first);
 
             SKsize j = 0;
-
             if (index[mapping] != SK_NPOS)
             {
                 while (index[mapping] != SK_NPOS)
@@ -343,7 +337,6 @@ private:
             data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
             index[mapping] = i;
         }
-
 
         delete[]m_data;
         delete[]m_index;
