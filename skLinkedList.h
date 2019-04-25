@@ -139,12 +139,6 @@ public:
         while (l != 0 && l->m_next != m_last) l = l->m_next;
 
         SK_ASSERT(l && l->m_next == m_last);
-
-        // This must create a copy, so watch it if it's 
-        //
-        // for example: 
-        // skSinglyLinkedList<skArray<type> >
-        //
         ValueType val = m_last->m_data;
 
         delete m_last;
@@ -189,12 +183,6 @@ public:
     {
         SK_ASSERT(m_first);
         m_size--;
-
-        // This must create a copy, so watch it if it's 
-        //
-        // for example: 
-        // skSinglyLinkedList<skArray<type> >
-        //
         ValueType val = m_first->m_data;
 
         Link *t = m_first->m_next;
@@ -240,6 +228,7 @@ public:
 
     SK_INLINE Link*     first(void) { return m_first; }
     SK_INLINE SKsize    size(void)  { return m_size; }
+    SK_INLINE bool      empty(void) { return m_size==0; }
 };
 
 

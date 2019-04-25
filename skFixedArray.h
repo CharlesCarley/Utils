@@ -232,8 +232,7 @@ public:
 
     SK_INLINE ConstReferenceType at(SKuint16 i) const
     {
-        SK_ASSERT(i < m_size && i < L);
-        return m_data[i];
+        return (*this)[idx];
     }
 
     SK_INLINE ReferenceType operator [](SKuint16 i)
@@ -242,11 +241,9 @@ public:
         return m_data[i];
     }
 
-
     SK_INLINE ReferenceType at(SKuint16 i)
     {
-        SK_ASSERT(i < m_size && i < L);
-        return m_data[i];
+        return (*this)[idx];
     }
 
 
@@ -270,9 +267,9 @@ public:
         return m_size > 0 ? ConstReverseIterator((PointerType)ptr(), m_size) : ConstReverseIterator();
     }
 
-private:
-    ValueType   m_data[L];
-    SKuint16    m_size;
+protected:
+    mutable ValueType   m_data[L];
+    SKuint16            m_size;
 };
 
 

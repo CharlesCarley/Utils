@@ -35,27 +35,31 @@ set(Utils_HDR
     skFixedArray.h
     skFixedString.h
     skHash.h
+    skLinkedList.h
     skList.h
     skLogger.h
     skMap.h
     skMemoryStream.h
     skMemoryUtils.h
     skMinMax.h
+    skParser.h
     skPlatformHeaders.h
     skPointer.h
+    skQueue.h
+    skRandom.h
     skSingleton.h
     skSort.h
     skStack.h
+    skStackQueue.h
     skStreams.h
     skString.h
     skStringConverter.h
-    skRandom.h
     skTimer.h
     skTraits.h
     skTypes.h
     skUserObject.h
     skValue.h
-    skParser.h
+
     Config/skConfig.h
     CMake/skConfig.h.in
     CMake/ConfigureUtils.cmake
