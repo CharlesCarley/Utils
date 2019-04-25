@@ -42,10 +42,8 @@ public:
     class Pair : public skAllocObject
     {
     public:
-
         Key     first;
         Value   second;
-
         Pair()
             : hash(SK_NPOS)
         {
@@ -97,13 +95,11 @@ private:
     SKsize      m_size, m_capacity;
     SKsize*     m_index;
 
-
     // h(k) = k % (c - 1)
     SK_INLINE SKsize hash(const Key& key)
     {
         return skHash(key) & (m_capacity - 1);
     }
-
 
     // f(i) = i
     //   i = (0, SK_NPOS-1)
@@ -130,13 +126,15 @@ private:
 public:
     skDictionary() :
         m_data(0),
+        m_index(0),
         m_size(0),
         m_capacity(0)
     {
     }
 
     skDictionary(const skDictionary& o) :
-        m_data(0),
+        m_data(0), 
+        m_index(0),
         m_size(0),
         m_capacity(0)
     {
@@ -160,33 +158,27 @@ public:
 
     void reserve(SKsize nr)
     {
-        if (!m_data)
+        if (nr > m_capacity)
         {
-            m_data  = new Pair[nr];
-            m_index = new SKsize[nr];
-            skMemset(m_index, SK_NPOS, nr * sizeof(SKsize));
+            m_capacity = nr;
+            rehash(m_capacity);
         }
-        else
-        {
-            if (nr > m_capacity)
-                rehash(nr);
-        }
-
-        m_capacity = nr;
     }
 
     void insert(const Key& key, const Value& val)
     {
-        if (m_size + 1 > m_capacity)
-            reserve(m_size == 0 ? 64 : m_size * 2);
+        if (m_size*2 >= m_capacity)
+            reserve(m_size == 0 ? 16 : m_capacity * 2);
 
         if (find(key) != SK_NPOS)
             return;
 
         SKhash mapping = hash(key);
         SKsize i = 0;
-        while (m_index[mapping] != SK_NPOS)
+
+        while (m_index[mapping] != SK_NPOS && i < m_capacity)
             mapping = probe(mapping, i++);
+
 
         m_data[m_size] = Pair(key, val, mapping);
         m_index[mapping] = m_size;
