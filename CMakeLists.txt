@@ -15,7 +15,6 @@ set(Utils_SRC
     skLogger.cpp
     skMemoryStream.cpp
     skMemoryUtils.cpp
-    skStreams.cpp
     skString.cpp
     skStringConverter.cpp
     skRandom.cpp
