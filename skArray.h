@@ -128,8 +128,6 @@ protected:
     }
 
 public:
-
-
     skPointerDecrementIterator()
         :   m_beg(0), m_end(0)
     {
@@ -158,10 +156,7 @@ public:
         return *this;
     }
 
-    SK_INLINE bool hasMoreElements(void) const
-    {
-        return m_beg && m_beg >= m_end;
-    }
+    SK_INLINE bool hasMoreElements(void) const { return m_beg && m_beg >= m_end; }
 
     SK_INLINE ReferenceType getNext(void)
     {
@@ -240,14 +235,13 @@ public:
         m_size = 0;
     }
 
-
-    SKsize find(ConstReferenceType v)
+    const SKsize find(ConstReferenceType v) const
     {
+        SKsize i;
         for (SKsize i = 0; i < m_size; i++) {
             if (m_data[i] == v)
                 return i;
         }
-
         return SK_NPOS;
     }
 
@@ -257,11 +251,9 @@ public:
         else if (m_size == m_capacity) {
             reserve(m_size == 0 ? 8 : m_size * 2);
             m_data[m_size++] = v;
-
         } else
             m_data[m_size++] = v;
     }
-
 
     void pop_back(void)
     {
@@ -271,13 +263,7 @@ public:
         }
     }
 
-
-    void erase(ConstReferenceType v)
-    {
-        remove(find(v));
-    }
-
-
+    void erase(ConstReferenceType v) { remove(find(v)); }
 
     void remove(SKsize pos)
     {
@@ -285,24 +271,19 @@ public:
             if (pos != SK_NPOS) {
                 skSwap(m_data[pos], m_data[m_size - 1]);
                 m_alloc.destroy(&m_data[--m_size]);
-
             }
         }
     }
-
-
 
     void resize(SKsize nr)
     {
         if (nr < m_size) {
             for (SKsize i = m_size; i < nr; i++)
                 m_alloc.destroy(&m_data[i]);
-
         } else {
             if (nr > m_size)
                 reserve(nr);
         }
-
         m_size = nr;
     }
 
@@ -320,11 +301,8 @@ public:
 
             skFill(m_data + m_size, fill, nr);
         }
-
         m_size = nr;
     }
-
-
 
     void reserve(SKsize nr)
     {
@@ -332,14 +310,11 @@ public:
         else if (m_data) {
             m_data = m_alloc.array_reallocate(m_data, nr, m_size);
             m_capacity = nr;
-
         } else {
             m_data = m_alloc.array_allocate(nr);
             m_capacity = nr;
         }
     }
-
-
 
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
@@ -347,14 +322,11 @@ public:
         return m_data[idx];
     }
 
-
-
     SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
         SK_ASSERT(idx >= 0 && idx < m_capacity);
         return m_data[idx];
     }
-
 
     SK_INLINE ReferenceType at(SKsize idx)
     {
@@ -362,14 +334,11 @@ public:
         return m_data[idx];
     }
 
-
     SK_INLINE ConstReferenceType at(SKsize idx) const
     {
         SK_ASSERT(idx >= 0 && idx < m_capacity);
         return m_data[idx];
     }
-
-
 
     SK_INLINE ReferenceType front(void)
     {
@@ -377,15 +346,11 @@ public:
         return m_data[0];
     }
 
-
-
     SK_INLINE ReferenceType back(void)
     {
         SK_ASSERT(m_size > 0);
         return m_data[m_size - 1];
     }
-
-
 
     SK_INLINE ConstReferenceType front(void) const
     {
@@ -393,24 +358,19 @@ public:
         return m_data[0];
     }
 
-
-
     SK_INLINE ConstReferenceType back(void) const
     {
         SK_ASSERT(m_size > 0);
         return m_data[m_size - 1];
     }
 
-    SK_INLINE ConstPointerType ptr(void) const
-    {
-        return m_data;
-    }
 
-    SK_INLINE PointerType   ptr(void)               { return m_data; }
-    SK_INLINE bool          valid(void) const       { return m_data != 0; }
-    SK_INLINE SKsize        capacity(void) const    { return m_capacity; }
-    SK_INLINE SKsize        size(void) const        { return m_size;     }
-    SK_INLINE bool          empty(void) const       { return m_size == 0; }
+    SK_INLINE ConstPointerType  ptr(void)       const   { return m_data;      }
+    SK_INLINE PointerType       ptr(void)               { return m_data;      }
+    SK_INLINE bool              valid(void)     const   { return m_data != 0; }
+    SK_INLINE SKsize            capacity(void)  const   { return m_capacity;  }
+    SK_INLINE SKsize            size(void)      const   { return m_size;      }
+    SK_INLINE bool              empty(void)     const   { return m_size == 0; }
 
 
     SK_INLINE Iterator iterator(void)
@@ -422,8 +382,6 @@ public:
     {
         return m_data && m_size > 0 ? ConstIterator(m_data, m_size) : ConstIterator();
     }
-
-
 
     SK_INLINE ReverseIterator reverseIterator(void)
     {
@@ -450,10 +408,9 @@ public:
 
 private:
     PointerType m_data;
-    SKsize m_size, m_capacity;
-
-    Allocator m_alloc;
-
+    SKsize      m_size, m_capacity;
+    Allocator   m_alloc;
 };
+
 
 #endif//_skArray_h_

@@ -79,6 +79,7 @@ public:
     typedef int(*Function)(T a, T b);
     typedef typename C::ReferenceType ReferenceType;
 
+
 private:
     Function m_sort;
 

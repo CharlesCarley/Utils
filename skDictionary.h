@@ -47,25 +47,24 @@ public:
         Value   second;
 
         Pair()
-            : hash(SK_NPOS), idx(SK_NPOS)
+            : hash(SK_NPOS)
         {
         }
 
-        Pair(const Key& k, const Value& v, SKhash hk, SKsize i)
-            : first(k), second(v), hash(hk), idx(i)
+        Pair(const Key& k, const Value& v, SKhash hk)
+            : first(k), second(v), hash(hk)
         {
         }
 
         Pair(const Pair& oth)
-            : first(oth.first), second(oth.second), hash(oth.hash), idx(oth.idx)
+            : first(oth.first), second(oth.second), hash(oth.hash)
         {
         }
 
         SK_INLINE bool operator == (const Pair& rhs)
         {
-            return first == rhs.first && second == rhs.second;
+            return hash == rhs.hash && first == rhs.first && second == rhs.second;
         }
-
 
         Pair& operator= (const Pair& rhs)
         {
@@ -74,30 +73,29 @@ public:
                 first = rhs.first;
                 second = rhs.second;
                 hash = rhs.hash;
-                idx = rhs.idx;
             }
             return *this;
         }
-
         ~Pair() {}
 
     private:
         friend class skDictionary;
         SKsize  hash;
-        SKsize  idx;
     };
 
-    typedef Pair*                       Result;
-    typedef Result                      PairList;
-    typedef SKsize*                     Indices;
-    typedef skDictionary<Key, Value> SelfType;
-
     SK_DECLARE_TYPE(Pair);
+
+    typedef skDictionary<Key, Value>                      SelfType;
+    typedef skPointerIncrementIterator<SelfType>          Iterator;
+    typedef const skPointerIncrementIterator<SelfType>    ConstIterator;
+    typedef skPointerDecrementIterator<SelfType>          ReverseIterator;
+    typedef const skPointerDecrementIterator<SelfType>    ConstReverseIterator;
+
 
 private:
     PointerType m_data;
     SKsize      m_size, m_capacity;
-    Indices     m_index;
+    SKsize*     m_index;
 
 
     // h(k) = k % (c - 1)
@@ -108,16 +106,16 @@ private:
 
 
     // f(i) = i
-    //   i = 0,1,2,3...
-    // h1(k) = [ h(k) + f(i) ] % (c-1)
+    //   i = (0, SK_NPOS-1)
+    // l(k,i) = { h(k) + f(i) } % (c)
     SK_INLINE SKsize linearProbe(const SKhash& key, SKsize i)
     {
         return (key + i) & (m_capacity - 1);
     }
 
     // f(i) = i^2
-    //   i = 0,1,2,3...
-    // h1(k) = [ h(k) + f(i) ] % (c-1)
+    //   i = (0, SK_NPOS-1)
+    // q(k) = { h(k) + f(i) } % (c)
     SK_INLINE SKsize quadradicProbe(const SKhash& key, SKsize i)
     {
         return ((i * i) + key) & (m_capacity - 1);
@@ -125,7 +123,7 @@ private:
 
     SK_INLINE SKsize probe(const SKhash& key, SKsize i)
     {
-        return quadradicProbe(key, i);
+        return linearProbe(key, i);
     }
 
 
@@ -184,16 +182,13 @@ public:
         if (find(key) != SK_NPOS)
             return;
 
-
         SKhash mapping = hash(key);
-
         SKsize i = 0;
         while (m_index[mapping] != SK_NPOS)
             mapping = probe(mapping, i++);
 
-        m_data[m_size] = Pair(key, val, mapping, m_size);
+        m_data[m_size] = Pair(key, val, mapping);
         m_index[mapping] = m_size;
-
         ++m_size;
     }
 
@@ -201,7 +196,7 @@ public:
     {
         if (m_size == 0)
             return false;
-        return !(m_data[hash()].empty());
+        return find(key) != SK_NPOS;
     }
 
     SKsize find(const Key& k)
@@ -214,25 +209,21 @@ public:
             return SK_NPOS;
 
         SKsize i = 0, idx;
-        while (i < m_capacity)
+        while (i < m_capacity) // worst case
         {
             mapping = probe(mapping, i++);
-
             if (m_index[mapping] != SK_NPOS)
             {
                 idx = m_index[mapping];
                 if (idx < m_size)
                 {
-                    if (m_data[idx].hash == mapping &&
-                            m_data[idx].first == k)
+                    if (m_data[idx].hash == mapping && m_data[idx].first == k)
                         return m_index[mapping];
                 }
             }
         }
-
         return SK_NPOS;
     }
-
 
     void erase(const Key& k)
     {
@@ -243,38 +234,26 @@ public:
         if (m_index[mapping] == SK_NPOS)
             return;
 
-
-        SKsize i = 0, idx, k3, k4;
+        SKsize i = 0, idx;
         while (i < m_capacity)
         {
             mapping = probe(mapping, i++);
 
-            if (m_index[mapping] != SK_NPOS)
+            if (m_index[mapping] == SK_NPOS)
+                continue;
+
+            idx = m_index[mapping];
+            if (idx > m_size)
+                continue;
+
+            if (m_data[idx].hash == mapping && m_data[idx].first == k)
             {
-                idx = m_index[mapping];
-                if (idx < m_size)
-                {
-                    if (m_data[idx].hash == mapping && m_data[idx].first == k)
-                    {
-                        idx = m_index[mapping];
-                        k3 = idx;
-                        k4 = m_size - 1;
-                        m_index[m_data[k3].hash] = SK_NPOS;
-                        m_index[m_data[k4].hash] = k3;
-                        m_data[k3].hash = m_data[k4].hash;
-
-                        skSwap(m_data[k3], m_data[k4]);
-                        --m_size;
-
-                        break;
-                    }
-                }
+                swap_keys(idx, m_size - 1);
+                --m_size;
+                break;
             }
         }
     }
-
-    SK_INLINE SKsize size(void)     { return m_size; }
-    SK_INLINE SKsize capacity(void) { return m_capacity; }
 
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
@@ -282,14 +261,11 @@ public:
         return m_data[idx];
     }
 
-
-
     SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
         SK_ASSERT(idx >= 0 && idx < m_capacity);
         return m_data[idx];
     }
-
 
     SK_INLINE ReferenceType at(SKsize idx)
     {
@@ -297,21 +273,55 @@ public:
         return m_data[idx];
     }
 
-
     SK_INLINE ConstReferenceType at(SKsize idx) const
     {
         SK_ASSERT(idx >= 0 && idx < m_capacity);
         return m_data[idx];
     }
 
+    SK_INLINE ConstPointerType  ptr(void)       const { return m_data; }
+    SK_INLINE PointerType       ptr(void)             { return m_data; }
+    SK_INLINE bool              valid(void)     const { return m_data != 0; }
+    SK_INLINE SKsize            capacity(void)  const { return m_capacity; }
+    SK_INLINE SKsize            size(void)      const { return m_size; }
+    SK_INLINE bool              empty(void)     const { return m_size == 0; }
+
+    SK_INLINE Iterator iterator(void)
+    {
+        return m_data && m_size > 0 ? Iterator(m_data, m_size) : Iterator();
+    }
+
+    SK_INLINE ConstIterator iterator(void) const
+    {
+        return m_data && m_size > 0 ? ConstIterator(m_data, m_size) : ConstIterator();
+    }
+
+    SK_INLINE ReverseIterator reverseIterator(void)
+    {
+        return m_data && m_size > 0 ? ReverseIterator(m_data, m_size) : ReverseIterator();
+    }
 
 
+    SK_INLINE ConstReverseIterator reverseIterator(void) const
+    {
+        return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
+    }
 
 private:
 
+    void swap_keys(SKsize k3, SKsize k4)
+    {
+        m_index[m_data[k3].hash] = SK_NPOS;
+        m_index[m_data[k4].hash] = k3;
+        m_data[k3].hash = m_data[k4].hash;
+
+        skSwap(m_data[k3], m_data[k4]);
+    }
 
     void _rehash(SKsize nr)
     {
+        // yikes!
+
         Pair* data     = new Pair[nr];
         SKsize* index = new SKsize[nr];
         skMemset(index, SK_NPOS, nr * sizeof(SKsize));
@@ -330,7 +340,7 @@ private:
                     mapping = probe(mapping, j++);
             }
 
-            data[i] = Pair(m_data[i].first, m_data[i].second, mapping, i);
+            data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
             index[mapping] = i;
         }
 
