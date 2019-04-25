@@ -29,6 +29,7 @@ set(Utils_HDR
     skAssert.h
     skDebugger.h
     skDelegate.h
+    skDictionary.h
     skDeque.h
     skEndian.h
     skFileStream.h
