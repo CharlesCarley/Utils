@@ -37,17 +37,18 @@
 
 namespace skStringUtils
 {
-    extern SKsize skStrlen(const char* in);
-    extern SKsize skStrcpy(char* dest, const char* src);
-    extern SKsize skStrcnpy(char* dest, const char* src, SKsize n);
-    extern SKsize skStreq(const char* a, const char* b);
-    extern SKsize skStrneq(const char* a, const char* b, SKsize n);
+    extern SKsize length(const char* in);
+    extern SKsize copy(char* dest, const char* src);
+    extern SKsize copyn(char* dest, const char* src, SKsize n);
+    extern SKsize equals(const char* a, const char* b);
+    extern SKsize equalsn(const char* a, const char* b, SKsize n);
 
-    extern bool skStrToBool(const char* in);
-    extern int skStrToInt(const char* in);
-    extern long skStrToLong(const char* in);
-    extern float skStrToFloat(const char* in);
-    extern double skStrToDouble(const char* in);
+
+    extern bool     toBool(const char* in);
+    extern int      toInt(const char* in);
+    extern long     toLong(const char* in);
+    extern float    toFloat(const char* in);
+    extern double   toDouble(const char* in);
 };
 
 
@@ -99,16 +100,16 @@ public:
     }
 
     SK_INLINE bool operator == (const skString& rhs) const 
-    { return !skStringUtils::skStreq(m_data, rhs.m_data); }
+    { return !skStringUtils::equals(m_data, rhs.m_data); }
     
     SK_INLINE bool operator != (const skString& rhs) const 
-    { return skStringUtils::skStreq(m_data, rhs.m_data) != 0; }
+    { return skStringUtils::equals(m_data, rhs.m_data) != 0; }
 
     SK_INLINE bool operator == (const ValueType* rhs) const
-    { return !skStringUtils::skStreq(m_data, rhs); }
+    { return !skStringUtils::equals(m_data, rhs); }
 
     SK_INLINE bool operator != (const ValueType* rhs) const
-    { return skStringUtils::skStreq(m_data, rhs) != 0; }
+    { return skStringUtils::equals(m_data, rhs) != 0; }
 
     SK_INLINE skString operator + (const char ch) const
     { return skString(*this).append(ch); }
@@ -233,10 +234,10 @@ public:
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
     }
 
-    bool    toBoolean(void) { return skStringUtils::skStrToBool(m_data); }
-    SKint32 toInteger(void) { return skStringUtils::skStrToInt(m_data); }
-    float   toFloat(void)   { return skStringUtils::skStrToFloat(m_data); }
-    double  toDouble(void)  { return skStringUtils::skStrToDouble(m_data); }
+    bool    toBoolean(void) { return skStringUtils::toBool(m_data); }
+    SKint32 toInteger(void) { return skStringUtils::toInt(m_data); }
+    float   toFloat(void)   { return skStringUtils::toFloat(m_data); }
+    double  toDouble(void)  { return skStringUtils::toDouble(m_data); }
 
 protected:
     PointerType m_data;

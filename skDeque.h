@@ -48,19 +48,21 @@ public:
 
 private:
     PointerType m_data;
-    SKsize m_size, m_capacity;
-    Allocator m_alloc;
+    SKsize      m_size, m_capacity;
+    Allocator   m_alloc;
+
 public:
-
-
-    skDeque()
-        : m_data(0), m_size(0), m_capacity(0)
+    skDeque() : 
+        m_data(0), 
+        m_size(0), 
+        m_capacity(0)
     {
     }
 
-    
-    skDeque(const skDeque& o)
-        : m_data(0), m_size(0), m_capacity(0)
+    skDeque(const skDeque& o) : 
+        m_data(0), 
+        m_size(0), 
+        m_capacity(0)
     {
         if (o.m_data) {
             m_size  = o.size();
@@ -78,7 +80,6 @@ public:
     {
         if (m_data)
             m_alloc.array_deallocate(m_data, m_capacity);
-
         m_data = 0;
         m_capacity = 0;
         m_size = 0;
@@ -89,16 +90,13 @@ public:
         return SK_NPOS;
     }
 
-
     SK_INLINE void push_front(ConstReferenceType v)
     {
         if (m_size == 0)
             push_back(v);
         else
-            stackRecurse(v);
+            push_bottom(v);
     }
-
-
 
     void push_back(ConstReferenceType v)
     {
@@ -192,13 +190,10 @@ public:
     }
 
 
-    SK_INLINE bool valid(void) const      { return m_data != 0; }
-    SK_INLINE SKsize capacity(void) const { return m_capacity; }
-    SK_INLINE SKsize size(void) const     { return m_size; }
-    SK_INLINE bool empty(void) const      { return m_size == 0; }
-
-
-
+    SK_INLINE bool      valid(void)     const   { return m_data != 0; }
+    SK_INLINE SKsize    capacity(void)  const   { return m_capacity; }
+    SK_INLINE SKsize    size(void)      const   { return m_size; }
+    SK_INLINE bool      empty(void)     const   { return m_size == 0; }
 
     SK_INLINE Iterator iterator(void)
     {
@@ -220,15 +215,15 @@ public:
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
     }
 
-private:
 
+private:
     ReferenceType pop(void)
     {
         SK_ASSERT(m_size >= 0);
         return m_data[--m_size];
     }
 
-    void stackRecurse(ConstReferenceType first)
+    void push_bottom(ConstReferenceType first)
     {
         if (m_size == 1)
         {
@@ -239,11 +234,10 @@ private:
         else
         {
             ValueType val = pop();
-            stackRecurse(first);
+            push_bottom(first);
             push_back(val);
         }
     }
-
 
     ReferenceType stackRecurse(void)
     {
@@ -257,7 +251,6 @@ private:
             return rval;
         }
     }
-
 };
 
 #endif//_skDeque_h_

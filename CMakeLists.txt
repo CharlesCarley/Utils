@@ -15,7 +15,6 @@ set(Utils_SRC
     skLogger.cpp
     skMemoryStream.cpp
     skMemoryUtils.cpp
-    skStreams.cpp
     skString.cpp
     skStringConverter.cpp
     skRandom.cpp
@@ -29,6 +28,7 @@ set(Utils_HDR
     skAssert.h
     skDebugger.h
     skDelegate.h
+    skDictionary.h
     skDeque.h
     skFileStream.h
     skFixedArray.h

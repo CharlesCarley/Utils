@@ -63,15 +63,15 @@
         srt.sort( (*this) );                        \
     }
 
+
 #define SK_IMPLEMENT_QSORT(T, SELF)                 \
     public:                                         \
     typedef skQSort<T, SELF> SortType;              \
-    void sort( typename SortType::Function cmp )   \
+    void sort( typename SortType::Function cmp )    \
     {                                               \
         SortType srt( cmp );                        \
         srt.sort( (*this) );                        \
     }
-
 
 #define SK_IMPLEMENT_SORT2(T, SELF)                 \
     public:                                         \
@@ -81,6 +81,5 @@
         SortType srt( cmp );                        \
         srt.sort( (*this) );                        \
     }
-
 
 #endif//_skTraits_h_

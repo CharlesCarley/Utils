@@ -31,51 +31,33 @@
 namespace skStringUtils
 {
 
-    bool skStrToBool(const char* in)
+    bool toBool(const char* in)
     {
-        return (skStreq(in, "true") == 0 ||
-                skStreq(in, "yes") == 0 ||
-                skStreq(in, "1") == 0);
+        return (equals(in, "true") == 0 ||
+                equals(in, "yes") == 0 ||
+                equals(in, "1") == 0);
     }
 
 
-
-    long skStrToLong(const char* in)
+    long toLong(const char* in)
     {
-        return atol(in);
+        return ::atol(in);
     }
 
-
-
-    int skStrToInt(const char* in)
-    {
-        return atoi(in);
-    }
-
-
-
-    float skStrToFloat(const char* in)
-    {
-        return (float)atof(in);
-    }
-
-
-    double skStrToDouble(const char* in)
-    {
-        return atof(in);
-    }
+    int toInt(const char* in)          { return ::atoi(in); }
+    float toFloat(const char* in)      { return (float)::atof(in); }
+    double toDouble(const char* in)    { return (double)::atof(in); }
 
 #ifndef SK_USE_STD_STRING_FUNCS
 
 
 
-    SKsize skStrlen(const char* in)
+    SKsize length(const char* in)
     {
         if (!in)
             return 0;
 
         SKsize i = 0;
-
         while (in[i] != 0) ++i;
 
         return i;
@@ -83,33 +65,29 @@ namespace skStringUtils
 
 
 
-    SKsize skStrncpy(char* out, const char* in, SKsize max)
+    SKsize copyn(char* out, const char* in, SKsize max)
     {
         if (!in || !out)
             return 0;
-
         SKsize i = 0;
-
         while (in[i] != 0 && i < max)
         {
             out[i] = in[i];
             ++i;
         };
-
         out[i] = 0;
-
         return i;
     }
 
 
-    SKsize skStrcpy(char* out, const char* in)
+    SKsize copy(char* out, const char* in)
     {
-        return skStrncpy(out, in, SK_NPOS);
+        return copyn(out, in, SK_NPOS);
     }
 
 
 
-    SKsize skStrneq(const char* a, const char* b, SKsize max)
+    SKsize equalsn(const char* a, const char* b, SKsize max)
     {
         if (!a || !b) return 1;
 
@@ -129,38 +107,37 @@ namespace skStringUtils
 
 
 
-    SKsize skStreq(const char* a, const char* b)
+    SKsize equals(const char* a, const char* b)
     {
-        return skStrneq(a, b, SK_NPOS);
+        return equalsn(a, b, SK_NPOS);
     }
 #else
 
 
-    SKsize skStrlen(const char* in)
+    SKsize length(const char* in)
     {
         if (!in) return 0;
 
-        return (SKsize)strlen(in);
+        return (SKsize)::strlen(in);
     }
 
 
-    SKsize skStrncpy(char* out, const char* in, SKsize max)
+    SKsize copyn(char* out, const char* in, SKsize max)
     {
         if (!in || !out)
             return 0;
-
-        return (SKsize)strncpy(out, in, max);
+        return (SKsize)::strncpy(out, in, max);
     }
 
 
 
-    SKsize skStrcpy(char* out, const char* in)
+    SKsize copy(char* out, const char* in)
     {
         return (SKsize)strcpy(out, in);
     }
 
 
-    SKsize skStrneq(const char* a, const char* b, SKsize max)
+    SKsize equalsn(const char* a, const char* b, SKsize max)
     {
         if (!a || !b) return 1;
 
@@ -171,7 +148,7 @@ namespace skStringUtils
     }
 
 
-    SKsize skStreq(const char* a, const char* b)
+    SKsize equals(const char* a, const char* b)
     {
         if (!a || !b) return 1;
 
@@ -193,13 +170,13 @@ void skString::alloc(const char* str, SKsize len)
     m_size = len;
 
     if (!m_size)
-        m_size = skStringUtils::skStrlen(str);
+        m_size = skStringUtils::length(str);
 
     reserve(m_size);
 
     if (m_data)
     {
-        skStringUtils::skStrncpy(m_data, str, m_size);
+        skStringUtils::copyn(m_data, str, m_size);
         m_data[m_size] = 0;
     }
 }
@@ -391,7 +368,7 @@ skString& skString::append(const char* rhs, SKsize rhsLen)
     if (rhs)
     {
         if (!rhsLen)
-            rhsLen = skStringUtils::skStrlen(rhs);
+            rhsLen = skStringUtils::length(rhs);
 
         reserve(m_size + rhsLen);
 
@@ -718,7 +695,7 @@ void skString::encrypt(const char* password)
     { 13673, 32696, 27676, 5443, 22638 };
 
     encrypt((SKbyte*)password,
-            skStringUtils::skStrlen(password),
+            skStringUtils::length(password),
             UB,
             sizeof(UB) / sizeof(UB[0])
            );
@@ -730,7 +707,7 @@ void skString::decrypt(const char* password)
     { 13673, 32696, 27676, 5443, 22638 };
 
     decrypt((SKbyte*)password,
-            skStringUtils::skStrlen(password),
+            skStringUtils::length(password),
             UB,
             sizeof(UB) / sizeof(UB[0])
            );
