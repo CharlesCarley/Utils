@@ -30,7 +30,6 @@ set(Utils_HDR
     skDebugger.h
     skDelegate.h
     skDeque.h
-    skEndian.h
     skFileStream.h
     skFixedArray.h
     skFixedString.h
@@ -44,7 +43,6 @@ set(Utils_HDR
     skMinMax.h
     skParser.h
     skPlatformHeaders.h
-    skPointer.h
     skQueue.h
     skRandom.h
     skSingleton.h
