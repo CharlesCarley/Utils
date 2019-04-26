@@ -56,31 +56,31 @@ void skStringConverter::toString(skString& dest, bool v)
 
 int skStringConverter::toInt(const skString& src)
 {
-    return skStringUtils::skStrToInt(src.c_str());
+    return skStringUtils::toInt(src.c_str());
 }
 
 long skStringConverter::toLong(const skString& src)
 {
-    return skStringUtils::skStrToLong(src.c_str());
+    return skStringUtils::toLong(src.c_str());
 }
 
 float skStringConverter::toFloat(const skString& src)
 {
-    return skStringUtils::skStrToFloat(src.c_str());
+    return skStringUtils::toFloat(src.c_str());
 }
 
 double skStringConverter::toDouble(const skString& src)
 {
-    return skStringUtils::skStrToDouble(src.c_str());
+    return skStringUtils::toDouble(src.c_str());
 }
 
 
 bool skStringConverter::toBool(const skString& src)
 {
     return (
-               skStringUtils::skStreq(src.c_str(), "true") == 0 ||
-               skStringUtils::skStreq(src.c_str(), "yes") == 0  ||
-               skStringUtils::skStreq(src.c_str(), "1")
+               skStringUtils::equals(src.c_str(), "true") == 0 ||
+               skStringUtils::equals(src.c_str(), "yes") == 0  ||
+               skStringUtils::equals(src.c_str(), "1")
            );
 }
 

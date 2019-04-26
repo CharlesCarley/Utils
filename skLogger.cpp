@@ -107,7 +107,7 @@ void skLogger::logMessage(const char* msg, SKint32 len)
     if (!m_stream)
         return;
 
-    len = skStringUtils::skStrlen(buf);
+    len = skStringUtils::length(buf);
     if (len <= 0)
         return;
 
