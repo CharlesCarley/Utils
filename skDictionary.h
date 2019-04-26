@@ -95,29 +95,22 @@ private:
     SKsize      m_size, m_capacity;
     SKsize*     m_index;
 
-    // h(k) = k % (c - 1)
-    SK_INLINE SKsize hash(const Key& key)
+    SK_INLINE SKsize hash(const Key& key) const
     {
         return skHash(key) & (m_capacity - 1);
     }
 
-    // f(i) = i
-    //   i = (0, SK_NPOS-1)
-    // l(k,i) = { h(k) + f(i) } % (c)
-    SK_INLINE SKsize linearProbe(const SKhash& key, SKsize i)
+    SK_INLINE SKsize linearProbe(const SKhash& key, SKsize i) const
     {
         return (key + i) & (m_capacity - 1);
     }
 
-    // f(i) = i^2
-    //   i = (0, SK_NPOS-1)
-    // q(k) = { h(k) + f(i) } % (c)
-    SK_INLINE SKsize quadradicProbe(const SKhash& key, SKsize i)
+    SK_INLINE SKsize quadradicProbe(const SKhash& key, SKsize i) const
     {
         return ((i * i) + key) & (m_capacity - 1);
     }
 
-    SK_INLINE SKsize probe(const SKhash& key, SKsize i)
+    SK_INLINE SKsize probe(const SKhash& key, SKsize i) const
     {
         return linearProbe(key, i);
     }
@@ -193,7 +186,7 @@ public:
         return find(key) != SK_NPOS;
     }
 
-    SKsize find(const Key& k)
+    SKsize find(const Key& k) const
     {
         if (m_size == 0)
             return SK_NPOS;
