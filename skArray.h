@@ -238,7 +238,7 @@ public:
     const SKsize find(ConstReferenceType v) const
     {
         SKsize i;
-        for (SKsize i = 0; i < m_size; i++) {
+        for (i = 0; i < m_size; i++) {
             if (m_data[i] == v)
                 return i;
         }
