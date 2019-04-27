@@ -46,20 +46,15 @@ public:
         Node(ConstValueType v) : m_left(0), m_right(0), m_data(v) {}
         ~Node() { destruct(); }
 
-        SK_INLINE Node*         getLeft(void)   { return m_left; }
-        SK_INLINE Node*         getRight(void)  { return m_right; }
-        SK_INLINE ReferenceType getData(void)   { return m_data; }
+        SK_INLINE Node*         left(void)   { return m_left; }
+        SK_INLINE Node*         right(void)  { return m_right; }
+        SK_INLINE ReferenceType data(void)   { return m_data; }
 
     private:
         friend class skBinarySearchTree;
 
         Node* m_left, *m_right;
         ValueType m_data;
-        void zero(void)
-        {
-            m_left = 0;
-            m_right = 0;
-        }
 
         void destruct(void)
         {
@@ -69,7 +64,6 @@ public:
     };
 
     SK_DECLARE_TYPE_NAME(Node, Node);
-
 
     typedef skArray<T> Array;
     typedef typename Array::Iterator Iterator;
@@ -171,36 +165,36 @@ public:
 
 
 private:
-    void insert_recursive(NodePointerType root, ConstReferenceType val)
+    void insert_recursive(NodePointerType node, ConstReferenceType val)
     {
-        if (val < root->m_data)
+        if (val < node->m_data)
         {
-            if (root->m_left)
-                insert_recursive(root->m_left, val);
+            if (node->m_left)
+                insert_recursive(node->m_left, val);
             else
-                root->m_left = new Node(val);
+                node->m_left = new Node(val);
         }
         else
         {
-            if (root->m_right)
-                insert_recursive(root->m_right, val);
+            if (node->m_right)
+                insert_recursive(node->m_right, val);
             else
-                root->m_right = new Node(val);
+                node->m_right = new Node(val);
         }
     }
 
-    NodePointerType find_recursive(NodePointerType root, ConstReferenceType val) const
+    NodePointerType find_recursive(NodePointerType node, ConstReferenceType val) const
     {
-        if (!root)
+        if (!node)
             return 0;
 
-        if (root->m_data == val)
-            return root;
+        if (node->m_data == val)
+            return node;
 
-        if (root->m_data > val)
-            return find_recursive(root->m_left, val);
+        if (node->m_data > val)
+            return find_recursive(node->m_left, val);
 
-        return find_recursive(root->m_right, val);
+        return find_recursive(node->m_right, val);
     }
 
 
@@ -250,14 +244,14 @@ private:
     }
 
 
-    void populate(NodePointerType root, bool descending)
+    void populate(NodePointerType node, bool descending)
     {
-        if (!root)
+        if (!node)
             return;
 
-        populate(descending ? root->m_right : root->m_left, descending);
-        m_array.push_back(root->m_data);
-        populate(descending ? root->m_left : root->m_right, descending);
+        populate(descending ? node->m_right : node->m_left, descending);
+        m_array.push_back(node->m_data);
+        populate(descending ? node->m_left : node->m_right, descending);
     }
 
 };
