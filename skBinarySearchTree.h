@@ -161,7 +161,7 @@ public:
     SK_INLINE NodePointerType root(void)    { return m_root; }
     SK_INLINE NodePointerType left(void)    { return m_root? m_root->m_left : 0; }
     SK_INLINE NodePointerType right(void)   { return m_root ? m_root->m_right : 0; }
-    SK_INLINE NodePointerType size(void)    { return m_size; }
+    SK_INLINE SKsize          size(void)    { return m_size; }
 
 
 private:
