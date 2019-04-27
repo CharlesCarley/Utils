@@ -202,14 +202,11 @@ public:
         while (i < m_capacity) // worst case
         {
             mapping = probe(mapping, i++);
-            if (m_index[mapping] != SK_NPOS)
+            idx = m_index[mapping];
+            if (idx < m_size)
             {
-                idx = m_index[mapping];
-                if (idx < m_size)
-                {
-                    if (m_data[idx].hash == mapping && m_data[idx].first == k)
-                        return m_index[mapping];
-                }
+                if (m_data[idx].hash == mapping && m_data[idx].first == k)
+                    return m_index[mapping];
             }
         }
         return SK_NPOS;
@@ -317,11 +314,10 @@ private:
             mapping = hash(m_data[i].first);
 
             j = 0;
-            if (index[mapping] != SK_NPOS)
-            {
-                while (index[mapping] != SK_NPOS)
-                    mapping = probe(mapping, j++);
-            }
+            while (index[mapping] != SK_NPOS && j < m_capacity)
+                mapping = probe(mapping, j++);
+
+            SK_ASSERT(j != m_capacity);
 
             data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
             index[mapping] = i;
