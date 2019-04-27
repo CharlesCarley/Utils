@@ -30,7 +30,7 @@
 #include "Utils/skTraits.h"
 #include "Utils/skArray.h"
 
-template < typename T >
+template <typename T>
 class skBinarySearchTree
 {
 public:
@@ -38,17 +38,15 @@ public:
 
     class Node : public skAllocObject
     {
-
     public:
-
         Node() : m_left(0), m_right(0) {}
-        Node(const Node& oth) : m_left(oth.m_left), m_right(oth.m_right), m_data(oth.m_data) {}
         Node(ConstValueType v) : m_left(0), m_right(0), m_data(v) {}
+
         ~Node() { destruct(); }
 
-        SK_INLINE Node*         left(void)   { return m_left; }
+        SK_INLINE Node*         left(void)   { return m_left;  }
         SK_INLINE Node*         right(void)  { return m_right; }
-        SK_INLINE ReferenceType data(void)   { return m_data; }
+        SK_INLINE ReferenceType data(void)   { return m_data;  }
 
     private:
         friend class skBinarySearchTree;
@@ -84,6 +82,7 @@ public:
         m_root(0),
         m_size(0)
     {
+        SK_ASSERT(0 && "TODO");
     }
 
     ~skBinarySearchTree() { clear(); }
@@ -102,7 +101,6 @@ public:
             m_root = new Node(val);
         else
             insert_recursive(m_root, val);
-
         m_size++;
     }
 
@@ -140,7 +138,6 @@ public:
             return;
 
         m_root = erase_recursive(m_root, val);
-
     }
 
     Iterator iterator_ascending(void)
@@ -159,12 +156,13 @@ public:
 
 
     SK_INLINE NodePointerType root(void)    { return m_root; }
-    SK_INLINE NodePointerType left(void)    { return m_root? m_root->m_left : 0; }
+    SK_INLINE NodePointerType left(void)    { return m_root ? m_root->m_left : 0; }
     SK_INLINE NodePointerType right(void)   { return m_root ? m_root->m_right : 0; }
     SK_INLINE SKsize          size(void)    { return m_size; }
 
 
 private:
+
     void insert_recursive(NodePointerType node, ConstReferenceType val)
     {
         if (val < node->m_data)
@@ -238,11 +236,9 @@ private:
 
             node->m_data = cur->m_data;
             node->m_right = erase_recursive(node->m_right, cur->m_data);
-
         }
         return node;
     }
-
 
     void populate(NodePointerType node, bool descending)
     {
@@ -253,7 +249,6 @@ private:
         m_array.push_back(node->m_data);
         populate(descending ? node->m_left : node->m_right, descending);
     }
-
 };
 
 
