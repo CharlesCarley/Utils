@@ -79,7 +79,6 @@ private:
     SKsize              m_size;
     Array               m_array;
 
-
 public:
     skBinarySearchTree() :
         m_root(0),
@@ -141,15 +140,14 @@ public:
     }
 
 
-
     void erase(ConstReferenceType val)
     {
-        erase_recursive(0, m_root, val);
+        if (m_root == 0)
+            return;
 
-        if (m_size == 0)
-            m_root = 0;
+        m_root = erase_recursive(m_root, val);
+
     }
-
 
     Iterator iterator_ascending(void)
     {
@@ -205,57 +203,50 @@ private:
         return find_recursive(root->m_right, val);
     }
 
-    void erase_recursive(NodePointerType par, NodePointerType node, ConstReferenceType val)
+
+    NodePointerType erase_recursive(NodePointerType node, ConstReferenceType val)
     {
-        if (!node) return;
+        if (!node) return 0;
 
         if (node->m_data > val)
-            erase_recursive(node, node->m_left, val);
+            node->m_left = erase_recursive(node->m_left, val);
         else if (node->m_data < val)
-            erase_recursive(node, node->m_right, val);
+            node->m_right = erase_recursive(node->m_right, val);
         else
-            detach(par, node);
+            return detach(node);
+        return node;
     }
 
-    void detach(NodePointerType par, NodePointerType node)
+    NodePointerType detach(NodePointerType node)
     {
         SK_ASSERT(node);
+
         if (node->m_left == 0 && node->m_right == 0)
         {
-            if (par)
-            {
-                if (par->m_right == node)
-                    par->m_right = 0;
-                else if (par->m_left == node)
-                    par->m_left = 0;
-            }
             --m_size;
-            node->zero();
             delete node;
+            node = 0;
         }
         else if (node->m_left == 0 || node->m_right == 0)
         {
-            NodePointerType local = node->m_left == 0? node->m_right : node->m_left;
-            if (par)
-            {
-                if (par->m_right == node)
-                    par->m_right = local;
-                else if (par->m_left == node)
-                    par->m_left = local;
-            }
-            node->zero();
-            delete node;
+            NodePointerType local = node->m_left == 0 ? node->m_right : node->m_left;
+            node->m_left = node->m_right = 0;
+
             --m_size;
+            delete node;
+            node = local;
         }
         else
         {
-            NodePointerType nextFree = node->m_right;
-            while (nextFree && nextFree->m_left != 0)
-                nextFree = nextFree->m_left;
+            NodePointerType cur = node->m_right;
+            while (cur && cur->m_left != 0)
+                cur = cur->m_left;
 
-            node->m_data = nextFree->m_data;
-            detach(node, node->m_right);
+            node->m_data = cur->m_data;
+            node->m_right = erase_recursive(node->m_right, cur->m_data);
+
         }
+        return node;
     }
 
 
