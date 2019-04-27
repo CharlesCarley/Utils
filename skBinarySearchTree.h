@@ -30,7 +30,7 @@
 #include "Utils/skTraits.h"
 #include "Utils/skArray.h"
 
-template <typename T>
+template < typename T >
 class skBinarySearchTree
 {
 public:
@@ -38,6 +38,7 @@ public:
 
     class Node : public skAllocObject
     {
+
     public:
 
         Node() : m_left(0), m_right(0) {}
@@ -54,6 +55,11 @@ public:
 
         Node* m_left, *m_right;
         ValueType m_data;
+        void zero(void)
+        {
+            m_left = 0;
+            m_right = 0;
+        }
 
         void destruct(void)
         {
@@ -138,7 +144,7 @@ public:
 
     void erase(ConstReferenceType val)
     {
-        erase_recursive(m_root, val);
+        erase_recursive(0, m_root, val);
     }
 
 
@@ -158,14 +164,12 @@ public:
 
 
     SK_INLINE NodePointerType root(void)    { return m_root; }
-    SK_INLINE NodePointerType left(void)    { return m_root ? m_root->m_left : 0; }
+    SK_INLINE NodePointerType left(void)    { return m_root? m_root->m_left : 0; }
     SK_INLINE NodePointerType right(void)   { return m_root ? m_root->m_right : 0; }
     SK_INLINE SKsize          size(void)    { return m_size; }
 
 
 private:
-
-
     void insert_recursive(NodePointerType root, ConstReferenceType val)
     {
         if (val < root->m_data)
@@ -198,43 +202,43 @@ private:
         return find_recursive(root->m_right, val);
     }
 
-    NodePointerType erase_recursive(NodePointerType node, ConstReferenceType val)
+    void erase_recursive(NodePointerType par, NodePointerType node, ConstReferenceType val)
     {
-        if (!node) return 0;
+        if (!node) return;
 
         if (node->m_data > val)
-            node->m_left = erase_recursive(node->m_left, val);
+            erase_recursive(node, node->m_left, val);
         else if (node->m_data < val)
-            node->m_right = erase_recursive(node->m_right, val);
+            erase_recursive(node, node->m_right, val);
         else
-            return erase_recursive(node);
+            detach(par, node);
     }
 
-    NodePointerType detach(NodePointerType node)
+    void detach(NodePointerType par, NodePointerType node)
     {
         SK_ASSERT(node);
         if (node->m_left == 0 && node->m_right == 0)
         {
             --m_size;
+            if (par->m_right == node)
+                par->m_right = 0;
+            if (par->m_left == node)
+                par->m_left = 0;
+
+            node->zero();
             delete node;
-            node = 0;
         }
         else if (node->m_left == 0 || node->m_right == 0)
         {
-            if (node->m_left == 0)
-            {
-                NodePointerType tmp = node;
-                node = node->m_right;
-                delete tmp;
-            }
-            else if (node->m_right == 0)
-            {
-                NodePointerType tmp = node;
-                node = node->m_left;
-                delete tmp;
-            }
+            NodePointerType local = node->m_left == 0? node->m_right : node->m_left;
+            if (par->m_right == node)
+                par->m_right = local;
+            else if (par->m_left == node)
+                par->m_left = local;
+
+            node->zero();
+            delete node;
             --m_size;
-            node = 0;
         }
         else
         {
@@ -243,9 +247,8 @@ private:
                 nextFree = nextFree->m_left;
 
             node->m_data = nextFree->m_data;
-            node->m_right = detach(node->m_right, nextFree->m_data);
+            detach(node, node->m_right);
         }
-        return node;
     }
 
 
