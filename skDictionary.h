@@ -34,7 +34,7 @@
 
 
 
-template < typename Key, typename Value>
+template <typename Key, typename Value>
 class skDictionary
 {
 public:
@@ -44,8 +44,9 @@ public:
     public:
         Key     first;
         Value   second;
-        Pair()
-            : hash(SK_NPOS)
+ 
+        Pair() :
+            hash(SK_NPOS)
         {
         }
 
@@ -74,6 +75,7 @@ public:
             }
             return *this;
         }
+
         ~Pair() {}
 
     private:
@@ -131,6 +133,7 @@ public:
         m_size(0),
         m_capacity(0)
     {
+        SK_ASSERT(0 && "TODO");
     }
 
     ~skDictionary() { clear(); }
@@ -160,7 +163,7 @@ public:
 
     void insert(const Key& key, const Value& val)
     {
-        if (m_size*2 >= m_capacity)
+        if (m_size*2 >= m_capacity) // assure that the load factor is balanced  
             reserve(m_size == 0 ? 16 : m_capacity * 2);
 
         if (find(key) != SK_NPOS)
@@ -308,12 +311,12 @@ private:
         SKsize* index = new SKsize[nr];
         skMemset(index, SK_NPOS, nr * sizeof(SKsize));
 
-        SKsize i = 0;
+        SKsize i = 0, mapping, j;
         for (i = 0; i < m_size; ++i)
         {
-            SKhash mapping = hash(m_data[i].first);
+            mapping = hash(m_data[i].first);
 
-            SKsize j = 0;
+            j = 0;
             if (index[mapping] != SK_NPOS)
             {
                 while (index[mapping] != SK_NPOS)
@@ -326,13 +329,9 @@ private:
 
         delete[]m_data;
         delete[]m_index;
-        m_data = data;
+        m_data  = data;
         m_index = index;
     }
 };
-
-
-
-
 
 #endif//_skDictionary_h_
