@@ -145,6 +145,9 @@ public:
     void erase(ConstReferenceType val)
     {
         erase_recursive(0, m_root, val);
+
+        if (m_size == 0)
+            m_root = 0;
     }
 
 
@@ -219,23 +222,27 @@ private:
         SK_ASSERT(node);
         if (node->m_left == 0 && node->m_right == 0)
         {
+            if (par)
+            {
+                if (par->m_right == node)
+                    par->m_right = 0;
+                else if (par->m_left == node)
+                    par->m_left = 0;
+            }
             --m_size;
-            if (par->m_right == node)
-                par->m_right = 0;
-            if (par->m_left == node)
-                par->m_left = 0;
-
             node->zero();
             delete node;
         }
         else if (node->m_left == 0 || node->m_right == 0)
         {
             NodePointerType local = node->m_left == 0? node->m_right : node->m_left;
-            if (par->m_right == node)
-                par->m_right = local;
-            else if (par->m_left == node)
-                par->m_left = local;
-
+            if (par)
+            {
+                if (par->m_right == node)
+                    par->m_right = local;
+                else if (par->m_left == node)
+                    par->m_left = local;
+            }
             node->zero();
             delete node;
             --m_size;
@@ -250,7 +257,6 @@ private:
             detach(node, node->m_right);
         }
     }
-
 
 
     void populate(NodePointerType root, bool descending)
