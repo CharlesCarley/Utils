@@ -53,6 +53,14 @@
     typedef typename T::ConstReferenceType ConstReferenceType;
 
 
+#define SK_DECLARE_TYPE_NAME(T, N)                              \
+    typedef T N##Type;                                          \
+    typedef T& N##ReferenceType;                                \
+    typedef T* N##PointerType;                                  \
+    typedef const T Const##N##Type;                             \
+    typedef const T*    ConstPointer##N##Type;                  \
+    typedef const T&    ConstReference##N##Type;
+
 
 #define SK_IMPLEMENT_SORT(T, SELF)                  \
     public:                                         \
