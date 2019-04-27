@@ -63,7 +63,7 @@ public:
         }
     };
 
-    SK_DECLARE_NAME_TYPE(Node, Node);
+    SK_DECLARE_TYPE_NAME(Node, Node);
 
 
     typedef skArray<T> Array;
