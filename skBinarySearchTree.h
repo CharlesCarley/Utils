@@ -30,7 +30,7 @@
 #include "Utils/skTraits.h"
 #include "Utils/skArray.h"
 
-template < typename T >
+template <typename T>
 class skBinarySearchTree
 {
 public:
@@ -38,7 +38,6 @@ public:
 
     class Node : public skAllocObject
     {
-
     public:
 
         Node() : m_left(0), m_right(0) {}
@@ -159,12 +158,14 @@ public:
 
 
     SK_INLINE NodePointerType root(void)    { return m_root; }
-    SK_INLINE NodePointerType left(void)    { return m_root? m_root->m_left : 0; }
+    SK_INLINE NodePointerType left(void)    { return m_root ? m_root->m_left : 0; }
     SK_INLINE NodePointerType right(void)   { return m_root ? m_root->m_right : 0; }
     SK_INLINE SKsize          size(void)    { return m_size; }
 
 
 private:
+
+
     void insert_recursive(NodePointerType root, ConstReferenceType val)
     {
         if (val < root->m_data)
