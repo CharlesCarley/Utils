@@ -65,9 +65,7 @@ public:
 
 
 private:
-    Link*       m_last;
     Link*       m_first;
-
     SKsize      m_size;
 
 public:
@@ -75,7 +73,6 @@ public:
     skSinglyLinkedList() :
         m_size(0)
     {
-        m_last  = 0;
         m_first = 0;
     }
 
@@ -84,31 +81,25 @@ public:
 
     void clear(void)
     {
-        Link *l = m_first;
-        while (l != 0)
+        Link *link = m_first;
+        while (link != 0)
         {
-            Link *t = l->m_next;
-            delete l;
-            l = t;
+            Link *tmp = link->m_next;
+            delete link;
+            link = tmp;
         }
-        m_last = 0;
         m_first = 0;
-
         m_size = 0;
     }
 
     void push_back(ConstReferenceType v)
     {
         Link *nd = new Link(v);
-
         if (!m_first)
             m_first = nd;
         else
-        {
-            if (m_last)
-                m_last->m_next = nd;
-        }
-        m_last = nd;
+            push_last(m_first, nd);
+
         m_size++;
     }
 
@@ -117,10 +108,7 @@ public:
         Link *nd = new Link(v);
 
         if (!m_first)
-        {
             m_first = nd;
-            m_last = nd;
-        }
         else
         {
             Link *t = m_first;
@@ -132,66 +120,47 @@ public:
 
     ValueType pop_back(void)
     {
-        SK_ASSERT(m_last);
+        SK_ASSERT(m_first);
+
+        Link *link = m_first, *prev =0;
+        while (link->m_next != 0)
+        {
+            prev = link;
+            link = link->m_next;
+        }
+
+        ValueType val = link->m_data;
+        if (prev)
+            prev->m_next = 0;
+
+        if (link == m_first)
+            m_first = 0;
+
+        delete link;
         m_size--;
-
-        Link *l = m_first;
-        while (l != 0 && l->m_next != m_last) l = l->m_next;
-
-        SK_ASSERT(l && l->m_next == m_last);
-        ValueType val = m_last->m_data;
-
-        delete m_last;
-        m_last = l;
-        m_last->m_next = 0;
         return val;
     }
 
+    ValueType pop_front(void)
+    {
+        SK_ASSERT(m_first);
+
+        ValueType val = m_first->m_data;
+        Link *link = m_first->m_next;
+
+        m_size--;
+        delete m_first;
+        m_first = link;
+        return val;
+    }
 
     void erase(ConstReferenceType v)
     {
         if (!m_first)
             return;
 
-        Link* node = m_first, *prev = 0;
-        while (node)
-        {
-            if (node->m_data == v)
-            {
-                if (node == m_first)
-                    m_first = node->m_next;
-
-                if (prev && node->m_next)
-                    prev->m_next = node->m_next;
-
-                if (node == m_last)
-                {
-                    if (prev) prev->m_next = 0;
-                    m_last = prev;
-                }
-
-                delete node;
-                --m_size;
-                return;
-            }
-            prev = node;
-            node = node->m_next;
-        }
+        m_first = erase_recursive(0, m_first, v);
     }
-
-    ValueType pop_front(void)
-    {
-        SK_ASSERT(m_first);
-        m_size--;
-        ValueType val = m_first->m_data;
-
-        Link *t = m_first->m_next;
-        delete m_first;
-        m_first = t;
-        return val;
-    }
-
-
 
     SKsize find(ConstValueType v)
     {
@@ -209,6 +178,7 @@ public:
         }
         return foundIndex;
     }
+
 
     ReferenceType at(SKsize idx)
     {
@@ -229,6 +199,41 @@ public:
     SK_INLINE Link*     first(void) { return m_first; }
     SK_INLINE SKsize    size(void)  { return m_size; }
     SK_INLINE bool      empty(void) { return m_size==0; }
+
+
+private:
+
+    void push_last(Link* node, Link *val)
+    {
+        if (node->m_next)
+            push_last(node->m_next, val);
+        else
+            node->m_next = val;
+
+    }
+
+    Link* erase_recursive(Link* prev, Link* node, ConstReferenceType v)
+    {
+        if (!node) 
+            return 0;
+
+        if (node->m_data == v)
+        {
+            Link *t = node->m_next;
+            if (prev)
+                prev->m_next = node->m_next;
+
+            delete node;
+            m_size--;
+            node = t;
+
+        }
+        else if (node->m_next)
+            erase_recursive(node, node->m_next, v);
+
+        return node;
+    }
+
 };
 
 
