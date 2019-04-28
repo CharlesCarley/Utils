@@ -57,7 +57,7 @@ public:
 
 
     private:
-        friend class SelfType;
+        friend class skSinglyLinkedList;
         PointerType         m_next;
         SelfType::ValueType m_data;
     };

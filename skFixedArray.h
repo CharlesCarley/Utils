@@ -232,7 +232,7 @@ public:
 
     SK_INLINE ConstReferenceType at(SKuint16 i) const
     {
-        return (*this)[idx];
+        return (*this)[i];
     }
 
     SK_INLINE ReferenceType operator [](SKuint16 i)
@@ -243,7 +243,7 @@ public:
 
     SK_INLINE ReferenceType at(SKuint16 i)
     {
-        return (*this)[idx];
+        return (*this)[i];
     }
 
 
