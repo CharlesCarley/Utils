@@ -28,7 +28,7 @@
 
 #include "Utils/Config/skConfig.h"
 
-extern void     skRandInit(SKuint32 seed= SK_NPOS);
+extern void     skRandInit(SKuint32 seed = SK_NPOS);
 extern SKuint32 skRandomUnsignedInt(SKuint32 mod = SK_NPOS);
 extern double   skUnitRandom(SKuint32 mod = SK_NPOS);
 

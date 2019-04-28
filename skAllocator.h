@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------------
-    
+
     Copyright (c) Charles Carley.
 
     Contributor(s): none yet.
@@ -67,7 +67,8 @@ public:
     typedef skMallocAllocator<T> SelfType;
 
     template<typename U>
-    struct rebind {
+    struct rebind
+    {
         typedef skMallocAllocator<U> other;
     };
 
@@ -183,7 +184,8 @@ public:
     typedef skNewAllocator<T> SelfType;
 
     template<typename U>
-    struct rebind {
+    struct rebind
+    {
         typedef skNewAllocator<U> other;
     };
 
@@ -251,7 +253,8 @@ public:
     PointerType array_reallocate(PointerType op, SKsize nr, SKsize os)
     {
         PointerType p = new T[nr];
-        if (op) {
+        if (op)
+        {
             __fill(p, op, os);
             delete []op;
         }
@@ -278,7 +281,7 @@ public:
 
     bool operator == (const SelfType&) { return true; }
 
-    SK_INLINE SKsize max_size(void) 
+    SK_INLINE SKsize max_size(void)
     {
         // < actual
         return LIMIT;
@@ -289,11 +292,14 @@ private:
     void __fill(T* dst, T* src, const SKsize nr)
     {
         if (nr <= 0);
-        else {
+        else
+        {
             SKsize i = 0;
-            do {
+            do
+            {
                 dst[i] = src[i];
-            } while (++i < nr);
+            }
+            while (++i < nr);
         }
     }
 
@@ -302,9 +308,9 @@ private:
 
 
 #if SK_ALLOCATOR == 1
-# define skAllocator skMallocAllocator
+    #define skAllocator skMallocAllocator
 #else
-# define skAllocator skNewAllocator
+    #define skAllocator skNewAllocator
 #endif
 
 #endif//_skAllocator_h_

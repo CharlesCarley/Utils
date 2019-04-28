@@ -46,7 +46,8 @@ skFileStream::~skFileStream()
 
 void skFileStream::flush(void)
 {
-    if (m_mode == READ) {
+    if (m_mode == READ)
+    {
         if (m_handle)
             fflush(static_cast<FILE*>(m_handle));
     }
@@ -123,7 +124,8 @@ SKsize skFileStream::position(void) const
 
 SKsize skFileStream::size(void) const
 {
-    if (m_size == SK_NPOS) {
+    if (m_size == SK_NPOS)
+    {
         FILE* fp = static_cast<FILE*>(m_handle);
         SKsize loc = feof(fp);
         fseek(fp, 0L, SEEK_END);

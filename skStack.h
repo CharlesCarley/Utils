@@ -198,7 +198,8 @@ public:
 
     SelfType& operator = (const SelfType& rhs)
     {
-        if (this != &rhs) {
+        if (this != &rhs)
+        {
             m_stack = rhs.m_stack;
             m_top = rhs.m_top;
         }

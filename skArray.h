@@ -207,7 +207,7 @@ public:
 
 public:
 
-    skArray() :   
+    skArray() :
         m_data(0), m_size(0), m_capacity(0)
     {
     }
@@ -215,7 +215,8 @@ public:
     skArray(const skArray& o)
         :   m_data(0), m_size(0), m_capacity(0)
     {
-        if (o.m_data) {
+        if (o.m_data)
+        {
             m_size = o.size();
             reserve(m_size);
             skFill(m_data, o.m_data, m_size);
@@ -238,7 +239,8 @@ public:
     const SKsize find(ConstReferenceType v) const
     {
         SKsize i;
-        for (i = 0; i < m_size; i++) {
+        for (i = 0; i < m_size; i++)
+        {
             if (m_data[i] == v)
                 return i;
         }
@@ -248,16 +250,19 @@ public:
     void push_back(ConstReferenceType v)
     {
         if (m_size > m_alloc.max_size());
-        else if (m_size == m_capacity) {
+        else if (m_size == m_capacity)
+        {
             reserve(m_size == 0 ? 8 : m_size * 2);
             m_data[m_size++] = v;
-        } else
+        }
+        else
             m_data[m_size++] = v;
     }
 
     void pop_back(void)
     {
-        if (m_size > 0) {
+        if (m_size > 0)
+        {
             m_alloc.destroy(&m_data[m_size]);
             m_size--;
         }
@@ -267,8 +272,10 @@ public:
 
     void remove(SKsize pos)
     {
-        if (m_size > 0) {
-            if (pos != SK_NPOS) {
+        if (m_size > 0)
+        {
+            if (pos != SK_NPOS)
+            {
                 skSwap(m_data[pos], m_data[m_size - 1]);
                 m_alloc.destroy(&m_data[--m_size]);
             }
@@ -277,10 +284,13 @@ public:
 
     void resize(SKsize nr)
     {
-        if (nr < m_size) {
+        if (nr < m_size)
+        {
             for (SKsize i = m_size; i < nr; i++)
                 m_alloc.destroy(&m_data[i]);
-        } else {
+        }
+        else
+        {
             if (nr > m_size)
                 reserve(nr);
         }
@@ -291,11 +301,14 @@ public:
     {
         SKsize i;
 
-        if (nr < m_size) {
+        if (nr < m_size)
+        {
             for (i = m_size; i < nr; i++)
                 m_data[i].~T();
 
-        } else {
+        }
+        else
+        {
             if (nr > m_size)
                 reserve(nr);
 
@@ -307,10 +320,13 @@ public:
     void reserve(SKsize nr)
     {
         if (m_capacity > nr) ;
-        else if (m_data) {
+        else if (m_data)
+        {
             m_data = m_alloc.array_reallocate(m_data, nr, m_size);
             m_capacity = nr;
-        } else {
+        }
+        else
+        {
             m_data = m_alloc.array_allocate(nr);
             m_capacity = nr;
         }
@@ -396,8 +412,10 @@ public:
 
     skArray& operator= (const skArray& rhs)
     {
-        if (this != &rhs) {
-            if (rhs.m_size > 0 && rhs.m_data) {
+        if (this != &rhs)
+        {
+            if (rhs.m_size > 0 && rhs.m_data)
+            {
                 clear();
                 resize(rhs.m_size);
                 skFill(m_data, rhs.m_data, rhs.m_size);

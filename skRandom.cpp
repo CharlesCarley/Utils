@@ -33,7 +33,7 @@ void skRandInit(SKuint32 seed)
     if (seed != SK_NPOS)
         ::srand(seed);
     else
-        ::srand(skGetTickCount() % (SK_NPOS-1));
+        ::srand(skGetTickCount() % (SK_NPOS - 1));
 }
 
 

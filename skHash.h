@@ -50,7 +50,8 @@ SK_INLINE SKhash skHash(const char* key)
     // Fowler / Noll / Vo (FNV) Hash
     hash = (SKhash)_SK_INITIAL_FNV;
 
-    for (int i = 0; key[i]; i++) {
+    for (int i = 0; key[i]; i++)
+    {
         hash = hash ^ (key[i]);   // xor the low 8 bits
         hash = hash * _SK_MULTIPLE_FNV;  // multiply by the magic number
     }

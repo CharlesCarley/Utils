@@ -32,7 +32,8 @@
 
 
 template <typename T, typename C>
-struct skSort {
+struct skSort
+{
     typedef int (*Function)(T a, T b);
     typedef typename C::Iterator Iterator;
     typedef typename C::ReferenceType ReferenceType;
@@ -53,12 +54,14 @@ struct skSort {
         bool swapped = false;
         SKsize i;
 
-        do {
+        do
+        {
             if (size - 1 == SK_NPOS)
                 break;
 
             Iterator it = container.iterator();
-            for (i = 0; i < (size - 1); i++) {
+            for (i = 0; i < (size - 1); i++)
+            {
                 ReferenceType a = it.getNext();
                 ReferenceType b = it.peekNext();
 
@@ -69,12 +72,14 @@ struct skSort {
                 }
             }
             size -= 1;
-        } while (swapped && size != SK_NPOS);
+        }
+        while (swapped && size != SK_NPOS);
     }
 };
 
 template <typename T, typename C>
-class skQSort {
+class skQSort
+{
 public:
     typedef int(*Function)(T a, T b);
     typedef typename C::ReferenceType ReferenceType;
@@ -89,7 +94,7 @@ public:
     {
     }
 
-    
+
     void sort(C& container)
     {
         SKsize size = container.size();
@@ -107,8 +112,8 @@ private:
         if (first < last && last != SK_NPOS)
         {
             pivot = _partition(container, first, last);
-            _sort(container, first, pivot -1);
-            _sort(container, pivot+1, last);
+            _sort(container, first, pivot - 1);
+            _sort(container, pivot + 1, last);
         }
     }
 

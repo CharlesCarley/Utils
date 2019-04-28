@@ -52,19 +52,20 @@ private:
     Allocator   m_alloc;
 
 public:
-    skDeque() : 
-        m_data(0), 
-        m_size(0), 
+    skDeque() :
+        m_data(0),
+        m_size(0),
         m_capacity(0)
     {
     }
 
-    skDeque(const skDeque& o) : 
-        m_data(0), 
-        m_size(0), 
+    skDeque(const skDeque& o) :
+        m_data(0),
+        m_size(0),
         m_capacity(0)
     {
-        if (o.m_data) {
+        if (o.m_data)
+        {
             m_size  = o.size();
             reserve(m_size);
             skFill(m_data, o.m_data, m_size);
@@ -121,11 +122,14 @@ public:
 
     void resize(SKsize nr)
     {
-        if (nr < m_size) {
+        if (nr < m_size)
+        {
             for (SKsize i = m_size; i < nr; i++)
                 m_alloc.destroy(&m_data[i]);
 
-        } else {
+        }
+        else
+        {
             if (nr > m_size)
                 reserve(nr);
         }
@@ -136,10 +140,13 @@ public:
     void resize(SKsize nr, ConstReferenceType fill)
     {
         SKsize i;
-        if (nr < m_size) {
+        if (nr < m_size)
+        {
             for (i = m_size; i < nr; i++)
                 m_data[i].~T();
-        } else {
+        }
+        else
+        {
             if (nr > m_size)
                 reserve(nr);
             skFill(m_data + m_size, fill, nr);
@@ -150,10 +157,13 @@ public:
     void reserve(SKsize nr)
     {
         if (m_capacity > nr);
-        else if (m_data) {
+        else if (m_data)
+        {
             m_data = m_alloc.array_reallocate(m_data, nr, m_size);
             m_capacity = nr;
-        } else {
+        }
+        else
+        {
             m_data = m_alloc.array_allocate(nr);
             m_capacity = nr;
         }
@@ -163,7 +173,7 @@ public:
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
         SK_ASSERT(idx >= 0 && idx < m_size);
-        return m_data[(m_size-1)-idx];
+        return m_data[(m_size - 1) - idx];
     }
 
     SK_INLINE ConstReferenceType operator[](SKsize idx) const
@@ -179,8 +189,10 @@ public:
 
     skDeque& operator= (const skDeque& rhs)
     {
-        if (this != &rhs) {
-            if (rhs.m_size > 0 && rhs.m_data) {
+        if (this != &rhs)
+        {
+            if (rhs.m_size > 0 && rhs.m_data)
+            {
                 clear();
                 resize(rhs.m_size);
                 skFill(m_data, rhs.m_data, rhs.m_size);

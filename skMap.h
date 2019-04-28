@@ -341,7 +341,8 @@ public:
 
     bool insert(const Key& key, const Value& val)
     {
-        if (!empty()) {
+        if (!empty())
+        {
             if (find(key) != SK_NPOS)
                 return false;
         }
@@ -383,21 +384,25 @@ public:
         index = m_iptr[hash];
         pindex = SK_NPOS;
 
-        while (index != findex) {
+        while (index != findex)
+        {
             pindex = index;
             index = m_nptr[index];
         }
 
-        if (pindex != SK_NPOS) {
+        if (pindex != SK_NPOS)
+        {
             SK_ASSERT(m_nptr[pindex] == findex);
             m_nptr[pindex] = m_nptr[findex];
 
-        } else
+        }
+        else
             m_iptr[hash] = m_nptr[findex];
 
         SKsize lindex = m_size - 1;
 
-        if (lindex == findex) {
+        if (lindex == findex)
+        {
             --m_size;
             m_bptr[m_size].~Pair();
             return;
@@ -407,16 +412,19 @@ public:
         index = m_iptr[lhash];
         pindex = SK_NPOS;
 
-        while (index != lindex) {
+        while (index != lindex)
+        {
             pindex = index;
             index = m_nptr[index];
         }
 
-        if (pindex != SK_NPOS) {
+        if (pindex != SK_NPOS)
+        {
             SK_ASSERT(m_nptr[pindex] == lindex);
             m_nptr[pindex] = m_nptr[lindex];
 
-        } else
+        }
+        else
             m_iptr[lhash] = m_nptr[lindex];
 
         m_bptr[findex] = m_bptr[lindex];
@@ -501,16 +509,19 @@ private:
 
         SKsize i = from;
 
-        do {
+        do
+        {
             m_iptr[i] = m_nptr[i] = SK_NPOS;
-        } while (++i < to);
+        }
+        while (++i < to);
     }
 
 
 
     void doCopy(const SelfType& rhs)
     {
-        if (rhs.valid() && !rhs.empty()) {
+        if (rhs.valid() && !rhs.empty())
+        {
             reserve(rhs.m_capacity);
 
             SKsize i, b;
@@ -520,7 +531,8 @@ private:
             b = m_size > 0 ? m_size - 1 : 0;
             _zeroIndices(b, m_capacity);
 
-            for (i = 0; i < m_size; ++i) {
+            for (i = 0; i < m_size; ++i)
+            {
                 m_bptr[i] = rhs.m_bptr[i];
                 m_iptr[i] = rhs.m_iptr[i];
                 m_nptr[i] = rhs.m_nptr[i];
@@ -534,9 +546,8 @@ private:
     void rehash(SKsize nr)
     {
 
-        if (!_SK_UTHASHTABLE_IS_POW2(nr)) {
+        if (!_SK_UTHASHTABLE_IS_POW2(nr))
             _SK_UTHASHTABLE_POW2(nr);
-        }
 
 
         m_bptr = m_alloc.array_reallocate(m_bptr, nr, m_capacity);
@@ -550,7 +561,8 @@ private:
         SKsize i, h;
         _zeroIndices(0, m_capacity);
 
-        for (i = 0; i < m_size; i++) {
+        for (i = 0; i < m_size; i++)
+        {
             h = m_bptr[i].hash & (m_capacity - 1);
             m_nptr[i] = m_iptr[h];
             m_iptr[h] = i;

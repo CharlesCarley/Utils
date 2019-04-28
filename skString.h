@@ -99,10 +99,10 @@ public:
         clear();
     }
 
-    SK_INLINE bool operator == (const skString& rhs) const 
+    SK_INLINE bool operator == (const skString& rhs) const
     { return !skStringUtils::equals(m_data, rhs.m_data); }
-    
-    SK_INLINE bool operator != (const skString& rhs) const 
+
+    SK_INLINE bool operator != (const skString& rhs) const
     { return skStringUtils::equals(m_data, rhs.m_data) != 0; }
 
     SK_INLINE bool operator == (const ValueType* rhs) const
@@ -128,8 +128,8 @@ public:
 
     SK_INLINE skString operator += (const skString& rhs)
     { return append(rhs); }
-    
-    SK_INLINE char operator[](SKsize idx) const 
+
+    SK_INLINE char operator[](SKsize idx) const
     { SK_ASSERT(idx != SK_NPOS); return m_data ? m_data[idx] : 0; }
 
 
@@ -172,7 +172,8 @@ public:
 
     void clear(void)
     {
-        if (m_data) {
+        if (m_data)
+        {
             delete []m_data;
             m_data = 0;
         }
@@ -182,10 +183,12 @@ public:
 
     void reserve(SKsize nr)
     {
-        if (m_capacity < nr) {
+        if (m_capacity < nr)
+        {
             ValueType* ptr = new ValueType[nr + 1];
 
-            if (m_data) {
+            if (m_data)
+            {
                 skMemcpy(ptr, m_data, m_size);
                 delete []m_data;
             }
@@ -211,9 +214,9 @@ public:
     SK_INLINE SKsize            size(void) const        { return m_size; }
     SK_INLINE SKsize            capacity(void) const    { return m_capacity; }
     SK_INLINE bool              empty(void) const       { return m_size == 0 || !m_data || m_data[0] == 0; }
-    SK_INLINE char at(SKsize idx) const 
+    SK_INLINE char at(SKsize idx) const
     { SK_ASSERT(idx != SK_NPOS); return m_data ? m_data[idx] : 0; }
-    
+
     SK_INLINE Iterator iterator(void)
     {
         return m_data && m_size > 0 ? Iterator(m_data, m_size) : Iterator();

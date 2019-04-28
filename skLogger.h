@@ -50,7 +50,7 @@ private:
 };
 
 extern void skLogf(const char* fmt, ...);
-extern void skEnableLogging(bool v, const char *path);
+extern void skEnableLogging(bool v, const char* path);
 
 
 #endif//_skLogger_h_

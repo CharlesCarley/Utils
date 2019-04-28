@@ -32,7 +32,8 @@
 class skStream : public skAllocObject
 {
 public:
-    enum Mode {
+    enum Mode
+    {
         NO_INPUT = 0,
         READ,       //!< Opens for reading binary data
         WRITE,      //!< Opens for writing binary data

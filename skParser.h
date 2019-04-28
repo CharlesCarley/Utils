@@ -42,86 +42,100 @@ public:
     typedef SKint16 Token;
 
 
-    union StackPrimitive {
+    union StackPrimitive
+    {
         long                ival;
         double              dval;
         char*               sval;
         void*               pval;
     };
 
-    struct Symbol {
+    struct Symbol
+    {
         Index           m_index;
         Index           m_kind;
         const char*     m_symbol;
     };
 
-    struct SymbolTable {
+    struct SymbolTable
+    {
         Index       m_count;
         Symbol*     m_symbols;
     };
 
 
-    struct Rule {
+    struct Rule
+    {
         Index   m_index;
         Index   m_nonterminal;
         Index   m_count;
         Symbol* m_symbols;
     };
 
-    struct RuleTable {
+    struct RuleTable
+    {
         Index   m_count;
         Rule*   m_rules;
     };
 
-    struct DFAEdge {
+    struct DFAEdge
+    {
         Index   m_char;
         Index   m_target;
     };
 
-    struct DFAState {
+    struct DFAState
+    {
 
         Index		m_accept;
         Index       m_edgeCount;
         DFAEdge*    m_edges;
     };
 
-    struct DFATable {
+    struct DFATable
+    {
 
         Index       m_count;
         Index       m_initial;
         DFAState*   m_states;
     };
 
-    struct LALRAction {
+    struct LALRAction
+    {
         Index m_symbolIndex;
         Index m_action;
         Index m_value;
     };
 
-    struct LALRState {
+    struct LALRState
+    {
         Index       m_count;
         LALRAction* m_action;
     };
 
-    struct LALRTable {
+    struct LALRTable
+    {
 
         Index       m_count;
         Index       m_initial;
         LALRState*  m_states;
     };
 
-    struct CharacterSet {
+    struct CharacterSet
+    {
         Index     m_count;
         Index*    m_chars;
     };
 
-    struct CharacterSetTable {
+    struct CharacterSetTable
+    {
         SKint16             m_count;
         SKint16             m_isExpanded;
         const CharacterSet* m_chars;
     };
 
-    struct StackItem {
+    struct StackItem
+    {
         Symbol*             m_symbol;
         SKint16             m_state;
         StackPrimitive      m_primitive;
@@ -129,14 +143,16 @@ public:
         void*               m_ptr;
     };
 
-    enum Action {
+    enum Action
+    {
         ACTION_SHIFT = 1,
         ACTION_REDUCE,
         ACTION_GOTO,
         ACTION_ACCEPT
     };
 
-    enum SymbolKind {
+    enum SymbolKind
+    {
         SM_NONTERMINAL = 0,
         SM_TERMINAL,
         SM_WHITESPACE,
@@ -147,7 +163,8 @@ public:
         SM_ERROR
     };
 
-    enum ParseResult {
+    enum ParseResult
+    {
         PR_SHIFT = 1,
         PR_REDUCE,
         PR_REDUCE_TRIMMED,
@@ -156,7 +173,8 @@ public:
         PR_INTERNAL_ERROR
     };
 
-    enum Message {
+    enum Message
+    {
         MESSAGE_TOKEN_READ = 1,
         MESSAGE_REDUCTION,
         MESSAGE_ACCEPT,
@@ -179,7 +197,7 @@ public:
 protected:
     virtual SKint16		execRule(SKuint8 rule) = 0;
     virtual SKint16     tokenAccepted(SKint16 act) = 0;
-    virtual SKint32     handleBlockComment(char *inp, SKint32 from, SKint32 len, SKint32 &out, skString *bo) { return -1; }
+    virtual SKint32     handleBlockComment(char* inp, SKint32 from, SKint32 len, SKint32& out, skString* bo) { return -1; }
 
     Message parseImpl(void);
 

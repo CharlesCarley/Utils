@@ -81,10 +81,10 @@ public:
 
     void clear(void)
     {
-        Link *link = m_first;
+        Link* link = m_first;
         while (link != 0)
         {
-            Link *tmp = link->m_next;
+            Link* tmp = link->m_next;
             delete link;
             link = tmp;
         }
@@ -94,7 +94,7 @@ public:
 
     void push_back(ConstReferenceType v)
     {
-        Link *nd = new Link(v);
+        Link* nd = new Link(v);
         if (!m_first)
             m_first = nd;
         else
@@ -105,13 +105,13 @@ public:
 
     void push_front(ConstReferenceType v)
     {
-        Link *nd = new Link(v);
+        Link* nd = new Link(v);
 
         if (!m_first)
             m_first = nd;
         else
         {
-            Link *t = m_first;
+            Link* t = m_first;
             m_first = nd;
             m_first->m_next = t;
         }
@@ -122,7 +122,7 @@ public:
     {
         SK_ASSERT(m_first);
 
-        Link *link = m_first, *prev =0;
+        Link* link = m_first, *prev = 0;
         while (link->m_next != 0)
         {
             prev = link;
@@ -146,7 +146,7 @@ public:
         SK_ASSERT(m_first);
 
         ValueType val = m_first->m_data;
-        Link *link = m_first->m_next;
+        Link* link = m_first->m_next;
 
         m_size--;
         delete m_first;
@@ -182,7 +182,7 @@ public:
 
     ReferenceType at(SKsize idx)
     {
-        SK_ASSERT(idx != SK_NPOS && idx<m_size);
+        SK_ASSERT(idx != SK_NPOS && idx < m_size);
 
         SKsize foundIndex = 0;
         Link* node = m_first;
@@ -198,12 +198,12 @@ public:
 
     SK_INLINE Link*     first(void) { return m_first; }
     SK_INLINE SKsize    size(void)  { return m_size; }
-    SK_INLINE bool      empty(void) { return m_size==0; }
+    SK_INLINE bool      empty(void) { return m_size == 0; }
 
 
 private:
 
-    void push_last(Link* node, Link *val)
+    void push_last(Link* node, Link* val)
     {
         if (node->m_next)
             push_last(node->m_next, val);
@@ -214,12 +214,12 @@ private:
 
     Link* erase_recursive(Link* prev, Link* node, ConstReferenceType v)
     {
-        if (!node) 
+        if (!node)
             return 0;
 
         if (node->m_data == v)
         {
-            Link *t = node->m_next;
+            Link* t = node->m_next;
             if (prev)
                 prev->m_next = node->m_next;
 

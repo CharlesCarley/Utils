@@ -32,8 +32,8 @@
 template <typename T>
 SK_INLINE void skSwap(T& a, T& b)
 {
-    T c(a); 
-    a = b; 
+    T c(a);
+    a = b;
     b = c;
 }
 
@@ -70,11 +70,14 @@ template <typename T>
 void skFill(T* dst, T* src, const SKsize nr)
 {
     if (nr <= 0);
-    else {
+    else
+    {
         SKsize i = 0;
-        do {
+        do
+        {
             dst[i] = src[i];
-        } while (++i < nr);
+        }
+        while (++i < nr);
     }
 }
 
@@ -83,18 +86,22 @@ template <typename T>
 void skFill(T* dst, const T& src, const SKsize nr)
 {
     if (nr <= 0);
-    else {
+    else
+    {
         SKsize i = 0;
-        do {
+        do
+        {
             dst[i] = src;
-        } while (++i < nr);
+        }
+        while (++i < nr);
     }
 }
 
 template <typename T>
 void skConstruct(T* beg, T* end, const T& x)
 {
-    while (beg != end) {
+    while (beg != end)
+    {
         new(beg) T(x); ++beg;
     }
 }
@@ -102,7 +109,8 @@ void skConstruct(T* beg, T* end, const T& x)
 template <typename T>
 void skConstructDefault(T* beg, T* end)
 {
-    while (beg != end) {
+    while (beg != end)
+    {
         new(beg) T(); ++beg;
     }
 }
@@ -111,7 +119,8 @@ void skConstructDefault(T* beg, T* end)
 template <typename T>
 void skConstructCopy(T* beg, T* end, T* oth)
 {
-    while (beg != end) {
+    while (beg != end)
+    {
         new(beg) T(*oth++); ++beg;
     }
 }
@@ -119,7 +128,8 @@ void skConstructCopy(T* beg, T* end, T* oth)
 template <typename T>
 void skDestruct(T* beg, T* end)
 {
-    while (beg != end) {
+    while (beg != end)
+    {
         beg->~T(); ++beg;
     }
 }

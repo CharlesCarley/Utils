@@ -29,15 +29,15 @@
 #include "Config/skConfig.h"
 
 #if SK_PLATFORM == SK_PLATFORM_WIN32
-# if SK_COMPILER == SK_COMPILER_MSVC
-# pragma warning (disable : 4996)
-#  define _WIN32_WINNT 0x403
-# endif
-# ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN 1
-# endif
-# include <windows.h>
-# include <io.h>
+    #if SK_COMPILER == SK_COMPILER_MSVC
+        #pragma warning (disable : 4996)
+        #define _WIN32_WINNT 0x403
+    #endif
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN 1
+    #endif
+    #include <windows.h>
+    #include <io.h>
 #else
 #endif
 
@@ -49,9 +49,9 @@
 
 
 #if SK_COMPILER == SK_COMPILER_MSVC
-# define skp_printf(ptr, size, fmt, lst) _vsnprintf_s(ptr, size, size, fmt, lst)
+    #define skp_printf(ptr, size, fmt, lst) _vsnprintf_s(ptr, size, size, fmt, lst)
 #else
-# define skp_printf vsnprintf
+    #define skp_printf vsnprintf
 #endif
 
 #endif//_skPlatformHeaders_h_

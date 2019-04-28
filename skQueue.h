@@ -55,9 +55,9 @@ public:
     {
     }
 
-    skQueueIncrementIterator(PointerType begin, 
-        SKsize size, SKsize front) : 
-        m_beg(begin + front), 
+    skQueueIncrementIterator(PointerType begin,
+                             SKsize size, SKsize front) :
+        m_beg(begin + front),
         m_end(begin + size)
     {
     }
@@ -241,10 +241,10 @@ private:
 public:
 
     skQueue() :
-        m_data(0), 
-        m_front(0), 
-        m_back(0), 
-        m_size(0), 
+        m_data(0),
+        m_front(0),
+        m_back(0),
+        m_size(0),
         m_capacity(0)
     {
     }
@@ -257,7 +257,8 @@ public:
         m_size(0),
         m_capacity(0)
     {
-        if (o.m_data) {
+        if (o.m_data)
+        {
             m_size = o.size();
             m_back = m_size;
 
@@ -282,12 +283,14 @@ public:
 
     void resize(SKsize nr)
     {
-        if (nr < m_size) {
+        if (nr < m_size)
+        {
             for (SKsize i = m_size; i < nr; i++)
                 m_alloc.destroy(&m_data[i]);
 
         }
-        else {
+        else
+        {
             if (nr > m_size)
                 reserve(nr);
         }
@@ -301,7 +304,7 @@ public:
 
     void reserve(SKsize nr)
     {
-        if (m_capacity > nr || nr > m_alloc.max_size()) 
+        if (m_capacity > nr || nr > m_alloc.max_size())
             return;
 
         if (m_data && m_size > 0)
@@ -319,7 +322,7 @@ public:
 
     void enqueue(ConstReferenceType value)
     {
-        if (m_size > m_alloc.max_size()) 
+        if (m_size > m_alloc.max_size())
             return;
         if (m_size == m_capacity)
         {
@@ -341,12 +344,12 @@ public:
     ReferenceType dequeue(void)
     {
         ReferenceType returnValue = m_data[m_front];
-        m_front =  (m_front + 1) % m_capacity;
+        m_front = (m_front + 1) % m_capacity;
         m_size--;
         return returnValue;
     }
 
-    SK_INLINE ReferenceType at(SKsize idx) 
+    SK_INLINE ReferenceType at(SKsize idx)
     {
         return (*this)[idx];
     }
@@ -356,14 +359,14 @@ public:
         return (*this)[idx];
     }
 
-    SK_INLINE ReferenceType operator[](SKsize idx)          
-    { 
+    SK_INLINE ReferenceType operator[](SKsize idx)
+    {
         SK_ASSERT(m_data);
         SK_ASSERT(idx != SK_NPOS && idx < m_capacity);
         return m_data[(m_front + idx) % m_capacity];
     }
 
-    SK_INLINE ConstReferenceType operator[](SKsize idx) const    
+    SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
         SK_ASSERT(m_data);
         SK_ASSERT(idx != SK_NPOS && idx < m_capacity);
@@ -377,33 +380,35 @@ public:
 
     SK_INLINE Iterator iterator(void)
     {
-        return m_data && m_size > 0 ? 
-            Iterator(m_data, m_size, m_front) : Iterator();
+        return m_data && m_size > 0 ?
+               Iterator(m_data, m_size, m_front) : Iterator();
     }
 
     SK_INLINE ConstIterator iterator(void) const
     {
-        return m_data && m_size > 0 ? 
-            ConstIterator(m_data, m_size, m_front) : ConstIterator();
+        return m_data && m_size > 0 ?
+               ConstIterator(m_data, m_size, m_front) : ConstIterator();
     }
 
     SK_INLINE ReverseIterator reverseIterator(void)
     {
-        return m_data && m_size > 0 ? 
-            ReverseIterator(m_data, m_size, m_front) : ReverseIterator();
+        return m_data && m_size > 0 ?
+               ReverseIterator(m_data, m_size, m_front) : ReverseIterator();
     }
 
 
     SK_INLINE ConstReverseIterator reverseIterator(void) const
     {
-        return m_data && m_size > 0 ? 
-            ConstReverseIterator(m_data, m_size, m_front) : ConstReverseIterator();
+        return m_data && m_size > 0 ?
+               ConstReverseIterator(m_data, m_size, m_front) : ConstReverseIterator();
     }
 
     skQueue& operator= (const skQueue& rhs)
     {
-        if (this != &rhs) {
-            if (rhs.m_size > 0 && rhs.m_data) {
+        if (this != &rhs)
+        {
+            if (rhs.m_size > 0 && rhs.m_data)
+            {
                 clear();
                 resize(rhs.m_size);
                 skFill(m_data, rhs.m_data, rhs.m_size);

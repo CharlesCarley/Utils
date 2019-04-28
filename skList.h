@@ -265,7 +265,8 @@ public:
     {
         LinkPtr node = m_first;
 
-        while (node) {
+        while (node)
+        {
             if (node->m_data == v)
                 return node;
 
@@ -282,7 +283,8 @@ public:
         SKsize i = 0;
         LinkPtr node = m_first;
 
-        while (node) {
+        while (node)
+        {
             if (i == pos)
                 return node;
 
@@ -406,7 +408,8 @@ public:
     void clear(void)
     {
         LinkPtr node = m_list.first();
-        while (node) {
+        while (node)
+        {
             LinkPtr temp = node;
             node = node->m_next;
             delete temp;
@@ -472,7 +475,8 @@ public:
     {
         LinkPtr fnd = m_list.find_link(v);
 
-        if (fnd) {
+        if (fnd)
+        {
             if (m_list.erase_link(fnd))
                 delete fnd;
         }
@@ -556,7 +560,8 @@ public:
 
     skList& operator = (const skList& rhs)
     {
-        if (this != &rhs) {
+        if (this != &rhs)
+        {
             clear();
             ConstIterator iter = rhs.iterator();
 
@@ -636,7 +641,8 @@ public:
 
     SK_INLINE void push_back(LinkPtr v)
     {
-        if (v) {
+        if (v)
+        {
             static_cast<Link*>(v)->m_data = v;
             m_list.push_back(v);
         }
@@ -646,7 +652,8 @@ public:
 
     SK_INLINE void push_front(LinkPtr v)
     {
-        if (v) {
+        if (v)
+        {
             static_cast<Link*>(v)->m_data = v;
             m_list.push_front(v);
         }
@@ -765,7 +772,8 @@ private:
 class skPtrList
 {
 public:
-    struct Link {
+    struct Link
+    {
         Link*   next;
         Link*   prev;
     };

@@ -67,7 +67,8 @@ public:
 
     skSimpleDelegate& operator = (const skSimpleDelegate& rhs)
     {
-        if (this != &rhs) {
+        if (this != &rhs)
+        {
             m_object = rhs.m_object;
             m_call = rhs.m_call;
         }
@@ -131,7 +132,8 @@ public:
 
     skSimpleDelegate2&  operator = (const skSimpleDelegate2&  rhs)
     {
-        if (this != &rhs) {
+        if (this != &rhs)
+        {
             m_object = rhs.m_object;
             m_call = rhs.m_call;
         }

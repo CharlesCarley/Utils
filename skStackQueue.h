@@ -56,8 +56,8 @@ private:
 public:
 
     skStackQueue() :
-        m_data(0), 
-        m_size(0), 
+        m_data(0),
+        m_size(0),
         m_capacity(0)
     {
     }
@@ -68,7 +68,8 @@ public:
         m_size(0),
         m_capacity(0)
     {
-        if (o.m_data) {
+        if (o.m_data)
+        {
             m_size = o.size();
             reserve(m_size);
             skFill(m_data, o.m_data, m_size);
@@ -87,11 +88,13 @@ public:
 
     void resize(SKsize nr)
     {
-        if (nr < m_size) {
+        if (nr < m_size)
+        {
             for (SKsize i = m_size; i < nr; i++)
                 m_alloc.destroy(&m_data[i]);
         }
-        else {
+        else
+        {
             if (nr > m_size)
                 reserve(nr);
         }
@@ -100,7 +103,7 @@ public:
 
     void reserve(SKsize nr)
     {
-        if (m_capacity > nr || nr > m_alloc.max_size()) 
+        if (m_capacity > nr || nr > m_alloc.max_size())
             return;
         if (m_data && m_size > 0)
             m_data = m_alloc.array_reallocate(m_data, nr, m_size);
@@ -117,7 +120,7 @@ public:
 
     void enqueue(ConstReferenceType value)
     {
-        if (m_size > m_alloc.max_size()) 
+        if (m_size > m_alloc.max_size())
             return;
         if (m_size == m_capacity)
             reserve(m_size == 0 ? 8 : m_size * 2);
@@ -135,7 +138,7 @@ public:
         return stackRecurse();
     }
 
-    SK_INLINE ReferenceType at(SKsize idx) 
+    SK_INLINE ReferenceType at(SKsize idx)
     {
         return (*this)[idx];
     }
@@ -145,18 +148,18 @@ public:
         return (*this)[idx];
     }
 
-    SK_INLINE ReferenceType operator[](SKsize idx)          
-    { 
+    SK_INLINE ReferenceType operator[](SKsize idx)
+    {
         SK_ASSERT(m_data);
         SK_ASSERT(idx != SK_NPOS && idx < m_size);
         return m_data[(m_size - 1) - idx];
     }
 
-    SK_INLINE ConstReferenceType operator[](SKsize idx) const    
+    SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
         SK_ASSERT(m_data);
         SK_ASSERT(idx != SK_NPOS && idx < m_size);
-        return m_data[(m_size -1) - idx];
+        return m_data[(m_size - 1) - idx];
     }
 
     SK_INLINE bool      empty(void) const { return m_size == 0; }

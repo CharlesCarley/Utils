@@ -47,7 +47,8 @@ public:
     skFixedString(const skFixedString& rhs)
         :   m_size(0), m_hash(SK_NPOS)
     {
-        if (rhs.size()) {
+        if (rhs.size())
+        {
             SKuint16 i, os = rhs.size();
             const char* cp = rhs.c_str();
 
@@ -60,7 +61,8 @@ public:
     skFixedString(const char* rhs)
         :   m_size(0), m_hash(SK_NPOS)
     {
-        if (rhs) {
+        if (rhs)
+        {
             SKuint16 i;
 
             for (i = 0; i < L && rhs[i]; ++i, ++m_size) m_buffer[i] = rhs[i];
@@ -72,7 +74,8 @@ public:
     skFixedString(const char* rhs, SKuint16 size)
         :   m_size(0), m_hash(SK_NPOS)
     {
-        if (rhs) {
+        if (rhs)
+        {
             SKuint16 i;
             for (i = 0; i < L && i < size && rhs[i]; ++i, ++m_size) m_buffer[i] = rhs[i];
         }
@@ -90,7 +93,8 @@ public:
 
     void resize(SKuint16 ns)
     {
-        if (ns <= L) {
+        if (ns <= L)
+        {
             if (ns < m_size)
                 for (SKuint16 i = ns; i < m_size; i++) m_buffer[i] = 0;
             m_size = ns;
@@ -100,7 +104,8 @@ public:
 
     skFixedString& operator = (const skFixedString& rhs)
     {
-        if (this != &rhs && rhs.m_size > 0) {
+        if (this != &rhs && rhs.m_size > 0)
+        {
             SKuint16 i;
             m_size = 0;
             m_hash = SK_NPOS;

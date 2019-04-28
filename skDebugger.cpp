@@ -85,7 +85,8 @@ void skDebugger::report(const char* fmt, ...)
 
     if (size < 0) size = SK_SBUF_SIZE;
 
-    if (size > 0) {
+    if (size > 0)
+    {
         ReportBuf[size] = 0;
 
 #if SK_COMPILER == SK_COMPILER_MSVC

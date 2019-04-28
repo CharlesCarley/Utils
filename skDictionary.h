@@ -44,7 +44,7 @@ public:
     public:
         Key     first;
         Value   second;
- 
+
         Pair() :
             hash(SK_NPOS)
         {
@@ -128,7 +128,7 @@ public:
     }
 
     skDictionary(const skDictionary& o) :
-        m_data(0), 
+        m_data(0),
         m_index(0),
         m_size(0),
         m_capacity(0)
@@ -163,7 +163,7 @@ public:
 
     void insert(const Key& key, const Value& val)
     {
-        if (m_size*2 >= m_capacity) // assure that the load factor is balanced  
+        if (m_size * 2 >= m_capacity) // assure that the load factor is balanced
             reserve(m_size == 0 ? 16 : m_capacity * 2);
 
         if (find(key) != SK_NPOS)
