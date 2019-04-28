@@ -107,11 +107,6 @@ private:
         return (key + i) & (m_capacity - 1);
     }
 
-    SK_INLINE SKsize quadradicProbe(const SKhash& key, SKsize i) const
-    {
-        return ((i * i) + key) & (m_capacity - 1);
-    }
-
     SK_INLINE SKsize probe(const SKhash& key, SKsize i) const
     {
         return linearProbe(key, i);
@@ -171,9 +166,8 @@ public:
 
         SKhash mapping = hash(key);
         SKsize i = 0;
-
         while (m_index[mapping] != SK_NPOS && i < m_capacity)
-            mapping = probe(mapping, i++);
+            mapping = probe(mapping, ++i);
 
         SK_ASSERT(i != m_capacity);
 
@@ -315,7 +309,7 @@ private:
 
             j = 0;
             while (index[mapping] != SK_NPOS && j < m_capacity)
-                mapping = probe(mapping, j++);
+                mapping = probe(mapping, ++j);
 
             SK_ASSERT(j != m_capacity);
 

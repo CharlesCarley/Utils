@@ -765,54 +765,6 @@ private:
     skListClass(const skListClass& rhs);
 
     mutable BaseType m_list;
-
 };
-
-
-class skPtrList
-{
-public:
-    struct Link
-    {
-        Link*   next;
-        Link*   prev;
-    };
-
-
-    Link*   first;
-    Link*   last;
-
-public:
-
-    skPtrList() : first(0), last(0) {}
-    ~skPtrList()
-    {
-        clear();
-    }
-
-    void clear(void)
-    {
-        first = last = 0;
-    }
-
-    void push_back(void* v)
-    {
-        Link* link = ((Link*)v);
-
-        if (!link)
-            return;
-
-        link->prev = last;
-
-        if (last)
-            last->next = link;
-
-        if (!first)
-            first = link;
-
-        last = link;
-    }
-};
-
 
 #endif//_skList_h_
