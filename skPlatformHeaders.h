@@ -49,7 +49,7 @@
 
 
 #if SK_COMPILER == SK_COMPILER_MSVC
-    #define skp_printf(ptr, size, fmt, lst) _vsnprintf_s(ptr, size, size, fmt, lst)
+    #define skp_printf(ptr, size, fmt, lst) _vsnprintf_s(ptr, size, _TRUNCATE, fmt, lst)
 #else
     #define skp_printf vsnprintf
 #endif
