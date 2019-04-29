@@ -155,6 +155,25 @@ public:
     }
 
 
+
+    NodePointerType minimum(void)
+    {
+        NodePointerType node = m_root;
+        while (node != 0 && node->m_left != 0)
+            node = node->m_left;
+        return node;
+    }
+
+
+    NodePointerType maximum(void)
+    {
+        NodePointerType node = m_root;
+        while (node != 0 && node->m_right != 0)
+            node = node->m_right;
+        return node;
+    }
+
+
     SK_INLINE NodePointerType root(void)    { return m_root; }
     SK_INLINE NodePointerType left(void)    { return m_root ? m_root->m_left : 0; }
     SK_INLINE NodePointerType right(void)   { return m_root ? m_root->m_right : 0; }

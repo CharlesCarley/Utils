@@ -30,8 +30,6 @@
 #include "Config/skConfig.h"
 #include "Utils/skTraits.h"
 #include "Utils/skArray.h"
-#include "Utils/skLinkedList.h"
-
 
 
 template <typename Key, typename Value>
@@ -99,12 +97,12 @@ private:
 
     SK_INLINE SKsize hash(const Key& key) const
     {
-        return skHash(key) & (m_capacity - 1);
+        return skHash(key) % (m_capacity);
     }
 
     SK_INLINE SKsize linearProbe(const SKhash& key, SKsize i) const
     {
-        return (key + i) & (m_capacity - 1);
+        return (key + i) % (m_capacity);
     }
 
     SK_INLINE SKsize probe(const SKhash& key, SKsize i) const

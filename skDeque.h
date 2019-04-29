@@ -111,7 +111,7 @@ public:
 
     ReferenceType pop_back(void)
     {
-        SK_ASSERT(m_size - 1 > 0);
+        SK_ASSERT(m_size - 1 >= 0);
         return m_data[--m_size];
     }
 

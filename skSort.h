@@ -47,13 +47,11 @@ struct skSort
     void sort(C& container)
     {
         SKsize size = container.size();
-
         if (!m_sort || size < 2)
             return;
 
         bool swapped = false;
         SKsize i;
-
         do
         {
             if (size - 1 == SK_NPOS)
