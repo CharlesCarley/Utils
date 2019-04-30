@@ -241,8 +241,6 @@ public:
         ++m_size;
     }
 
-
-
     void push_front(LinkPtr link)
     {
         SK_ASSERT(link);

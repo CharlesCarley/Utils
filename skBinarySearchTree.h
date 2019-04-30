@@ -156,21 +156,15 @@ public:
 
 
 
-    NodePointerType minimum(void)
+    NodePointerType minimum(NodePointerType node = 0)
     {
-        NodePointerType node = m_root;
-        while (node != 0 && node->m_left != 0)
-            node = node->m_left;
-        return node;
+        return minimum_recursive(node ? node : m_root);
     }
 
 
-    NodePointerType maximum(void)
+    NodePointerType maximum(NodePointerType node = 0)
     {
-        NodePointerType node = m_root;
-        while (node != 0 && node->m_right != 0)
-            node = node->m_right;
-        return node;
+        return maximum_recursive(node ? node : m_root);
     }
 
 
@@ -181,6 +175,22 @@ public:
 
 
 private:
+
+    NodePointerType minimum_recursive(NodePointerType node)
+    {
+        if (node && node->m_left)
+            return minimum_recursive(node->m_left);
+        return node;
+    }
+
+    NodePointerType maximum_recursive(NodePointerType node)
+    {
+        if (node && node->m_right)
+            return maximum_recursive(node->m_right);
+        return node;
+    }
+
+
 
     void insert_recursive(NodePointerType node, ConstReferenceType val)
     {
@@ -249,10 +259,7 @@ private:
         }
         else
         {
-            NodePointerType cur = node->m_right;
-            while (cur && cur->m_left != 0)
-                cur = cur->m_left;
-
+            NodePointerType cur = minimum_recursive(node->m_right);
             node->m_data = cur->m_data;
             node->m_right = erase_recursive(node->m_right, cur->m_data);
         }
