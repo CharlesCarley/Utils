@@ -158,6 +158,11 @@ public:
     void toBinary(void);
     void fromBinary(void);
 
+    skString& asHex(void) {
+        this->toHex();
+        return *this;
+    }
+
     void toHex(void);
     void fromHex(void);
 
