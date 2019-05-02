@@ -493,7 +493,7 @@ void skString::toHex(void)
         'F',
     };
 
-    SKsize i, j = 0, k=m_size;
+    SKsize i, j=m_size;
     for (i = (old_size -1); i != SK_NPOS; --i)
     {
         ival = (int)(unsigned char)cp[i];
@@ -501,8 +501,8 @@ void skString::toHex(void)
         rv = ival % 16;
         if (ival < 256)
         {
-            (dp[--k]) = hexValues[rv];
-            (dp[--k]) = hexValues[dv];
+            (dp[--j]) = hexValues[rv];
+            (dp[--j]) = hexValues[dv];
         }
     }
 
