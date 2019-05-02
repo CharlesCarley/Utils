@@ -467,39 +467,46 @@ skString& skString::erase(SKsize pos, SKsize nr)
 
 void skString::toHex(void)
 {
-    skString result;
-    result.resize(m_size * 2);
+    // There are two characters per one in the hex string 
+    //          Old                             New
+    //  -------------------------- -------------------------- 
+    // |                          |                       <--|
+    //  -------------------------- -------------------------- 
+    //  work in reverse, and by the time it gets to the first
+    //  old character, it will be in ival and nothing
+    //  will be overridden 
+
+    SKsize old_size = m_size;
+    resize(m_size * 2);
 
     const char* cp = m_data;
-    char* dp = result.ptr();
-
+    char* dp = ptr();
 
     int ival, dv, rv;
-
     char hexValues[16] =
     {
         '0', '1', '2',
         '3', '4', '5',
         '6', '7', '8',
         '9', 'A', 'B',
-        'C', 'D', 'E', 'F',
+        'C', 'D', 'E', 
+        'F',
     };
 
-    SKsize i, j = 0;
-    for (i = 0; i < m_size; ++i)
+    SKsize i, j = 0, k=m_size;
+    for (i = (old_size -1); i != SK_NPOS; --i)
     {
         ival = (int)(unsigned char)cp[i];
         dv = ival / 16;
         rv = ival % 16;
         if (ival < 256)
         {
-            dp[j++] = hexValues[dv];
-            dp[j++] = hexValues[rv];
-            dp[j] = 0;
+            (dp[--k]) = hexValues[rv];
+            (dp[--k]) = hexValues[dv];
         }
     }
 
-    swap(result);
+    dp[m_size] = 0;
 }
 
 
