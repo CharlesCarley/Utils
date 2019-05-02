@@ -161,19 +161,54 @@ namespace skStringUtils
 
 }
 
+void skString::clear(void)
+{
+    if (m_data)
+    {
+        delete[]m_data;
+        m_data = 0;
+    }
+    m_size = 0;
+    m_capacity = 0;
+}
 
+
+void skString::reserve(SKsize nr)
+{
+    if (m_capacity < nr)
+    {
+        ValueType* ptr = new ValueType[nr + 1];
+
+        if (m_data)
+        {
+            skMemcpy(ptr, m_data, m_size);
+            delete[]m_data;
+        }
+
+        m_data = ptr;
+        m_capacity = nr;
+        m_data[m_size] = 0;
+    }
+}
+
+void skString::resize(SKsize nr)
+{
+    if (nr < m_size)
+        m_data[nr] = 0;
+    else if (nr > m_size)
+        reserve(nr);
+    m_size = nr;
+}
 
 void skString::alloc(const char* str, SKsize len)
 {
     if (!str) return;
 
     m_size = len;
-
     if (!m_size)
         m_size = skStringUtils::length(str);
 
     reserve(m_size);
-
     if (m_data)
     {
         skStringUtils::copyn(m_data, str, m_size);
@@ -266,8 +301,6 @@ void skString::split(skArray<skString>& dst, const char* op) const
     {
         i = find(op, j);
 
-        // Find found an exact match; Therefore,
-        // skip over and go to the next.
         if (i == 0)
         {
             j += len;
@@ -513,35 +546,17 @@ void skString::toBinary(void)
     skString s;
     SKuint16 c, j, counter;
     bool splitHiLo = false;
-
-
-    // 1). Loop through every element in the string
-    //       range(0, length of string) equals i
-    //
-    //       c = the current character
-    //
-
-    // Reserve enough memory, so the string is not being re-allocated unnecessarily
-    // Space =  8 * len + padding (splitHiLo ? 2 : 1)
     s.reserve(LookupTableLength * m_size + 2);
 
     for (i = 0; i < m_size; ++i)
     {
         c = (SKuint8)m_data[i];
 
-        // test limits (should, never happen with a standard string)
         if (c < LookupTable[0])
         {
-
-            // temporary buffer to hold the decimal
-            // 2l to make extra space for padding, and +1 for
-            // the null terminator
             char tempBuf[3 + LookupTableLength];
-
-            // reset the counter for the next iteration
             counter = 0;
 
-            // if it's not the first iteration, add a space
             if (i != 0)
                 tempBuf[counter++] = 0x20;
 
@@ -555,20 +570,14 @@ void skString::toBinary(void)
                 else
                     tempBuf[counter++] = 0x30;
 
-
                 if (splitHiLo && j == 3)
                     tempBuf[counter++] = 0x20;
             }
 
             tempBuf[counter] = 0x00;
-
-            // append the temporary buffer
-            // to the main string
             s += tempBuf;
         }
     }
-
-
     swap(s);
 
 }

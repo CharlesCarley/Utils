@@ -170,44 +170,9 @@ public:
     void encrypt(void);
     void decrypt(void);
 
-    void clear(void)
-    {
-        if (m_data)
-        {
-            delete []m_data;
-            m_data = 0;
-        }
-        m_size = 0;
-        m_capacity = 0;
-    }
-
-    void reserve(SKsize nr)
-    {
-        if (m_capacity < nr)
-        {
-            ValueType* ptr = new ValueType[nr + 1];
-
-            if (m_data)
-            {
-                skMemcpy(ptr, m_data, m_size);
-                delete []m_data;
-            }
-
-            m_data = ptr;
-            m_capacity = nr;
-            m_data[m_size] = 0;
-        }
-    }
-
-    void resize(SKsize nr)
-    {
-        if (nr < m_size)
-            m_data[nr] = 0;
-        else if (nr > m_size)
-            reserve(nr);
-        m_size = nr;
-    }
-
+    void clear(void);
+    void reserve(SKsize nr);
+    void resize(SKsize nr);
 
     SK_INLINE ConstPointerType  c_str(void) const       { return m_data; }
     SK_INLINE PointerType       ptr(void)               { return m_data; }
