@@ -159,7 +159,20 @@ namespace skStringUtils
 
 #endif
 
+    const  SKuint8  HexTable[16] = {
+        '0', '1', '2', '3',
+        '4', '5', '6', '7',
+        '8', '9', 'A', 'B',
+        'C', 'D', 'E', 'F',
+    };
+
+    const  SKuint16 BinaryTable[9] = {
+        256, 128, 64, 32, 16, 8, 4, 2, 1
+    };
+
 }
+
+
 
 void skString::clear(void)
 {
@@ -483,15 +496,6 @@ void skString::toHex(void)
     char* dp = ptr();
 
     int ival, dv, rv;
-    char hexValues[16] =
-    {
-        '0', '1', '2',
-        '3', '4', '5',
-        '6', '7', '8',
-        '9', 'A', 'B',
-        'C', 'D', 'E', 
-        'F',
-    };
 
     SKsize i, j=m_size;
     for (i = (old_size -1); i != SK_NPOS; --i)
@@ -501,8 +505,8 @@ void skString::toHex(void)
         rv = ival % 16;
         if (ival < 256)
         {
-            (dp[--j]) = hexValues[rv];
-            (dp[--j]) = hexValues[dv];
+            (dp[--j]) = skStringUtils::HexTable[rv];
+            (dp[--j]) = skStringUtils::HexTable[dv];
         }
     }
 
@@ -545,34 +549,31 @@ void skString::fromHex(void)
 
 void skString::toBinary(void)
 {
-    const short LookupTable[] = { 256, 128, 64, 32, 16, 8, 4, 2, 1 };
-    const short LookupTableLength = sizeof(LookupTable) / sizeof(short);
-
-
+    
     SKsize i;
     skString s;
     SKuint16 c, j, counter;
     bool splitHiLo = false;
-    s.reserve(LookupTableLength * m_size + 2);
+    s.reserve(9 * m_size + 2);
 
     for (i = 0; i < m_size; ++i)
     {
         c = (SKuint8)m_data[i];
 
-        if (c < LookupTable[0])
+        if (c < skStringUtils::BinaryTable[0])
         {
-            char tempBuf[3 + LookupTableLength];
+            char tempBuf[12];
             counter = 0;
 
             if (i != 0)
                 tempBuf[counter++] = 0x20;
 
-            for (j = 0; j < LookupTableLength; ++j)
+            for (j = 0; j < 9; ++j)
             {
-                if (c >= LookupTable[j])
+                if (c >= skStringUtils::BinaryTable[j])
                 {
                     tempBuf[counter++] = 0x31;
-                    c -= LookupTable[j];
+                    c -= skStringUtils::BinaryTable[j];
                 }
                 else
                     tempBuf[counter++] = 0x30;
@@ -592,8 +593,6 @@ void skString::toBinary(void)
 
 void skString::fromBinary(void)
 {
-    const short LookupTable[] = { 256, 128, 64, 32, 16, 8, 4, 2, 1 };
-    const short LookupTableLength = sizeof(LookupTable) / sizeof(short);
     skString s;
     SKuint16 c, j;
 
@@ -606,10 +605,10 @@ void skString::fromBinary(void)
         const skString& cs = it.getNext();
 
         c = 0;
-        for (j = LookupTableLength; j > 0; j--)
+        for (j = 9; j > 0; j--)
         {
             if (j < cs.size() && cs[j] == 0x31)
-                c += LookupTable[j];
+                c += skStringUtils::BinaryTable[j];
         }
         s.append((SKbyte)c);
     }

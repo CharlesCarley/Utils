@@ -49,6 +49,10 @@ namespace skStringUtils
     extern long     toLong(const char* in);
     extern float    toFloat(const char* in);
     extern double   toDouble(const char* in);
+
+
+    extern const  SKuint8  HexTable[16];
+    extern const  SKuint16 BinaryTable[9];
 };
 
 
