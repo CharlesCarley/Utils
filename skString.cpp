@@ -275,16 +275,12 @@ void skString::swap(skString& rhs)
     skSwap(m_capacity, rhs.m_capacity);
 }
 
-
-
 skString skString::substr(SKsize pos, SKsize nr) const
 {
     skString s;
     substr(s, pos, nr);
     return s;
 }
-
-
 
 void skString::substr(skString& dest, SKsize pos, SKsize nr) const
 {
@@ -395,7 +391,6 @@ SKsize skString::find(const char* ch,  SKsize pos) const
     return SK_NPOS;
 }
 
-
 skString& skString::append(char ch)
 {
 
@@ -406,8 +401,6 @@ skString& skString::append(char ch)
 
     return *this;
 }
-
-
 
 skString& skString::append(const char* rhs, SKsize rhsLen)
 {
@@ -427,8 +420,6 @@ skString& skString::append(const char* rhs, SKsize rhsLen)
 
     return *this;
 }
-
-
 
 SKsize skString::copy(char* arr, SKsize nr, SKsize pos)
 {

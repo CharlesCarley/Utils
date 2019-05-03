@@ -224,7 +224,7 @@ public:
 
             if (m_data[idx].hash == mapping && m_data[idx].first == k)
             {
-                swap_keys(idx, m_size - 1);
+                swap_keys(idx, (m_size - 1));
                 --m_size;
                 break;
             }
@@ -233,25 +233,25 @@ public:
 
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
-        SK_ASSERT(idx >= 0 && idx < m_capacity);
+        SK_ASSERT(idx >= 0 && idx < m_size);
         return m_data[idx];
     }
 
     SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
-        SK_ASSERT(idx >= 0 && idx < m_capacity);
+        SK_ASSERT(idx >= 0 && idx < m_size);
         return m_data[idx];
     }
 
     SK_INLINE ReferenceType at(SKsize idx)
     {
-        SK_ASSERT(idx >= 0 && idx < m_capacity);
+        SK_ASSERT(idx >= 0 && idx < m_size);
         return m_data[idx];
     }
 
     SK_INLINE ConstReferenceType at(SKsize idx) const
     {
-        SK_ASSERT(idx >= 0 && idx < m_capacity);
+        SK_ASSERT(idx >= 0 && idx < m_size);
         return m_data[idx];
     }
 
@@ -285,20 +285,32 @@ public:
 
 private:
 
-    void swap_keys(SKsize k3, SKsize k4)
+    void swap_keys(SKsize X, SKsize Y)
     {
-        m_index[m_data[k3].hash] = SK_NPOS;
-        m_index[m_data[k4].hash] = k3;
-        m_data[k3].hash = m_data[k4].hash;
+        skMemset(m_index, SK_NPOS, (m_capacity) * sizeof(SKsize));
+        skSwap(m_data[X], m_data[Y]);
 
-        skSwap(m_data[k3], m_data[k4]);
+        SKsize i = 0, mapping, j, ns = m_size - 1;
+        for (i = 0; i < ns && ns != SK_NPOS; ++i)
+        {
+            mapping = hash(m_data[i].first);
+
+            j = 0;
+            while (m_index[mapping] != SK_NPOS && j < m_capacity)
+                mapping = probe(mapping, j++);
+
+            SK_ASSERT(j != m_capacity);
+
+            m_data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
+            m_index[mapping] = i;
+        }
     }
 
     void rehash(SKsize nr)
     {
         Pair* data = new Pair[nr];
         SKsize* index = new SKsize[nr];
-        skMemset(index, SK_NPOS, nr * sizeof(SKsize));
+        skMemset(index, SK_NPOS, (nr) * sizeof(SKsize));
 
         SKsize i = 0, mapping, j;
         for (i = 0; i < m_size; ++i)
@@ -307,7 +319,7 @@ private:
 
             j = 0;
             while (index[mapping] != SK_NPOS && j < m_capacity)
-                mapping = probe(mapping, ++j);
+                mapping = probe(mapping, j++);
 
             SK_ASSERT(j != m_capacity);
 
