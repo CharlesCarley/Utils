@@ -470,7 +470,7 @@ void skString::toHex(void)
     // There are two characters per one in the hex string 
     //          Old                             New
     //  -------------------------- -------------------------- 
-    // |                          |                       <--|
+    // |                        <-|                       <--|
     //  -------------------------- -------------------------- 
     //  work in reverse, and by the time it gets to the first
     //  old character, it will be in ival and nothing
