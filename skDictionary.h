@@ -105,15 +105,9 @@ private:
         return (key + i) % (m_capacity);
     }
 
-    SK_INLINE SKsize quadraticProbe(const SKhash& key, SKsize i) const
-    {
-        return (key + 2*i + 3*(i*i)) % m_capacity;
-    }
-
-
     SK_INLINE SKsize probe(const SKhash& key, SKsize i) const
     {
-        return quadraticProbe(key, i);
+        return linearProbe(key, i);
     }
 
 
