@@ -170,6 +170,10 @@ public:
         SK_ASSERT(i != m_capacity);
 
         m_data[m_size] = Pair(key, val, mapping);
+        
+        SK_ASSERT(m_index[mapping] == SK_NPOS);
+
+        
         m_index[mapping] = m_size;
         ++m_size;
     }
@@ -225,7 +229,6 @@ public:
             if (m_data[idx].hash == mapping && m_data[idx].first == k)
             {
                 swap_keys(idx, (m_size - 1));
-                --m_size;
                 break;
             }
         }
@@ -285,26 +288,42 @@ public:
 
 private:
 
-    void swap_keys(SKsize X, SKsize Y)
+    void swap_keys(SKsize A, SKsize B)
     {
-        skMemset(m_index, SK_NPOS, (m_capacity) * sizeof(SKsize));
-        skSwap(m_data[X], m_data[Y]);
+        SKsize mapB = m_data[B].hash;
+        SKsize mapA = m_data[A].hash;
 
-        SKsize i = 0, mapping, j, ns = m_size - 1;
-        for (i = 0; i < ns && ns != SK_NPOS; ++i)
+        m_size--;
+        if (m_size == 0)
         {
-            mapping = hash(m_data[i].first);
-
-            j = 0;
-            while (m_index[mapping] != SK_NPOS && j < m_capacity)
-                mapping = probe(mapping, j++);
-
-            SK_ASSERT(j != m_capacity);
-
-            m_data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
-            m_index[mapping] = i;
+            m_index[mapA] = SK_NPOS;
+            m_index[mapB] = SK_NPOS;
         }
-    }
+        else
+        {
+            SKsize idx = m_index[mapA];
+            m_index[mapB] = SK_NPOS;
+            m_index[mapA] = SK_NPOS;
+
+            Pair &da = m_data[A];
+            Pair &db = m_data[B];
+
+            skSwap(da, db);
+            db.hash = SK_NPOS;
+
+
+            SKhash mapping = hash(da.first);
+            SKsize i = 0;
+            while (m_index[mapping] != SK_NPOS && i < m_capacity)
+                mapping = probe(mapping, ++i);
+
+            SK_ASSERT(i != m_capacity);
+            SK_ASSERT(m_index[mapping] == SK_NPOS);
+
+            da.hash = mapping;
+            m_index[mapping] = idx;
+        }
+   }
 
     void rehash(SKsize nr)
     {
