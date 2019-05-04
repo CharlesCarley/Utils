@@ -162,18 +162,9 @@ public:
         if (find(key) != SK_NPOS)
             return;
 
-        SKhash mapping = hash(key);
-        SKsize i = 0;
-        while (m_index[mapping] != SK_NPOS && i < m_capacity)
-            mapping = probe(mapping, ++i);
-
-        SK_ASSERT(i != m_capacity);
+        SKhash mapping = probeKey(key);
 
         m_data[m_size] = Pair(key, val, mapping);
-        
-        SK_ASSERT(m_index[mapping] == SK_NPOS);
-
-        
         m_index[mapping] = m_size;
         ++m_size;
     }
@@ -288,6 +279,18 @@ public:
 
 private:
 
+    SKsize probeKey(const Key& k)
+    {
+        SKhash mapping = hash(k);
+        SKsize i = 0;
+        while (m_index[mapping] != SK_NPOS && i < m_capacity)
+            mapping = probe(mapping, ++i);
+
+        SK_ASSERT(i != m_capacity);
+        SK_ASSERT(m_index[mapping] == SK_NPOS);
+        return mapping;
+    }
+
     void swap_keys(SKsize A, SKsize B)
     {
         SKsize mapB = m_data[B].hash;
@@ -312,14 +315,7 @@ private:
             db.hash = SK_NPOS;
 
 
-            SKhash mapping = hash(da.first);
-            SKsize i = 0;
-            while (m_index[mapping] != SK_NPOS && i < m_capacity)
-                mapping = probe(mapping, ++i);
-
-            SK_ASSERT(i != m_capacity);
-            SK_ASSERT(m_index[mapping] == SK_NPOS);
-
+            SKhash mapping = probeKey(da.first);
             da.hash = mapping;
             m_index[mapping] = idx;
         }
@@ -331,16 +327,10 @@ private:
         SKsize* index = new SKsize[nr];
         skMemset(index, SK_NPOS, (nr) * sizeof(SKsize));
 
-        SKsize i = 0, mapping, j;
+        SKsize i = 0, mapping;
         for (i = 0; i < m_size; ++i)
         {
-            mapping = hash(m_data[i].first);
-
-            j = 0;
-            while (index[mapping] != SK_NPOS && j < m_capacity)
-                mapping = probe(mapping, j++);
-
-            SK_ASSERT(j != m_capacity);
+            mapping = probeKey(m_data[i].first);
 
             data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
             index[mapping] = i;
