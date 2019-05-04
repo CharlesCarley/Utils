@@ -284,7 +284,7 @@ private:
         SKhash mapping = hash(k);
         SKsize i = 0;
         while (m_index[mapping] != SK_NPOS && i < m_capacity)
-            mapping = probe(mapping, ++i);
+            mapping = probe(mapping, i++);
 
         SK_ASSERT(i != m_capacity);
         SK_ASSERT(m_index[mapping] == SK_NPOS);
