@@ -185,7 +185,7 @@ public:
             return SK_NPOS;
 
         SKsize idx = m_index[mapping];
-        if (m_data[idx].hash != mapping)
+        if (m_data[idx].hash != mapping || m_data[idx].first != k)
         {
             SKsize i = 0;
             while (i < m_capacity)
