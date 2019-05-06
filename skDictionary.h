@@ -185,18 +185,21 @@ public:
         if (m_index[mapping] == SK_NPOS)
             return SK_NPOS;
 
-        SKsize i = 0, idx;
-        while (i < m_capacity) // worst case
+        SKsize idx = m_index[mapping], next;
+        if (m_data[idx].hash != mapping)
         {
-            mapping = probe(mapping, i++);
-            idx = m_index[mapping];
-            if (idx < m_size)
+            SKsize i = 0;
+            while (i < m_capacity)
             {
-                if (m_data[idx].hash == mapping && m_data[idx].first == k)
-                    return m_index[mapping];
+                next = probe(mapping, i++);
+
+                idx = m_index[next];
+                if (idx != SK_NPOS && m_data[idx].hash == next && m_data[idx].first == k)
+                    return idx;
             }
+            idx = SK_NPOS;
         }
-        return SK_NPOS;
+        return idx;
     }
 
     void erase(const Key& k)
@@ -204,23 +207,25 @@ public:
         if (m_size == 0)
             return;
 
-        SKsize mapping = hash(k);
-        if (m_index[mapping] == SK_NPOS)
-            return;
-
-        SKsize i = 0, idx;
-        while (i < m_capacity)
+        SKsize A = find(k), B = m_size - 1;
+        if (A != SK_NPOS)
         {
-            mapping = probe(mapping, i++);
+            SKsize mapB = m_data[B].hash;
+            SKsize mapA = m_data[A].hash;
 
-            idx = m_index[mapping];
-            if (m_index[mapping] == SK_NPOS || idx > m_size)
-                continue;
-
-            if (m_data[idx].hash == mapping && m_data[idx].first == k)
+            m_size--;
+            if (m_size == 0)
             {
-                swap_keys(idx, (m_size - 1));
-                break;
+                m_index[mapA] = SK_NPOS;
+                m_index[mapB] = SK_NPOS;
+            }
+            else
+            {
+                SKsize idx = m_index[mapA];
+                m_index[mapB] = idx;
+                m_index[mapA] = SK_NPOS;
+
+                skSwap(m_data[A], m_data[B]);
             }
         }
     }
@@ -251,10 +256,13 @@ public:
 
     SK_INLINE ConstPointerType  ptr(void)       const { return m_data; }
     SK_INLINE PointerType       ptr(void)             { return m_data; }
+    SK_INLINE const SKsize*     iptr(void)      const { return m_index; }
     SK_INLINE bool              valid(void)     const { return m_data != 0; }
     SK_INLINE SKsize            capacity(void)  const { return m_capacity; }
     SK_INLINE SKsize            size(void)      const { return m_size; }
     SK_INLINE bool              empty(void)     const { return m_size == 0; }
+
+
 
     SK_INLINE Iterator iterator(void)
     {
@@ -290,36 +298,6 @@ private:
         SK_ASSERT(m_index[mapping] == SK_NPOS);
         return mapping;
     }
-
-    void swap_keys(SKsize A, SKsize B)
-    {
-        SKsize mapB = m_data[B].hash;
-        SKsize mapA = m_data[A].hash;
-
-        m_size--;
-        if (m_size == 0)
-        {
-            m_index[mapA] = SK_NPOS;
-            m_index[mapB] = SK_NPOS;
-        }
-        else
-        {
-            SKsize idx = m_index[mapA];
-            m_index[mapB] = SK_NPOS;
-            m_index[mapA] = SK_NPOS;
-
-            Pair &da = m_data[A];
-            Pair &db = m_data[B];
-
-            skSwap(da, db);
-            db.hash = SK_NPOS;
-
-
-            SKhash mapping = probeKey(da.first);
-            da.hash = mapping;
-            m_index[mapping] = idx;
-        }
-   }
 
     void rehash(SKsize nr)
     {
