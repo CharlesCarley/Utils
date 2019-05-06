@@ -156,7 +156,7 @@ public:
 
     void insert(const Key& key, const Value& val)
     {
-        if (m_size * 2 >= m_capacity) // assure that the load factor is balanced
+        if ((m_size+1) * 2 >= m_capacity) // assure that the load factor is balanced
             reserve(m_size == 0 ? 16 : m_capacity * 2);
 
         if (find(key) != SK_NPOS)
@@ -289,14 +289,18 @@ private:
 
     SKsize probeKey(const Key& k)
     {
-        SKhash mapping = hash(k);
+        SKhash mapping = hash(k), next;
+        
+        next = mapping;
         SKsize i = 0;
-        while (m_index[mapping] != SK_NPOS && i < m_capacity)
-            mapping = probe(mapping, i++);
+        while (m_index[next] != SK_NPOS && i < m_capacity)
+        {
+            next = probe(mapping, i++);
+        }
 
         SK_ASSERT(i != m_capacity);
-        SK_ASSERT(m_index[mapping] == SK_NPOS);
-        return mapping;
+        SK_ASSERT(m_index[next] == SK_NPOS);
+        return next;
     }
 
     void rehash(SKsize nr)
@@ -305,18 +309,27 @@ private:
         SKsize* index = new SKsize[nr];
         skMemset(index, SK_NPOS, (nr) * sizeof(SKsize));
 
-        SKsize i = 0, mapping;
+        SKsize i, mapping, j, next;
         for (i = 0; i < m_size; ++i)
         {
-            mapping = probeKey(m_data[i].first);
+            mapping = hash(m_data[i].first);
+            next = mapping;
 
-            data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
-            index[mapping] = i;
+            j = 0;
+            while (index[next] != SK_NPOS && j < m_capacity)
+                next = probe(mapping, j++);
+
+            SK_ASSERT(j != m_capacity);
+            SK_ASSERT(index[next] == SK_NPOS);
+
+            data[i] = Pair(m_data[i].first, m_data[i].second, next);
+            index[next] = i;
         }
 
         delete[]m_data;
         delete[]m_index;
-        m_data  = data;
+
+        m_data = data;
         m_index = index;
     }
 };
