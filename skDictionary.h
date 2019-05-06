@@ -131,6 +131,7 @@ public:
 
     ~skDictionary() { clear(); }
 
+
     void clear(void)
     {
         if (m_data)
@@ -144,7 +145,6 @@ public:
         m_capacity = 0;
     }
 
-
     void reserve(SKsize nr)
     {
         if (nr > m_capacity)
@@ -156,19 +156,13 @@ public:
 
     void insert(const Key& key, const Value& val)
     {
-        if (m_size * 2 >= m_capacity) // assure that the load factor is balanced
+        if ((m_size+1) * 2 >= m_capacity) // assure that the load factor is balanced
             reserve(m_size == 0 ? 16 : m_capacity * 2);
 
         if (find(key) != SK_NPOS)
             return;
 
-        SKhash mapping = hash(key);
-        SKsize i = 0;
-        while (m_index[mapping] != SK_NPOS && i < m_capacity)
-            mapping = probe(mapping, ++i);
-
-        SK_ASSERT(i != m_capacity);
-
+        SKhash mapping = probeKey(key);
         m_data[m_size] = Pair(key, val, mapping);
         m_index[mapping] = m_size;
         ++m_size;
@@ -190,18 +184,20 @@ public:
         if (m_index[mapping] == SK_NPOS)
             return SK_NPOS;
 
-        SKsize i = 0, idx;
-        while (i < m_capacity) // worst case
+        SKsize idx = m_index[mapping];
+        if (m_data[idx].hash != mapping)
         {
-            mapping = probe(mapping, i++);
-            idx = m_index[mapping];
-            if (idx < m_size)
+            SKsize i = 0;
+            while (i < m_capacity)
             {
-                if (m_data[idx].hash == mapping && m_data[idx].first == k)
-                    return m_index[mapping];
+                mapping = probe(mapping, i++);
+                idx = m_index[mapping];
+                if (idx != SK_NPOS && m_data[idx].hash == mapping && m_data[idx].first == k)
+                    return idx;
             }
+            idx = SK_NPOS;
         }
-        return SK_NPOS;
+        return idx;
     }
 
     void erase(const Key& k)
@@ -209,24 +205,25 @@ public:
         if (m_size == 0)
             return;
 
-        SKsize mapping = hash(k);
-        if (m_index[mapping] == SK_NPOS)
-            return;
-
-        SKsize i = 0, idx;
-        while (i < m_capacity)
+        SKsize A = find(k), B = m_size - 1;
+        if (A != SK_NPOS)
         {
-            mapping = probe(mapping, i++);
+            SKsize mapB = m_data[B].hash;
+            SKsize mapA = m_data[A].hash;
 
-            idx = m_index[mapping];
-            if (m_index[mapping] == SK_NPOS || idx > m_size)
-                continue;
-
-            if (m_data[idx].hash == mapping && m_data[idx].first == k)
+            m_size--;
+            if (m_size == 0)
             {
-                swap_keys(idx, (m_size - 1));
-                --m_size;
-                break;
+                m_index[mapA] = SK_NPOS;
+                m_index[mapB] = SK_NPOS;
+            }
+            else
+            {
+                SKsize idx = m_index[mapA];
+                m_index[mapB] = idx;
+                m_index[mapA] = SK_NPOS;
+
+                skSwap(m_data[A], m_data[B]);
             }
         }
     }
@@ -257,6 +254,7 @@ public:
 
     SK_INLINE ConstPointerType  ptr(void)       const { return m_data; }
     SK_INLINE PointerType       ptr(void)             { return m_data; }
+    SK_INLINE const SKsize*     iptr(void)      const { return m_index; }
     SK_INLINE bool              valid(void)     const { return m_data != 0; }
     SK_INLINE SKsize            capacity(void)  const { return m_capacity; }
     SK_INLINE SKsize            size(void)      const { return m_size; }
@@ -285,25 +283,16 @@ public:
 
 private:
 
-    void swap_keys(SKsize X, SKsize Y)
+    SKsize probeKey(const Key& k)
     {
-        skMemset(m_index, SK_NPOS, (m_capacity) * sizeof(SKsize));
-        skSwap(m_data[X], m_data[Y]);
+        SKhash mapping = hash(k);
+        SKsize i = 0;
+        while (m_index[mapping] != SK_NPOS && i < m_capacity)
+            mapping = probe(mapping, i++);
 
-        SKsize i = 0, mapping, j, ns = m_size - 1;
-        for (i = 0; i < ns && ns != SK_NPOS; ++i)
-        {
-            mapping = hash(m_data[i].first);
-
-            j = 0;
-            while (m_index[mapping] != SK_NPOS && j < m_capacity)
-                mapping = probe(mapping, j++);
-
-            SK_ASSERT(j != m_capacity);
-
-            m_data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
-            m_index[mapping] = i;
-        }
+        SK_ASSERT(i != m_capacity);
+        SK_ASSERT(m_index[mapping] == SK_NPOS);
+        return mapping;
     }
 
     void rehash(SKsize nr)
@@ -312,16 +301,16 @@ private:
         SKsize* index = new SKsize[nr];
         skMemset(index, SK_NPOS, (nr) * sizeof(SKsize));
 
-        SKsize i = 0, mapping, j;
+        SKsize i, mapping, j;
         for (i = 0; i < m_size; ++i)
         {
             mapping = hash(m_data[i].first);
-
             j = 0;
             while (index[mapping] != SK_NPOS && j < m_capacity)
                 mapping = probe(mapping, j++);
 
             SK_ASSERT(j != m_capacity);
+            SK_ASSERT(index[mapping] == SK_NPOS);
 
             data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
             index[mapping] = i;
@@ -329,6 +318,7 @@ private:
 
         delete[]m_data;
         delete[]m_index;
+
         m_data  = data;
         m_index = index;
     }
