@@ -36,6 +36,10 @@ void skRandInit(SKuint32 seed)
         ::srand(skGetTickCount() % (SK_NPOS - 1));
 }
 
+SKuint32 skRandom(SKuint32 mod)
+{
+    return rand() % mod;
+}
 
 SKuint32 skRandomUnsignedInt(SKuint32 mod)
 {
