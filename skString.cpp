@@ -126,14 +126,14 @@ namespace skStringUtils
     {
         if (!in || !out)
             return 0;
-        return (SKsize)::strncpy(out, in, max);
+        return (SKsize)(size_t)::strncpy(out, in, (size_t)max);
     }
 
 
 
     SKsize copy(char* out, const char* in)
     {
-        return (SKsize)strcpy(out, in);
+        return (SKsize)(size_t)strcpy(out, in);
     }
 
 
@@ -143,7 +143,7 @@ namespace skStringUtils
 
         if (*a != *b) return 1;
 
-        return (SKsize)strncmp(a, b, max);
+        return (SKsize)(size_t)strncmp(a, b, (size_t)max);
 
     }
 

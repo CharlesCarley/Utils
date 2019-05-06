@@ -95,8 +95,8 @@ public:
     {
         if (ns <= L)
         {
-            if (ns < m_size)
-                for (SKuint16 i = ns; i < m_size; i++) m_buffer[i] = 0;
+            //if (ns < m_size)
+            //    for (SKuint16 i = ns; i < m_size; i++) m_buffer[i] = 0;
             m_size = ns;
             m_buffer[m_size] = 0;
         }
