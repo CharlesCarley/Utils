@@ -26,23 +26,22 @@
 #ifndef _skDeque_h_
 #define _skDeque_h_
 
-
-#include "skSort.h"
 #include "skAllocator.h"
 #include "skArray.h"
+#include "skSort.h"
 
-
-template < typename T, typename Allocator = skAllocator<T> >
+template <typename T, typename Allocator = skAllocator<T> >
 class skDeque
 {
 public:
     SK_DECLARE_TYPE(T);
+
 public:
-    typedef skDeque<T, Allocator>                         SelfType;
-    typedef skPointerIncrementIterator<SelfType>          Iterator;
-    typedef const skPointerIncrementIterator<SelfType>    ConstIterator;
-    typedef skPointerDecrementIterator<SelfType>          ReverseIterator;
-    typedef const skPointerDecrementIterator<SelfType>    ConstReverseIterator;
+    typedef skDeque<T, Allocator>                      SelfType;
+    typedef skPointerIncrementIterator<SelfType>       Iterator;
+    typedef const skPointerIncrementIterator<SelfType> ConstIterator;
+    typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
+    typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
 
     SK_IMPLEMENT_QSORT(T, SelfType);
 
@@ -52,21 +51,15 @@ private:
     Allocator   m_alloc;
 
 public:
-    skDeque() :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
+    skDeque() : m_data(0), m_size(0), m_capacity(0)
     {
     }
 
-    skDeque(const skDeque& o) :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
+    skDeque(const skDeque& o) : m_data(0), m_size(0), m_capacity(0)
     {
         if (o.m_data)
         {
-            m_size  = o.size();
+            m_size = o.size();
             reserve(m_size);
             skFill(m_data, o.m_data, m_size);
         }
@@ -126,7 +119,6 @@ public:
         {
             for (SKsize i = m_size; i < nr; i++)
                 m_alloc.destroy(&m_data[i]);
-
         }
         else
         {
@@ -156,7 +148,8 @@ public:
 
     void reserve(SKsize nr)
     {
-        if (m_capacity > nr);
+        if (m_capacity > nr)
+            ;
         else if (m_data)
         {
             m_data = m_alloc.array_reallocate(m_data, nr, m_size);
@@ -168,7 +161,6 @@ public:
             m_capacity = nr;
         }
     }
-
 
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
@@ -182,12 +174,16 @@ public:
         return m_data[(m_size - 1) - idx];
     }
 
+    SK_INLINE ReferenceType at(SKsize idx)
+    {
+        return (*this)[idx];
+    }
+    SK_INLINE ConstReferenceType at(SKsize idx) const
+    {
+        return (*this)[idx];
+    }
 
-    SK_INLINE ReferenceType         at(SKsize idx)          { return (*this)[idx]; }
-    SK_INLINE ConstReferenceType    at(SKsize idx) const    { return (*this)[idx]; }
-
-
-    skDeque& operator= (const skDeque& rhs)
+    skDeque& operator=(const skDeque& rhs)
     {
         if (this != &rhs)
         {
@@ -201,11 +197,22 @@ public:
         return *this;
     }
 
-
-    SK_INLINE bool      valid(void)     const   { return m_data != 0; }
-    SK_INLINE SKsize    capacity(void)  const   { return m_capacity; }
-    SK_INLINE SKsize    size(void)      const   { return m_size; }
-    SK_INLINE bool      empty(void)     const   { return m_size == 0; }
+    SK_INLINE bool valid(void) const
+    {
+        return m_data != 0;
+    }
+    SK_INLINE SKsize capacity(void) const
+    {
+        return m_capacity;
+    }
+    SK_INLINE SKsize size(void) const
+    {
+        return m_size;
+    }
+    SK_INLINE bool empty(void) const
+    {
+        return m_size == 0;
+    }
 
     SK_INLINE Iterator iterator(void)
     {
@@ -226,7 +233,6 @@ public:
     {
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
     }
-
 
 private:
     ReferenceType pop(void)
@@ -265,4 +271,4 @@ private:
     }
 };
 
-#endif//_skDeque_h_
+#endif //_skDeque_h_

@@ -23,10 +23,9 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include <stdlib.h>
 #include "skRandom.h"
 #include "skTimer.h"
-
+#include <stdlib.h>
 
 void skRandInit(SKuint32 seed)
 {
@@ -44,7 +43,8 @@ SKuint32 skRandom(SKuint32 mod)
 SKuint32 skRandomUnsignedInt(SKuint32 mod)
 {
     int r = ::rand();
-    if (r < 0) r = -r;
+    if (r < 0)
+        r = -r;
 
     if (mod != SK_NPOS)
         r %= mod;
@@ -52,10 +52,11 @@ SKuint32 skRandomUnsignedInt(SKuint32 mod)
     return (SKuint32)r;
 }
 
-
 double skUnitRandom(SKuint32 mod)
 {
-    if (mod == 0)       mod = 256;
-    if (mod == SK_NPOS) mod = 256;
+    if (mod == 0)
+        mod = 256;
+    if (mod == SK_NPOS)
+        mod = 256;
     return (double)skRandomUnsignedInt(mod) / (double)mod;
 }

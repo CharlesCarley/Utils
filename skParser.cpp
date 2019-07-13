@@ -24,42 +24,35 @@
 -------------------------------------------------------------------------------
 */
 #include "skParser.h"
-#include "skStreams.h"
-#include "skFixedString.h"
 #include "skDebugger.h"
+#include "skFixedString.h"
+#include "skStreams.h"
 #include "skValue.h"
 
 #define SK_PARSER_TRACE 1
 #if SK_PARSER_TRACE
-    #define skParserTrace skPrintf
-    #define skREAD   "Token Read"
-    #define skSHIFT  "Shift"
-    #define skREDUCE "Reduce"
-    #define skFMT    "%-11s|   "
+#define skParserTrace skPrintf
+#define skREAD "Token Read"
+#define skSHIFT "Shift"
+#define skREDUCE "Reduce"
+#define skFMT "%-11s|   "
 #else
-    #define skParserTrace(x, y, z, w) (void)0
+#define skParserTrace(x, y, z, w) (void)0
 #endif
 
-#define skLabel(x)      x:
-#define skJmp(x)        goto x
+#define skLabel(x)                                                                                                     \
+    x:
+#define skJmp(x) goto x
 #define skDFAedge(s, e) m_dfa->m_states[s].m_edges[e]
-#define skChSt(s, e)    m_charsets->m_chars[skDFAedge(s,e).m_char]
-#define skLALR(idx)     m_lalr->m_states[idx]
-#define skTmpBuf        skString
+#define skChSt(s, e) m_charsets->m_chars[skDFAedge(s, e).m_char]
+#define skLALR(idx) m_lalr->m_states[idx]
+#define skTmpBuf skString
 
-#define skBufferComment( b, x ) ((( b[x] != '\n'  && b[x-1] != '\r' ) && ( b[x] != '\r' ) && ( b[x] != '\n' ) ))
+#define skBufferComment(b, x) (((b[x] != '\n' && b[x - 1] != '\r') && (b[x] != '\r') && (b[x] != '\n')))
 
-skParser::skParser()
-    :   m_stream(0),
-        m_start(-1),
-        m_symbolTable(0),
-        m_ruleTable(0),
-        m_dfa(0),
-        m_lalr(0),
-        m_buffer(0),
-        m_len(0),
-        m_stateIdx(0),
-        m_cur(0)
+skParser::skParser() :
+    m_stream(0), m_start(-1), m_symbolTable(0), m_ruleTable(0), m_dfa(0), m_lalr(0), m_buffer(0), m_len(0),
+    m_stateIdx(0), m_cur(0)
 
 {
 }
@@ -68,12 +61,10 @@ skParser::~skParser()
 {
     if (m_buffer)
     {
-        delete []m_buffer;
+        delete[] m_buffer;
         m_buffer = 0;
     }
 }
-
-
 
 void skParser::initialize(SKuint32 stackSize, skStream* in)
 {
@@ -101,30 +92,27 @@ void skParser::initialize(SKuint32 stackSize, skStream* in)
     m_buffer[m_len] = 0;
 }
 
-
-
-
 skParser::Message skParser::parseImpl(void)
 {
     if (!m_buffer || m_len <= 0)
         return MESSAGE_NOT_LOADED_ERROR;
 
-    SKint16 dfa_state, dfa_accept, dfa_len, char_set, cntr, dfa_prev;
-    SKint16  dfa_cs, c1, c2;
+    SKint16               dfa_state, dfa_accept, dfa_len, char_set, cntr, dfa_prev;
+    SKint16               dfa_cs, c1, c2;
     skParser::LALRAction* action = 0;
-    StackItem item;
+    StackItem             item;
     item.m_ptr = 0;
-    char* dfa_buf;
+    char*    dfa_buf;
     skTmpBuf tmpBuf;
 
     // ----------------------------------------------------
     skLabel(scnrRead);
 
-    dfa_len     = 0x00;
-    dfa_accept  = 0xFF;
-    dfa_prev    = 0xFF;
-    dfa_state   = m_dfa->m_initial;
-    dfa_buf     = &m_buffer[m_cur];
+    dfa_len = 0x00;
+    dfa_accept = 0xFF;
+    dfa_prev = 0xFF;
+    dfa_state = m_dfa->m_initial;
+    dfa_buf = &m_buffer[m_cur];
 
     if ((*dfa_buf) == 0x00)
     {
@@ -137,7 +125,6 @@ skParser::Message skParser::parseImpl(void)
 
     if (m_dfa->m_states[dfa_state].m_accept != 0xFF)
         dfa_accept = m_dfa->m_states[dfa_state].m_accept;
-
 
     dfa_cs = dfa_buf[dfa_len];
     cntr = 0x0000;
@@ -162,8 +149,7 @@ skParser::Message skParser::parseImpl(void)
                 c2 = skChSt(dfa_state, cntr).m_chars[char_set + 1];
                 char_set += 2;
 
-                if ((c2 > c1 && dfa_cs >= c1 && dfa_cs <= c2) ||
-                        dfa_cs == c1)
+                if ((c2 > c1 && dfa_cs >= c1 && dfa_cs <= c2) || dfa_cs == c1)
                 {
                     dfa_prev = dfa_accept;
                     dfa_state = (skDFAedge(dfa_state, cntr).m_target);
@@ -192,8 +178,10 @@ skParser::Message skParser::parseImpl(void)
         {
             m_cur += dfa_len;
 
-            do { m_cur++; }
-            while (skBufferComment(m_buffer, m_cur) && m_buffer[m_cur] != 0);
+            do
+            {
+                m_cur++;
+            } while (skBufferComment(m_buffer, m_cur) && m_buffer[m_cur] != 0);
             skJmp(scnrRead);
         }
         else if (m_symbolTable->m_symbols[dfa_accept].m_kind == SM_COMMENT_START)
@@ -224,7 +212,6 @@ skParser::Message skParser::parseImpl(void)
 
     m_input.push(dfa_accept);
 
-
     // ----------------------------------------------------
     skLabel(lalrAction);
 
@@ -251,17 +238,14 @@ skParser::Message skParser::parseImpl(void)
 
     skJmp(psrSyntax);
 
-
-
-
     // ----------------------------------------------------
     skLabel(lalrShift);
 
-    m_stateIdx      = action->m_value;
-    item.m_state    = 0;
-    item.m_state    = m_stateIdx;
-    item.m_symbol   = &m_symbolTable->m_symbols[action->m_symbolIndex];
-    item.m_buffer   = tmpBuf.c_str();
+    m_stateIdx = action->m_value;
+    item.m_state = 0;
+    item.m_state = m_stateIdx;
+    item.m_symbol = &m_symbolTable->m_symbols[action->m_symbolIndex];
+    item.m_buffer = tmpBuf.c_str();
     item.m_primitive.pval = 0;
     m_stack.push(item);
 
@@ -271,7 +255,6 @@ skParser::Message skParser::parseImpl(void)
     m_input.pop();
 
     skJmp(scnrRead);
-
 
     // ----------------------------------------------------
     skLabel(lalrReduce);
@@ -291,21 +274,18 @@ skParser::Message skParser::parseImpl(void)
     m_stateIdx = m_stack.top().m_state;
     skJmp(lalrAction);
 
-
     // ----------------------------------------------------
     skLabel(lalrGoto);
 
-    m_stateIdx      = action->m_value;
-    item.m_state    = m_stateIdx;
-    item.m_symbol   = &m_symbolTable->m_symbols[m_input.top()];
+    m_stateIdx = action->m_value;
+    item.m_state = m_stateIdx;
+    item.m_symbol = &m_symbolTable->m_symbols[m_input.top()];
 
     m_stack.push(item);
     m_input.pop();
 
     if (execRule((SKuint8)m_curReduction) == 0xFF)
         return MESSAGE_INTERNAL_ERROR;
-
-
 
     if (m_input.empty())
         skJmp(scnrRead);
@@ -317,11 +297,10 @@ skParser::Message skParser::parseImpl(void)
     return MESSAGE_SYNTAX_ERROR;
 }
 
-
 void skParser::stackTrace(void)
 {
-    int idx = 0;
-    skStack<StackItem>::Iterator it =  m_stack.iterator();
+    int                          idx = 0;
+    skStack<StackItem>::Iterator it = m_stack.iterator();
     while (it.hasMoreElements())
     {
         StackItem& lit = it.getNext();
@@ -339,4 +318,3 @@ void skParser::stackTrace(void)
         ++idx;
     }
 }
-

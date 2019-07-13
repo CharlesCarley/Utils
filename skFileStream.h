@@ -28,36 +28,30 @@
 
 #include "skStreams.h"
 
-
-
 class skFileStream : public skStream
 {
 public:
     typedef void* Handle;
 
 public:
-
     skFileStream();
     virtual ~skFileStream();
 
-
-    void flush(void);
-    void open(const char* path, Mode mode);
-    void close(void);
-    bool isOpen(void) const;
-    bool eof(void) const;
+    void   flush(void);
+    void   open(const char* path, Mode mode);
+    void   close(void);
+    bool   isOpen(void) const;
+    bool   eof(void) const;
     SKsize read(void* dst, SKsize nr) const;
     SKsize write(const void* src, SKsize nr);
     SKsize position(void) const;
     SKsize size(void) const;
 
 private:
-
-    Handle m_handle;
+    Handle         m_handle;
     mutable SKsize m_pos;
     mutable SKsize m_size;
-    SKint32 m_mode;
+    SKint32        m_mode;
 };
 
-
-#endif//_skFileStream_h_
+#endif //_skFileStream_h_

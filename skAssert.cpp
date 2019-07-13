@@ -28,11 +28,7 @@
 
 #include "skDebugger.h"
 
-void skAssertTrap(
-    const char* decl,
-    const char* file,
-    const unsigned long line,
-    const char* func)
+void skAssertTrap(const char* decl, const char* file, const unsigned long line, const char* func)
 {
     skDebugger::report("%s(%i): Error assert '%s' failed!\n\tin function %s\n", file, line, decl, func);
     if (skDebugger::isDebugger())

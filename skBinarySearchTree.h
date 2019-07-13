@@ -27,8 +27,8 @@
 #define _skBinarySearchTree_h_
 
 #include "Config/skConfig.h"
-#include "Utils/skTraits.h"
 #include "Utils/skArray.h"
+#include "Utils/skTraits.h"
 
 template <typename T>
 class skBinarySearchTree
@@ -39,53 +39,70 @@ public:
     class Node : public skAllocObject
     {
     public:
-        Node() : m_left(0), m_right(0) {}
-        Node(ConstValueType v) : m_left(0), m_right(0), m_data(v) {}
+        Node() : m_left(0), m_right(0)
+        {
+        }
+        Node(ConstValueType v) : m_left(0), m_right(0), m_data(v)
+        {
+        }
 
-        ~Node() { destruct(); }
+        ~Node()
+        {
+            destruct();
+        }
 
-        SK_INLINE Node*         left(void)   { return m_left;  }
-        SK_INLINE Node*         right(void)  { return m_right; }
-        SK_INLINE ReferenceType data(void)   { return m_data;  }
+        SK_INLINE Node* left(void)
+        {
+            return m_left;
+        }
+        SK_INLINE Node* right(void)
+        {
+            return m_right;
+        }
+        SK_INLINE ReferenceType data(void)
+        {
+            return m_data;
+        }
 
     private:
         friend class skBinarySearchTree;
 
-        Node* m_left, *m_right;
+        Node *    m_left, *m_right;
         ValueType m_data;
 
         void destruct(void)
         {
-            if (m_left)  delete m_left;
-            if (m_right) delete m_right;
+            if (m_left)
+                delete m_left;
+            if (m_right)
+                delete m_right;
         }
     };
 
     SK_DECLARE_TYPE_NAME(Node, Node);
 
-    typedef skArray<T> Array;
+    typedef skArray<T>               Array;
     typedef typename Array::Iterator Iterator;
 
 private:
-    NodePointerType     m_root;
-    SKsize              m_size;
-    Array               m_array;
+    NodePointerType m_root;
+    SKsize          m_size;
+    Array           m_array;
 
 public:
-    skBinarySearchTree() :
-        m_root(0),
-        m_size(0)
+    skBinarySearchTree() : m_root(0), m_size(0)
     {
     }
 
-    skBinarySearchTree(const skBinarySearchTree& o) :
-        m_root(0),
-        m_size(0)
+    skBinarySearchTree(const skBinarySearchTree& o) : m_root(0), m_size(0)
     {
         SK_ASSERT(0 && "TODO");
     }
 
-    ~skBinarySearchTree() { clear(); }
+    ~skBinarySearchTree()
+    {
+        clear();
+    }
 
     void clear(void)
     {
@@ -93,7 +110,6 @@ public:
         m_root = 0;
         m_array.clear();
     }
-
 
     void insert(ConstReferenceType val)
     {
@@ -103,7 +119,6 @@ public:
             insert_recursive(m_root, val);
         m_size++;
     }
-
 
     bool find(ConstReferenceType val) const
     {
@@ -131,7 +146,6 @@ public:
         return false;
     }
 
-
     void erase(ConstReferenceType val)
     {
         if (m_root == 0)
@@ -154,28 +168,34 @@ public:
         return m_array.iterator();
     }
 
-
-
     NodePointerType minimum(NodePointerType node = 0)
     {
         return minimum_recursive(node ? node : m_root);
     }
-
 
     NodePointerType maximum(NodePointerType node = 0)
     {
         return maximum_recursive(node ? node : m_root);
     }
 
-
-    SK_INLINE NodePointerType root(void)    { return m_root; }
-    SK_INLINE NodePointerType left(void)    { return m_root ? m_root->m_left : 0; }
-    SK_INLINE NodePointerType right(void)   { return m_root ? m_root->m_right : 0; }
-    SK_INLINE SKsize          size(void)    { return m_size; }
-
+    SK_INLINE NodePointerType root(void)
+    {
+        return m_root;
+    }
+    SK_INLINE NodePointerType left(void)
+    {
+        return m_root ? m_root->m_left : 0;
+    }
+    SK_INLINE NodePointerType right(void)
+    {
+        return m_root ? m_root->m_right : 0;
+    }
+    SK_INLINE SKsize size(void)
+    {
+        return m_size;
+    }
 
 private:
-
     NodePointerType minimum_recursive(NodePointerType node)
     {
         if (node && node->m_left)
@@ -189,8 +209,6 @@ private:
             return maximum_recursive(node->m_right);
         return node;
     }
-
-
 
     void insert_recursive(NodePointerType node, ConstReferenceType val)
     {
@@ -224,10 +242,10 @@ private:
         return find_recursive(node->m_right, val);
     }
 
-
     NodePointerType erase_recursive(NodePointerType node, ConstReferenceType val)
     {
-        if (!node) return 0;
+        if (!node)
+            return 0;
 
         if (node->m_data > val)
             node->m_left = erase_recursive(node->m_left, val);
@@ -277,8 +295,4 @@ private:
     }
 };
 
-
-
-
-
-#endif//_skBinarySearchTree_h_
+#endif //_skBinarySearchTree_h_

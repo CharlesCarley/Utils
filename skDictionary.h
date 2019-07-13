@@ -26,44 +26,39 @@
 #ifndef _skDictionary_h_
 #define _skDictionary_h_
 
-
 #include "Config/skConfig.h"
-#include "Utils/skTraits.h"
 #include "Utils/skArray.h"
 #include "Utils/skMap.h"
+#include "Utils/skTraits.h"
 
 template <typename Key, typename Value>
 class skDictionary
 {
 public:
-
     class Pair : public skAllocObject
     {
     public:
-        Key     first;
-        Value   second;
+        Key   first;
+        Value second;
 
-        Pair() :
-            hash(SK_NPOS)
+        Pair() : hash(SK_NPOS)
         {
         }
 
-        Pair(const Key& k, const Value& v, SKhash hk)
-            : first(k), second(v), hash(hk)
+        Pair(const Key& k, const Value& v, SKhash hk) : first(k), second(v), hash(hk)
         {
         }
 
-        Pair(const Pair& oth)
-            : first(oth.first), second(oth.second), hash(oth.hash)
+        Pair(const Pair& oth) : first(oth.first), second(oth.second), hash(oth.hash)
         {
         }
 
-        SK_INLINE bool operator == (const Pair& rhs)
+        SK_INLINE bool operator==(const Pair& rhs)
         {
             return hash == rhs.hash && first == rhs.first && second == rhs.second;
         }
 
-        Pair& operator= (const Pair& rhs)
+        Pair& operator=(const Pair& rhs)
         {
             if (this != &rhs)
             {
@@ -74,21 +69,22 @@ public:
             return *this;
         }
 
-        ~Pair() {}
+        ~Pair()
+        {
+        }
 
     private:
         friend class skDictionary;
-        SKsize  hash;
+        SKsize hash;
     };
 
     SK_DECLARE_TYPE(Pair);
 
-    typedef skDictionary<Key, Value>                      SelfType;
-    typedef skPointerIncrementIterator<SelfType>          Iterator;
-    typedef const skPointerIncrementIterator<SelfType>    ConstIterator;
-    typedef skPointerDecrementIterator<SelfType>          ReverseIterator;
-    typedef const skPointerDecrementIterator<SelfType>    ConstReverseIterator;
-
+    typedef skDictionary<Key, Value>                   SelfType;
+    typedef skPointerIncrementIterator<SelfType>       Iterator;
+    typedef const skPointerIncrementIterator<SelfType> ConstIterator;
+    typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
+    typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
 
 private:
     PointerType m_data;
@@ -110,34 +106,27 @@ private:
         return linearProbe(key, i);
     }
 
-
 public:
-    skDictionary() :
-        m_data(0),
-        m_index(0),
-        m_size(0),
-        m_capacity(0)
+    skDictionary() : m_data(0), m_index(0), m_size(0), m_capacity(0)
     {
     }
 
-    skDictionary(const skDictionary& o) :
-        m_data(0),
-        m_index(0),
-        m_size(0),
-        m_capacity(0)
+    skDictionary(const skDictionary& o) : m_data(0), m_index(0), m_size(0), m_capacity(0)
     {
         SK_ASSERT(0 && "TODO");
     }
 
-    ~skDictionary() { clear(); }
-
+    ~skDictionary()
+    {
+        clear();
+    }
 
     void clear(void)
     {
         if (m_data)
         {
-            delete[]m_data;
-            delete[]m_index;
+            delete[] m_data;
+            delete[] m_index;
         }
         m_index = 0;
         m_data = 0;
@@ -156,7 +145,7 @@ public:
 
     void insert(const Key& key, const Value& val)
     {
-        if ((m_size+1) * 2 >= m_capacity) // assure that the load factor is balanced
+        if ((m_size + 1) * 2 >= m_capacity) // assure that the load factor is balanced
             reserve(m_size == 0 ? 16 : m_capacity * 2);
 
         if (find(key) != SK_NPOS)
@@ -252,13 +241,34 @@ public:
         return m_data[idx];
     }
 
-    SK_INLINE ConstPointerType  ptr(void)       const { return m_data; }
-    SK_INLINE PointerType       ptr(void)             { return m_data; }
-    SK_INLINE const SKsize*     iptr(void)      const { return m_index; }
-    SK_INLINE bool              valid(void)     const { return m_data != 0; }
-    SK_INLINE SKsize            capacity(void)  const { return m_capacity; }
-    SK_INLINE SKsize            size(void)      const { return m_size; }
-    SK_INLINE bool              empty(void)     const { return m_size == 0; }
+    SK_INLINE ConstPointerType ptr(void) const
+    {
+        return m_data;
+    }
+    SK_INLINE PointerType ptr(void)
+    {
+        return m_data;
+    }
+    SK_INLINE const SKsize* iptr(void) const
+    {
+        return m_index;
+    }
+    SK_INLINE bool valid(void) const
+    {
+        return m_data != 0;
+    }
+    SK_INLINE SKsize capacity(void) const
+    {
+        return m_capacity;
+    }
+    SK_INLINE SKsize size(void) const
+    {
+        return m_size;
+    }
+    SK_INLINE bool empty(void) const
+    {
+        return m_size == 0;
+    }
 
     SK_INLINE Iterator iterator(void)
     {
@@ -275,14 +285,12 @@ public:
         return m_data && m_size > 0 ? ReverseIterator(m_data, m_size) : ReverseIterator();
     }
 
-
     SK_INLINE ConstReverseIterator reverseIterator(void) const
     {
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
     }
 
 private:
-
     SKsize probeKey(const Key& k)
     {
         SKhash mapping = hash(k);
@@ -297,7 +305,7 @@ private:
 
     void rehash(SKsize nr)
     {
-        Pair* data = new Pair[nr];
+        Pair*   data = new Pair[nr];
         SKsize* index = new SKsize[nr];
         skMemset(index, SK_NPOS, (nr) * sizeof(SKsize));
 
@@ -316,12 +324,12 @@ private:
             index[mapping] = i;
         }
 
-        delete[]m_data;
-        delete[]m_index;
+        delete[] m_data;
+        delete[] m_index;
 
-        m_data  = data;
+        m_data = data;
         m_index = index;
     }
 };
 
-#endif//_skDictionary_h_
+#endif //_skDictionary_h_

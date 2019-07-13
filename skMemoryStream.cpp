@@ -25,26 +25,19 @@
 */
 #include "skMemoryStream.h"
 #include "skFileStream.h"
-#include "skPlatformHeaders.h"
 #include "skMinMax.h"
+#include "skPlatformHeaders.h"
 
-
-skMemoryStream::skMemoryStream()
-    :   m_buffer(0),
-        m_pos(0),
-        m_size(0),
-        m_capacity(0),
-        m_mode(0)
+skMemoryStream::skMemoryStream() : 
+    m_buffer(0), m_pos(0), m_size(0), m_capacity(0), m_mode(0)
 {
 }
-
-
 
 skMemoryStream::~skMemoryStream()
 {
     if (m_buffer != 0)
     {
-        delete []m_buffer;
+        delete[] m_buffer;
         m_buffer = 0;
     }
 
@@ -52,13 +45,10 @@ skMemoryStream::~skMemoryStream()
     m_capacity = 0;
 }
 
-
-
 void skMemoryStream::open(skStream::Mode mode)
 {
     m_mode = mode;
 }
-
 
 void skMemoryStream::open(const char* path, skStream::Mode mode)
 {
@@ -73,11 +63,10 @@ void skMemoryStream::open(const skStream& cpy, skStream::Mode mode)
 {
     if (cpy.isOpen())
     {
-        //cpy.write( *this );
+        // cpy.write( *this );
         m_mode = mode;
     }
 }
-
 
 void skMemoryStream::open(const void* buffer, SKsize size, skStream::Mode mode)
 {
@@ -86,14 +75,12 @@ void skMemoryStream::open(const void* buffer, SKsize size, skStream::Mode mode)
     {
         m_mode = mode;
         m_size = size;
-        m_pos  = 0;
+        m_pos = 0;
 
         reserve(m_size);
         skMemcpy(m_buffer, buffer, m_size);
     }
 }
-
-
 
 void skMemoryStream::clear(void)
 {
@@ -104,8 +91,6 @@ void skMemoryStream::clear(void)
         m_buffer[0] = 0;
 }
 
-
-
 void skMemoryStream::close(void)
 {
 
@@ -113,8 +98,6 @@ void skMemoryStream::close(void)
     if (m_buffer)
         m_buffer[0] = 0;
 }
-
-
 
 SKsize skMemoryStream::seek(SKint32 off, SKint32 way)
 {
@@ -130,29 +113,32 @@ SKsize skMemoryStream::seek(SKint32 off, SKint32 way)
 
 SKsize skMemoryStream::read(void* dest, SKsize nr) const
 {
-    if (m_mode == skStream::WRITE) return SK_NPOS;
+    if (m_mode == skStream::WRITE)
+        return SK_NPOS;
 
-    if (m_pos > m_size) return 0;
+    if (m_pos > m_size)
+        return 0;
 
-    if (!dest || !m_buffer) return 0;
+    if (!dest || !m_buffer)
+        return 0;
 
-    if ((m_size - m_pos) < nr) nr = m_size - m_pos;
+    if ((m_size - m_pos) < nr)
+        nr = m_size - m_pos;
 
     char* cp = (char*)dest;
-    char* op = (char*) & m_buffer[m_pos];
+    char* op = (char*)&m_buffer[m_pos];
     skMemcpy(cp, op, nr);
     m_pos += nr;
     return nr;
 }
-
-
 
 SKsize skMemoryStream::write(const void* src, SKsize nr)
 {
     if (m_mode == skStream::READ || !src)
         return SK_NPOS;
 
-    if (m_pos > m_size) return 0;
+    if (m_pos > m_size)
+        return 0;
 
     if (m_buffer == 0)
         reserve(m_pos + (nr));
@@ -162,12 +148,10 @@ SKsize skMemoryStream::write(const void* src, SKsize nr)
     char* cp = &m_buffer[m_pos];
     skMemcpy(cp, (char*)src, nr);
 
-    m_pos   += nr;
-    m_size  += nr;
+    m_pos += nr;
+    m_size += nr;
     return nr;
 }
-
-
 
 SKsize skMemoryStream::writef(const char* fmt, ...)
 {
@@ -178,7 +162,6 @@ SKsize skMemoryStream::writef(const char* fmt, ...)
     int size = skp_printf(tmp, 1024, fmt, lst);
     va_end(lst);
 
-
     if (size > 0)
     {
         tmp[size] = 0;
@@ -186,10 +169,7 @@ SKsize skMemoryStream::writef(const char* fmt, ...)
     }
 
     return SK_NPOS;
-
-
 }
-
 
 void skMemoryStream::reserve(SKsize nr)
 {
@@ -200,7 +180,7 @@ void skMemoryStream::reserve(SKsize nr)
         if (m_buffer != 0)
         {
             skMemcpy(buf, m_buffer, m_size);
-            delete [] m_buffer;
+            delete[] m_buffer;
         }
 
         m_buffer = buf;

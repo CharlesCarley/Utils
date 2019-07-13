@@ -26,44 +26,38 @@
 #ifndef _skList_h_
 #define _skList_h_
 
-#include "skSort.h"
 #include "skAllocator.h"
-
+#include "skSort.h"
 
 template <typename T>
 class skListIterator
 {
 public:
-    typedef typename T::LinkPtr LinkPtr;
-    typedef typename T::LinkPtrRef LinkPtrRef;
+    typedef typename T::LinkPtr         LinkPtr;
+    typedef typename T::LinkPtrRef      LinkPtrRef;
     typedef typename T::ConstLinkPtrRef ConstLinkPtrRef;
 
 private:
     mutable LinkPtr m_cur;
 
 public:
-
-    skListIterator()
-        :   m_cur(0)
+    skListIterator() : m_cur(0)
     {
     }
 
-    skListIterator(LinkPtr first)
-        :   m_cur(first)
+    skListIterator(LinkPtr first) : m_cur(first)
     {
     }
 
-    explicit skListIterator(T& v)
-        :   m_cur(v.begin())
+    explicit skListIterator(T& v) : m_cur(v.begin())
     {
     }
 
-    skListIterator(const skListIterator& v)
-        :   m_cur(v.m_cur)
+    skListIterator(const skListIterator& v) : m_cur(v.m_cur)
     {
     }
 
-    skListIterator& operator = (const skListIterator& v)
+    skListIterator& operator=(const skListIterator& v)
     {
         if (this != &v)
             m_cur = v.m_cur;
@@ -115,36 +109,31 @@ template <typename T>
 class skListReverseIterator
 {
 public:
-    typedef typename T::LinkPtr LinkPtr;
-    typedef typename T::LinkPtrRef LinkPtrRef;
+    typedef typename T::LinkPtr         LinkPtr;
+    typedef typename T::LinkPtrRef      LinkPtrRef;
     typedef typename T::ConstLinkPtrRef ConstLinkPtrRef;
+
 private:
     mutable LinkPtr m_cur;
 
 public:
-    skListReverseIterator()
-        :   m_cur(0)
+    skListReverseIterator() : m_cur(0)
     {
     }
 
-    skListReverseIterator(LinkPtr first)
-        :   m_cur(first)
+    skListReverseIterator(LinkPtr first) : m_cur(first)
     {
     }
 
-    explicit skListReverseIterator(T& v)
-        :   m_cur(v.end())
+    explicit skListReverseIterator(T& v) : m_cur(v.end())
     {
     }
 
-    skListReverseIterator(const skListReverseIterator& v)
-        :   m_cur(v.m_cur)
+    skListReverseIterator(const skListReverseIterator& v) : m_cur(v.m_cur)
     {
     }
 
-
-
-    skListReverseIterator& operator = (const skListReverseIterator& v)
+    skListReverseIterator& operator=(const skListReverseIterator& v)
     {
         if (this != &v)
             m_cur = v.m_cur;
@@ -152,20 +141,16 @@ public:
         return *this;
     }
 
-
-
     SK_INLINE bool hasMoreElements(void) const
     {
         return m_cur != 0;
     }
-
 
     SK_INLINE void next(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         m_cur = m_cur->getPrev();
     }
-
 
     LinkPtrRef getNext(void)
     {
@@ -175,7 +160,6 @@ public:
         return ret;
     }
 
-
     ConstLinkPtrRef getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
@@ -184,13 +168,11 @@ public:
         return ret;
     }
 
-
     SK_INLINE LinkPtrRef peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
         return m_cur->getLink();
     }
-
 
     SK_INLINE ConstLinkPtrRef peekNext(void) const
     {
@@ -198,7 +180,6 @@ public:
         return m_cur->getLink();
     }
 };
-
 
 template <typename T, typename LinkPtr>
 class skListBase
@@ -223,8 +204,6 @@ public:
         m_last = 0;
         m_size = 0;
     }
-
-
 
     void push_back(LinkPtr link)
     {
@@ -257,8 +236,6 @@ public:
         ++m_size;
     }
 
-
-
     LinkPtr find_link(ConstReferenceType v)
     {
         LinkPtr node = m_first;
@@ -274,11 +251,9 @@ public:
         return 0;
     }
 
-
-
     LinkPtr link_at(SKsize pos) const
     {
-        SKsize i = 0;
+        SKsize  i = 0;
         LinkPtr node = m_first;
 
         while (node)
@@ -292,8 +267,6 @@ public:
 
         return 0;
     }
-
-
 
     bool erase_link(LinkPtr link)
     {
@@ -316,10 +289,18 @@ public:
         return true;
     }
 
-
-    SK_INLINE LinkPtr first(void)   { return m_first; }
-    SK_INLINE LinkPtr last(void)    { return m_last; }
-    SK_INLINE SKsize size(void)     { return m_size; }
+    SK_INLINE LinkPtr first(void)
+    {
+        return m_first;
+    }
+    SK_INLINE LinkPtr last(void)
+    {
+        return m_last;
+    }
+    SK_INLINE SKsize size(void)
+    {
+        return m_size;
+    }
 
 private:
     LinkPtr m_first;
@@ -327,14 +308,11 @@ private:
     SKsize  m_size;
 };
 
-
-
 template <typename T>
 class skList
 {
 public:
     SK_DECLARE_TYPE(T);
-
 
 public:
     typedef skListIterator<skList<T> >        Iterator;
@@ -344,55 +322,51 @@ public:
 
     SK_IMPLEMENT_SORT(T, skList);
 
-
     class Link : public skAllocObject
     {
     public:
-
-
-        Link()
-            :   m_next(0), m_prev(0), m_data(ValueType())
+        Link() : m_next(0), m_prev(0), m_data(ValueType())
         {
         }
 
-
-
-        explicit Link(ConstReferenceType v)
-            :   m_next(0), m_prev(0), m_data(v)
+        explicit Link(ConstReferenceType v) : m_next(0), m_prev(0), m_data(v)
         {
         }
-
-
 
         ~Link()
         {
         }
 
-
-        SK_INLINE ReferenceType getLink(void)   { return m_data; }
-        SK_INLINE Link*         getNext(void)   { return m_next; }
-        SK_INLINE Link*         getPrev(void)   { return m_prev; }
+        SK_INLINE ReferenceType getLink(void)
+        {
+            return m_data;
+        }
+        SK_INLINE Link* getNext(void)
+        {
+            return m_next;
+        }
+        SK_INLINE Link* getPrev(void)
+        {
+            return m_prev;
+        }
 
     protected:
-        Link* m_next, *m_prev;
+        Link *    m_next, *m_prev;
         ValueType m_data;
         friend class skList;
         friend class skListBase<T, Link*>;
-        friend class skListIterator<skList<T> > ;
-        friend class skListReverseIterator<skList<T> > ;
+        friend class skListIterator<skList<T> >;
+        friend class skListReverseIterator<skList<T> >;
     };
-    typedef Link* LinkPtr;
-    typedef ReferenceType LinkPtrRef;
-    typedef ConstReferenceType ConstLinkPtrRef;
-    typedef skListBase<T, Link*>        BaseType;
-
-
+    typedef Link*                LinkPtr;
+    typedef ReferenceType        LinkPtrRef;
+    typedef ConstReferenceType   ConstLinkPtrRef;
+    typedef skListBase<T, Link*> BaseType;
 
 public:
-
-
-
-    skList() { }
+    skList()
+    {
+    }
 
     skList(const skList& rhs)
     {
@@ -401,7 +375,10 @@ public:
             push_back(iter.getNext());
     }
 
-    ~skList() { clear(); }
+    ~skList()
+    {
+        clear();
+    }
 
     void clear(void)
     {
@@ -415,8 +392,6 @@ public:
         m_list.clear();
     }
 
-
-
     SK_INLINE void push_back(ConstReferenceType v)
     {
         m_list.push_back(new Link(v));
@@ -426,7 +401,6 @@ public:
     {
         m_list.push_front(new Link(v));
     }
-
 
     LinkPtr find(ConstReferenceType v)
     {
@@ -442,8 +416,6 @@ public:
         return node->m_data;
     }
 
-
-
     ConstReferenceType at(SKsize index) const
     {
         SK_ASSERT(index < m_list.size());
@@ -453,21 +425,16 @@ public:
         return node->m_data;
     }
 
-
     LinkPtr link_at(SKsize index)
     {
         return m_list.link_at(index);
     }
-
-
 
     void erase(LinkPtr link)
     {
         if (m_list.erase_link(link))
             delete link;
     }
-
-
 
     void erase(ConstReferenceType v)
     {
@@ -495,24 +462,20 @@ public:
         return m_list.size() == 0;
     }
 
-
     SK_INLINE SKsize size(void) const
     {
         return m_list.size();
     }
-
 
     SK_INLINE LinkPtr begin(void)
     {
         return m_list.first();
     }
 
-
     SK_INLINE LinkPtr end(void)
     {
         return m_list.last();
     }
-
 
     SK_INLINE const LinkPtr begin(void) const
     {
@@ -556,7 +519,7 @@ public:
         return m_list.last() ? ConstReverseIterator(m_list.last()) : ConstReverseIterator();
     }
 
-    skList& operator = (const skList& rhs)
+    skList& operator=(const skList& rhs)
     {
         if (this != &rhs)
         {
@@ -570,12 +533,9 @@ public:
         return *this;
     }
 
-
 private:
     mutable BaseType m_list;
 };
-
-
 
 template <typename T>
 class skListClass
@@ -584,12 +544,11 @@ public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef T* LinkPtr;
-    typedef T* LinkPtrRef;
+    typedef T*       LinkPtr;
+    typedef T*       LinkPtrRef;
     typedef const T* ConstLinkPtrRef;
 
-
-    typedef skListBase<LinkPtr, LinkPtr>    BaseType;
+    typedef skListBase<LinkPtr, LinkPtr> BaseType;
 
     typedef skListIterator<skListClass<T> >              Iterator;
     typedef skListReverseIterator<skListClass<T> >       ReverseIterator;
@@ -601,15 +560,25 @@ public:
     class Link
     {
     public:
-        Link()
-            :   m_next(0), m_prev(0), m_data(0)
+        Link() : m_next(0), m_prev(0), m_data(0)
         {
         }
 
-        ~Link() { }
-        SK_INLINE LinkPtrRef    getLink(void) { return m_data; }
-        SK_INLINE LinkPtr       getNext(void) { return m_next; }
-        SK_INLINE LinkPtr       getPrev(void) { return m_prev; }
+        ~Link()
+        {
+        }
+        SK_INLINE LinkPtrRef getLink(void)
+        {
+            return m_data;
+        }
+        SK_INLINE LinkPtr getNext(void)
+        {
+            return m_next;
+        }
+        SK_INLINE LinkPtr getPrev(void)
+        {
+            return m_prev;
+        }
 
     protected:
         LinkPtr m_next, m_prev;
@@ -622,9 +591,9 @@ public:
     };
 
 public:
-
-
-    skListClass()   { }
+    skListClass()
+    {
+    }
     ~skListClass()
     {
         clear();
@@ -635,8 +604,6 @@ public:
         m_list.clear();
     }
 
-
-
     SK_INLINE void push_back(LinkPtr v)
     {
         if (v)
@@ -645,8 +612,6 @@ public:
             m_list.push_back(v);
         }
     }
-
-
 
     SK_INLINE void push_front(LinkPtr v)
     {
@@ -657,7 +622,6 @@ public:
         }
     }
 
-
     LinkPtr at(SKsize index)
     {
         SK_ASSERT(index < m_list.size());
@@ -666,8 +630,6 @@ public:
         SK_ASSERT(node);
         return node->m_data;
     }
-
-
 
     LinkPtr at(SKsize index) const
     {
@@ -758,11 +720,12 @@ public:
     {
         return m_list.last() ? ConstReverseIterator(m_list.last()) : ConstReverseIterator();
     }
+
 private:
-    skListClass& operator = (const skListClass& rhs);
+    skListClass& operator=(const skListClass& rhs);
     skListClass(const skListClass& rhs);
 
     mutable BaseType m_list;
 };
 
-#endif//_skList_h_
+#endif //_skList_h_

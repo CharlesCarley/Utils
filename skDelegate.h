@@ -26,29 +26,22 @@
 #ifndef _skDelegate_h_
 #define _skDelegate_h_
 
-
 #include "Config/skConfig.h"
 #include "skStack.h"
 
-
-template<typename R, typename A1>
+template <typename R, typename A1>
 class skSimpleDelegate
 {
 public:
-    skSimpleDelegate()
-        :   m_object(0),
-            m_call(0)
+    skSimpleDelegate() : m_object(0), m_call(0)
     {
     }
 
-    skSimpleDelegate(const skSimpleDelegate& rhs)
-        :   m_object(rhs.m_object),
-            m_call(rhs.m_call)
+    skSimpleDelegate(const skSimpleDelegate& rhs) : m_object(rhs.m_object), m_call(rhs.m_call)
     {
     }
 
-
-    template < typename T, R(T::*Method)(A1) >
+    template <typename T, R (T::*Method)(A1)>
     static skSimpleDelegate bind(T* obj)
     {
         skSimpleDelegate d;
@@ -57,15 +50,12 @@ public:
         return d;
     }
 
-
-
     SK_INLINE R operator()(A1 a)
     {
         return (*m_call)(m_object, a);
     }
 
-
-    skSimpleDelegate& operator = (const skSimpleDelegate& rhs)
+    skSimpleDelegate& operator=(const skSimpleDelegate& rhs)
     {
         if (this != &rhs)
         {
@@ -77,13 +67,12 @@ public:
     }
 
 protected:
-    typedef R(*CallbackType)(void* obj, A1);
+    typedef R (*CallbackType)(void* obj, A1);
 
-    void* m_object;
+    void*        m_object;
     CallbackType m_call;
 
-
-    template < typename T, R(T::*Method)(A1) >
+    template <typename T, R (T::*Method)(A1)>
     static R call(void* obj, A1 a)
     {
         T* ptr = static_cast<T*>(obj);
@@ -91,46 +80,38 @@ protected:
     }
 };
 
-
-
-
-
-template<typename R>
+template <typename R>
 class skSimpleDelegate2
 {
 public:
-    skSimpleDelegate2()
-        :   m_object(0),
-            m_call(0)
+    skSimpleDelegate2() : m_object(0), m_call(0)
     {
     }
 
-    skSimpleDelegate2(const skSimpleDelegate2&  rhs)
-        :   m_object(rhs.m_object),
-            m_call(rhs.m_call)
+    skSimpleDelegate2(const skSimpleDelegate2& rhs) : m_object(rhs.m_object), m_call(rhs.m_call)
     {
     }
 
-
-    template < typename T, R(T::*Method)() >
-    static skSimpleDelegate2  bind(T* obj)
+    template <typename T, R (T::*Method)()>
+    static skSimpleDelegate2 bind(T* obj)
     {
-        skSimpleDelegate2  d;
+        skSimpleDelegate2 d;
         d.m_object = reinterpret_cast<void*>(obj);
         d.m_call = &skSimpleDelegate2 ::call<T, Method>;
         return d;
     }
 
-    SK_INLINE  bool isValid(void) { return (m_call != 0 && m_object != 0); }
-
+    SK_INLINE bool isValid(void)
+    {
+        return (m_call != 0 && m_object != 0);
+    }
 
     SK_INLINE R operator()()
     {
         return m_call ? (*m_call)(m_object) : (R)0;
     }
 
-
-    skSimpleDelegate2&  operator = (const skSimpleDelegate2&  rhs)
+    skSimpleDelegate2& operator=(const skSimpleDelegate2& rhs)
     {
         if (this != &rhs)
         {
@@ -141,16 +122,16 @@ public:
     }
 
 protected:
-    typedef R(*CallbackType)(void* obj);
+    typedef R (*CallbackType)(void* obj);
 
-    void* m_object;
+    void*        m_object;
     CallbackType m_call;
 
-    template < typename T, R(T::*Method)() > static R call(void* obj)
+    template <typename T, R (T::*Method)()>
+    static R call(void* obj)
     {
         return (static_cast<T*>(obj)->*Method)();
     }
 };
 
-
-#endif//_skDelegate_h_
+#endif //_skDelegate_h_

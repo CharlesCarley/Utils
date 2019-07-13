@@ -26,47 +26,35 @@
 #ifndef _skStackQueue_h_
 #define _skStackQueue_h_
 
-
 #include "Config/skConfig.h"
-#include "skTraits.h"
 #include "skArray.h"
+#include "skTraits.h"
 
-template < typename T, typename Allocator = skAllocator<T> >
+template <typename T, typename Allocator = skAllocator<T> >
 class skStackQueue
 {
 public:
     SK_DECLARE_TYPE(T);
     typedef skStackQueue<T, Allocator> SelfType;
 
-    typedef skPointerIncrementIterator<SelfType>          Iterator;
-    typedef const skPointerIncrementIterator<SelfType>    ConstIterator;
-    typedef skPointerDecrementIterator<SelfType>          ReverseIterator;
-    typedef const skPointerDecrementIterator<SelfType>    ConstReverseIterator;
-
+    typedef skPointerIncrementIterator<SelfType>       Iterator;
+    typedef const skPointerIncrementIterator<SelfType> ConstIterator;
+    typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
+    typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
 
     SK_IMPLEMENT_QSORT(T, SelfType);
 
 private:
-    Allocator m_alloc;
+    Allocator           m_alloc;
     mutable PointerType m_data;
-    SKsize m_size,  m_capacity;
-
-
+    SKsize              m_size, m_capacity;
 
 public:
-
-    skStackQueue() :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
+    skStackQueue() : m_data(0), m_size(0), m_capacity(0)
     {
     }
 
-
-    skStackQueue(const skStackQueue& o) :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
+    skStackQueue(const skStackQueue& o) : m_data(0), m_size(0), m_capacity(0)
     {
         if (o.m_data)
         {
@@ -76,7 +64,10 @@ public:
         }
     }
 
-    ~skStackQueue() { clear(); }
+    ~skStackQueue()
+    {
+        clear();
+    }
 
     void clear(void)
     {
@@ -116,7 +107,6 @@ public:
     {
         enqueue(value);
     }
-
 
     void enqueue(ConstReferenceType value)
     {
@@ -162,8 +152,14 @@ public:
         return m_data[(m_size - 1) - idx];
     }
 
-    SK_INLINE bool      empty(void) const { return m_size == 0; }
-    SK_INLINE SKsize    size(void)  const { return m_size; }
+    SK_INLINE bool empty(void) const
+    {
+        return m_size == 0;
+    }
+    SK_INLINE SKsize size(void) const
+    {
+        return m_size;
+    }
 
     SK_INLINE Iterator iterator(void)
     {
@@ -206,8 +202,4 @@ private:
     }
 };
 
-
-
-
-
-#endif//_skStackQueue_h_
+#endif //_skStackQueue_h_

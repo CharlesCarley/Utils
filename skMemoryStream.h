@@ -28,14 +28,12 @@
 
 #include "skStreams.h"
 
-
 class skMemoryStream : public skStream
 {
 public:
     typedef void* Handle;
 
 public:
-
     skMemoryStream();
 
     virtual ~skMemoryStream();
@@ -45,18 +43,27 @@ public:
     void open(const skStream& path, Mode mode);
     void open(const void* data, SKsize sizeInBytes, Mode mode);
     void close(void);
-    bool isOpen(void) const { return m_buffer != 0; }
-    bool eof(void) const { return m_pos != SK_NPOS; }
+
+    SK_INLINE bool isOpen(void) const
+    {
+        return m_buffer != 0;
+    }
+
+    SK_INLINE bool eof(void) const
+    {
+        return m_pos != SK_NPOS;
+    }
+
     SKsize read(void* dst, SKsize nr) const;
     SKsize write(const void* src, SKsize nr);
     SKsize writef(const char* fmt, ...);
 
-    SKsize position(void) const
+    SK_INLINE SKsize position(void) const
     {
         return m_pos;
     }
 
-    SKsize size(void) const
+    SK_INLINE SKsize size(void) const
     {
         return m_size;
     }
@@ -64,16 +71,13 @@ public:
     void clear(void);
 
     SKsize seek(SKint32 off, SKint32 way);
-    void reserve(SKsize nr);
+    void   reserve(SKsize nr);
 
 private:
-    char*            m_buffer;
-    mutable SKsize   m_pos;
-    SKsize           m_size, m_capacity;
-    int              m_mode;
-
+    char*          m_buffer;
+    mutable SKsize m_pos;
+    SKsize         m_size, m_capacity;
+    int            m_mode;
 };
 
-
-#endif//_skMemoryStream_h_
-
+#endif //_skMemoryStream_h_

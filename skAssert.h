@@ -28,7 +28,7 @@
 #define _skAssert_h_
 
 #if defined(DEBUG) || defined(_DEBUG)
-    extern void skAssertTrap(const char* decl, const char* file, const unsigned long line, const char* func);
+extern void skAssertTrap(const char* decl, const char* file, const unsigned long line, const char* func);
 #endif
 
-#endif//_skAssert_h_
+#endif //_skAssert_h_

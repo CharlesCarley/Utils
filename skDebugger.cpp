@@ -38,24 +38,19 @@ bool skDebugger::isDebugger(void)
 #endif
 }
 
-
-
 void skDebugger::breakProcess(void)
 {
     if (!isDebugger())
         return;
 #if SK_COMPILER == SK_COMPILER_MSVC
-    //asm( "int $3" );
+    // asm( "int $3" );
     _asm int 3;
 #else
     asm("int $3");
 #endif
 }
 
-
-
-#else//SK_DEBUG
-
+#else // SK_DEBUG
 
 bool skDebugger::isDebugger(void)
 {
@@ -66,24 +61,21 @@ void skDebugger::breakProcess(void)
 {
 }
 
-
-
-#endif//SK_DEBUG
-
+#endif // SK_DEBUG
 
 static char ReportBuf[SK_SBUF_SIZE + 1];
-
 
 void skDebugger::report(const char* fmt, ...)
 {
 
-    int size;
+    int     size;
     va_list lst;
     va_start(lst, fmt);
     size = skp_printf(ReportBuf, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
 
-    if (size < 0) size = SK_SBUF_SIZE;
+    if (size < 0)
+        size = SK_SBUF_SIZE;
 
     if (size > 0)
     {

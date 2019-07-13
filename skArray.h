@@ -26,9 +26,8 @@
 #ifndef _skArray_h_
 #define _skArray_h_
 
-
-#include "skSort.h"
 #include "skAllocator.h"
+#include "skSort.h"
 
 template <typename T>
 class skPointerIncrementIterator
@@ -46,38 +45,38 @@ protected:
         skSwap(m_end, rhs.m_end);
     }
 
-
 public:
-    skPointerIncrementIterator()
-        :   m_beg(0), m_end(0)
+    skPointerIncrementIterator() : m_beg(0), m_end(0)
     {
     }
 
-    skPointerIncrementIterator(PointerType begin, SKsize size)
-        :   m_beg(begin), m_end(begin + size)
+    skPointerIncrementIterator(PointerType begin, SKsize size) : m_beg(begin), m_end(begin + size)
     {
     }
 
-    explicit skPointerIncrementIterator(T& v)
-        :   m_beg(v.ptr()), m_end(v.ptr() + v.size())
+    explicit skPointerIncrementIterator(T& v) : m_beg(v.ptr()), m_end(v.ptr() + v.size())
     {
     }
 
-    skPointerIncrementIterator(const skPointerIncrementIterator& rhs)
-        :   m_beg(rhs.m_beg), m_end(rhs.m_end)
+    skPointerIncrementIterator(const skPointerIncrementIterator& rhs) : m_beg(rhs.m_beg), m_end(rhs.m_end)
     {
     }
 
-    ~skPointerIncrementIterator() {}
+    ~skPointerIncrementIterator()
+    {
+    }
 
-    skPointerIncrementIterator& operator = (const skPointerIncrementIterator& rhs)
+    skPointerIncrementIterator& operator=(const skPointerIncrementIterator& rhs)
     {
         if (this != &rhs)
             skPointerIncrementIterator(rhs).swap(*this);
         return *this;
     }
 
-    SK_INLINE bool hasMoreElements(void) const { return m_beg < m_end; }
+    SK_INLINE bool hasMoreElements(void) const
+    {
+        return m_beg < m_end;
+    }
 
     SK_INLINE ReferenceType getNext(void)
     {
@@ -110,7 +109,6 @@ public:
     }
 };
 
-
 template <typename T>
 class skPointerDecrementIterator
 {
@@ -128,35 +126,36 @@ protected:
     }
 
 public:
-    skPointerDecrementIterator()
-        :   m_beg(0), m_end(0)
+    skPointerDecrementIterator() : m_beg(0), m_end(0)
     {
     }
 
-    skPointerDecrementIterator(PointerType begin, SKsize size)
-        :   m_beg(begin + (size - 1)), m_end(begin)
+    skPointerDecrementIterator(PointerType begin, SKsize size) : m_beg(begin + (size - 1)), m_end(begin)
     {
     }
 
-    explicit skPointerDecrementIterator(T& v)
-        :   m_beg(v.ptr() + (v.size() - 1)), m_end(v.ptr())
+    explicit skPointerDecrementIterator(T& v) : m_beg(v.ptr() + (v.size() - 1)), m_end(v.ptr())
     {
     }
 
-    skPointerDecrementIterator(const skPointerDecrementIterator& rhs)
-        :   m_beg(rhs.m_beg), m_end(rhs.m_end)
+    skPointerDecrementIterator(const skPointerDecrementIterator& rhs) : m_beg(rhs.m_beg), m_end(rhs.m_end)
     {
     }
-    ~skPointerDecrementIterator() {}
+    ~skPointerDecrementIterator()
+    {
+    }
 
-    skPointerDecrementIterator& operator = (const skPointerDecrementIterator& rhs)
+    skPointerDecrementIterator& operator=(const skPointerDecrementIterator& rhs)
     {
         if (this != &rhs)
             skPointerIterator(*this).swap(rhs);
         return *this;
     }
 
-    SK_INLINE bool hasMoreElements(void) const { return m_beg && m_beg >= m_end; }
+    SK_INLINE bool hasMoreElements(void) const
+    {
+        return m_beg && m_beg >= m_end;
+    }
 
     SK_INLINE ReferenceType getNext(void)
     {
@@ -189,31 +188,27 @@ public:
     }
 };
 
-
-template < typename T, typename Allocator = skAllocator<T> >
+template <typename T, typename Allocator = skAllocator<T> >
 class skArray
 {
 public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef skArray<T, Allocator> SelfType;
-    typedef skPointerIncrementIterator<SelfType>          Iterator;
-    typedef const skPointerIncrementIterator<SelfType>    ConstIterator;
-    typedef skPointerDecrementIterator<SelfType>          ReverseIterator;
-    typedef const skPointerDecrementIterator<SelfType>    ConstReverseIterator;
+    typedef skArray<T, Allocator>                      SelfType;
+    typedef skPointerIncrementIterator<SelfType>       Iterator;
+    typedef const skPointerIncrementIterator<SelfType> ConstIterator;
+    typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
+    typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
 
     SK_IMPLEMENT_QSORT(T, skArray);
 
 public:
-
-    skArray() :
-        m_data(0), m_size(0), m_capacity(0)
+    skArray() : m_data(0), m_size(0), m_capacity(0)
     {
     }
 
-    skArray(const skArray& o)
-        :   m_data(0), m_size(0), m_capacity(0)
+    skArray(const skArray& o) : m_data(0), m_size(0), m_capacity(0)
     {
         if (o.m_data)
         {
@@ -223,8 +218,10 @@ public:
         }
     }
 
-    ~skArray()  { clear(); }
-
+    ~skArray()
+    {
+        clear();
+    }
 
     void clear(void)
     {
@@ -249,7 +246,8 @@ public:
 
     void push_back(ConstReferenceType v)
     {
-        if (m_size > m_alloc.max_size());
+        if (m_size > m_alloc.max_size())
+            ;
         else if (m_size == m_capacity)
         {
             reserve(m_size == 0 ? 8 : m_size * 2);
@@ -268,7 +266,10 @@ public:
         }
     }
 
-    void erase(ConstReferenceType v) { remove(find(v)); }
+    void erase(ConstReferenceType v)
+    {
+        remove(find(v));
+    }
 
     void remove(SKsize pos)
     {
@@ -305,7 +306,6 @@ public:
         {
             for (i = m_size; i < nr; i++)
                 m_data[i].~T();
-
         }
         else
         {
@@ -319,7 +319,8 @@ public:
 
     void reserve(SKsize nr)
     {
-        if (m_capacity > nr) ;
+        if (m_capacity > nr)
+            ;
         else if (m_data)
         {
             m_data = m_alloc.array_reallocate(m_data, nr, m_size);
@@ -380,14 +381,30 @@ public:
         return m_data[m_size - 1];
     }
 
-
-    SK_INLINE ConstPointerType  ptr(void)       const   { return m_data;      }
-    SK_INLINE PointerType       ptr(void)               { return m_data;      }
-    SK_INLINE bool              valid(void)     const   { return m_data != 0; }
-    SK_INLINE SKsize            capacity(void)  const   { return m_capacity;  }
-    SK_INLINE SKsize            size(void)      const   { return m_size;      }
-    SK_INLINE bool              empty(void)     const   { return m_size == 0; }
-
+    SK_INLINE ConstPointerType ptr(void) const
+    {
+        return m_data;
+    }
+    SK_INLINE PointerType ptr(void)
+    {
+        return m_data;
+    }
+    SK_INLINE bool valid(void) const
+    {
+        return m_data != 0;
+    }
+    SK_INLINE SKsize capacity(void) const
+    {
+        return m_capacity;
+    }
+    SK_INLINE SKsize size(void) const
+    {
+        return m_size;
+    }
+    SK_INLINE bool empty(void) const
+    {
+        return m_size == 0;
+    }
 
     SK_INLINE Iterator iterator(void)
     {
@@ -404,13 +421,12 @@ public:
         return m_data && m_size > 0 ? ReverseIterator(m_data, m_size) : ReverseIterator();
     }
 
-
     SK_INLINE ConstReverseIterator reverseIterator(void) const
     {
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
     }
 
-    skArray& operator= (const skArray& rhs)
+    skArray& operator=(const skArray& rhs)
     {
         if (this != &rhs)
         {
@@ -430,5 +446,4 @@ private:
     Allocator   m_alloc;
 };
 
-
-#endif//_skArray_h_
+#endif //_skArray_h_

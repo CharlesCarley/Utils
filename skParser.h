@@ -26,14 +26,12 @@
 #ifndef _skParser_h_
 #define _skParser_h_
 
-
 #include "skAllocator.h"
+#include "skFixedString.h"
 #include "skStack.h"
 #include "skString.h"
-#include "skFixedString.h"
 
 class skStream;
-
 
 class skParser : public skAllocObject
 {
@@ -41,28 +39,25 @@ public:
     typedef SKint16 Index;
     typedef SKint16 Token;
 
-
-    union StackPrimitive
-    {
-        long                ival;
-        double              dval;
-        char*               sval;
-        void*               pval;
+    union StackPrimitive {
+        long   ival;
+        double dval;
+        char*  sval;
+        void*  pval;
     };
 
     struct Symbol
     {
-        Index           m_index;
-        Index           m_kind;
-        const char*     m_symbol;
+        Index       m_index;
+        Index       m_kind;
+        const char* m_symbol;
     };
 
     struct SymbolTable
     {
-        Index       m_count;
-        Symbol*     m_symbols;
+        Index   m_count;
+        Symbol* m_symbols;
     };
-
 
     struct Rule
     {
@@ -74,30 +69,30 @@ public:
 
     struct RuleTable
     {
-        Index   m_count;
-        Rule*   m_rules;
+        Index m_count;
+        Rule* m_rules;
     };
 
     struct DFAEdge
     {
-        Index   m_char;
-        Index   m_target;
+        Index m_char;
+        Index m_target;
     };
 
     struct DFAState
     {
 
-        Index		m_accept;
-        Index       m_edgeCount;
-        DFAEdge*    m_edges;
+        Index    m_accept;
+        Index    m_edgeCount;
+        DFAEdge* m_edges;
     };
 
     struct DFATable
     {
 
-        Index       m_count;
-        Index       m_initial;
-        DFAState*   m_states;
+        Index     m_count;
+        Index     m_initial;
+        DFAState* m_states;
     };
 
     struct LALRAction
@@ -116,15 +111,15 @@ public:
     struct LALRTable
     {
 
-        Index       m_count;
-        Index       m_initial;
-        LALRState*  m_states;
+        Index      m_count;
+        Index      m_initial;
+        LALRState* m_states;
     };
 
     struct CharacterSet
     {
-        Index     m_count;
-        Index*    m_chars;
+        Index  m_count;
+        Index* m_chars;
     };
 
     struct CharacterSetTable
@@ -136,11 +131,11 @@ public:
 
     struct StackItem
     {
-        Symbol*             m_symbol;
-        SKint16             m_state;
-        StackPrimitive      m_primitive;
-        skString            m_buffer;
-        void*               m_ptr;
+        Symbol*        m_symbol;
+        SKint16        m_state;
+        StackPrimitive m_primitive;
+        skString       m_buffer;
+        void*          m_ptr;
     };
 
     enum Action
@@ -187,38 +182,38 @@ public:
     };
 
 public:
-
     skParser();
     ~skParser();
-
 
     void initialize(SKuint32 stackSize, skStream* in);
 
 protected:
-    virtual SKint16		execRule(SKuint8 rule) = 0;
-    virtual SKint16     tokenAccepted(SKint16 act) = 0;
-    virtual SKint32     handleBlockComment(char* inp, SKint32 from, SKint32 len, SKint32& out, skString* bo) { return -1; }
+    virtual SKint16 execRule(SKuint8 rule) = 0;
+    virtual SKint16 tokenAccepted(SKint16 act) = 0;
+    virtual SKint32 handleBlockComment(char* inp, SKint32 from, SKint32 len, SKint32& out, skString* bo)
+    {
+        return -1;
+    }
 
     Message parseImpl(void);
 
     virtual void stackTrace(void);
 
-    skStack<Token>      m_input;
-    skStack<StackItem>  m_stack;
-    skStream*           m_stream;
+    skStack<Token>     m_input;
+    skStack<StackItem> m_stack;
+    skStream*          m_stream;
 
-    SKint16             m_start;
-    SymbolTable*        m_symbolTable;
-    CharacterSetTable*  m_charsets;
-    RuleTable*          m_ruleTable;
-    DFATable*           m_dfa;
-    LALRTable*          m_lalr;
-    SKbyte*             m_buffer;
-    SKuint32            m_len;
-    SKuint32            m_stateIdx;
-    SKuint32            m_cur;
-    SKuint16            m_curReduction;
+    SKint16            m_start;
+    SymbolTable*       m_symbolTable;
+    CharacterSetTable* m_charsets;
+    RuleTable*         m_ruleTable;
+    DFATable*          m_dfa;
+    LALRTable*         m_lalr;
+    SKbyte*            m_buffer;
+    SKuint32           m_len;
+    SKuint32           m_stateIdx;
+    SKuint32           m_cur;
+    SKuint16           m_curReduction;
 };
 
-
-#endif//_skParser_h_
+#endif //_skParser_h_

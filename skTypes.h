@@ -26,14 +26,12 @@
 #ifndef _skTypes_h_
 #define _skTypes_h_
 
-
 #include "Config/skConfig.h"
-#include "skList.h"
 #include "skArray.h"
 #include "skDeque.h"
+#include "skList.h"
 #include "skMap.h"
 #include "skStack.h"
 #include "skString.h"
 
-
-#endif//_skTypes_h_
+#endif //_skTypes_h_

@@ -28,28 +28,22 @@
 
 #include "skString.h"
 
-
-
 class skStringConverter
 {
 public:
     static skString BLANK;
 
 public:
-
-
-    static void toString(skString& dest, int v);
-    static void toString(skString& dest, long v);
-    static void toString(skString& dest, float v);
-    static void toString(skString& dest, double v);
-    static void toString(skString& dest, bool v);
-    static int         toInt(const skString& src);
-    static long        toLong(const skString& src);
-    static float       toFloat(const skString& src);
-    static double      toDouble(const skString& src);
-    static bool        toBool(const skString& src);
+    static void   toString(skString& dest, int v);
+    static void   toString(skString& dest, long v);
+    static void   toString(skString& dest, float v);
+    static void   toString(skString& dest, double v);
+    static void   toString(skString& dest, bool v);
+    static int    toInt(const skString& src);
+    static long   toLong(const skString& src);
+    static float  toFloat(const skString& src);
+    static double toDouble(const skString& src);
+    static bool   toBool(const skString& src);
 };
 
-
-
-#endif//_skStringConverter_h_
+#endif //_skStringConverter_h_

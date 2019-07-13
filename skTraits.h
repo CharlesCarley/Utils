@@ -28,66 +28,63 @@
 
 #include "Config/skConfig.h"
 
-#define SK_DECLARE_TYPE(T)                                      \
-    typedef T ValueType;                                        \
-    typedef T& ReferenceType;                                   \
-    typedef T* PointerType;                                     \
-    typedef const T ConstValueType;                             \
-    typedef const T*    ConstPointerType;                       \
-    typedef const T&    ConstReferenceType;
+#define SK_DECLARE_TYPE(T)             \
+    typedef T        ValueType;        \
+    typedef T&       ReferenceType;    \
+    typedef T*       PointerType;      \
+    typedef const T  ConstValueType;   \
+    typedef const T* ConstPointerType; \
+    typedef const T& ConstReferenceType;
 
-#define SK_DECLARE_KEY_TYPE(T)                                  \
-    typedef T KeyType;                                          \
-    typedef T& ReferenceKeyType;                                \
-    typedef T* PointerKeyType;                                  \
-    typedef const T ConstKeyType;                               \
-    typedef const T*    ConstPointerKeyType;                    \
-    typedef const T&    ConstReferenceKeyType;
+#define SK_DECLARE_KEY_TYPE(T)            \
+    typedef T        KeyType;             \
+    typedef T&       ReferenceKeyType;    \
+    typedef T*       PointerKeyType;      \
+    typedef const T  ConstKeyType;        \
+    typedef const T* ConstPointerKeyType; \
+    typedef const T& ConstReferenceKeyType;
 
-#define SK_DECLARE_REF_TYPE(T)                                  \
-    typedef typename T::ValueType ValueType;                    \
-    typedef typename T::ReferenceType ReferenceType;            \
-    typedef typename T::PointerType PointerType;                \
-    typedef typename T::ConstValueType ConstValueType;          \
-    typedef typename T::ConstPointerType ConstPointerType;      \
+#define SK_DECLARE_REF_TYPE(T)                               \
+    typedef typename T::ValueType          ValueType;        \
+    typedef typename T::ReferenceType      ReferenceType;    \
+    typedef typename T::PointerType        PointerType;      \
+    typedef typename T::ConstValueType     ConstValueType;   \
+    typedef typename T::ConstPointerType   ConstPointerType; \
     typedef typename T::ConstReferenceType ConstReferenceType;
 
+#define SK_DECLARE_TYPE_NAME(T, N)          \
+    typedef T        N##Type;               \
+    typedef T&       N##ReferenceType;      \
+    typedef T*       N##PointerType;        \
+    typedef const T  Const##N##Type;        \
+    typedef const T* ConstPointer##N##Type; \
+    typedef const T& ConstReference##N##Type;
 
-#define SK_DECLARE_TYPE_NAME(T, N)                              \
-    typedef T N##Type;                                          \
-    typedef T& N##ReferenceType;                                \
-    typedef T* N##PointerType;                                  \
-    typedef const T Const##N##Type;                             \
-    typedef const T*    ConstPointer##N##Type;                  \
-    typedef const T&    ConstReference##N##Type;
-
-
-#define SK_IMPLEMENT_SORT(T, SELF)                  \
-    public:                                         \
-    typedef skSort<T, SELF> SortType;               \
-    void sort( typename SortType::Function cmp )    \
-    {                                               \
-        SortType srt( cmp );                        \
-        srt.sort( (*this) );                        \
+#define SK_IMPLEMENT_SORT(T, SELF)                                \
+public:                                                           \
+    typedef skSort<T, SELF> SortType;                             \
+    void                    sort(typename SortType::Function cmp) \
+    {                                                             \
+        SortType srt(cmp);                                        \
+        srt.sort((*this));                                        \
     }
 
-
-#define SK_IMPLEMENT_QSORT(T, SELF)                 \
-    public:                                         \
-    typedef skQSort<T, SELF> SortType;              \
-    void sort( typename SortType::Function cmp )    \
-    {                                               \
-        SortType srt( cmp );                        \
-        srt.sort( (*this) );                        \
+#define SK_IMPLEMENT_QSORT(T, SELF)                                \
+public:                                                            \
+    typedef skQSort<T, SELF> SortType;                             \
+    void                     sort(typename SortType::Function cmp) \
+    {                                                              \
+        SortType srt(cmp);                                         \
+        srt.sort((*this));                                         \
     }
 
-#define SK_IMPLEMENT_SORT2(T, SELF)                 \
-    public:                                         \
-    typedef skSort<T, SELF> SortType;               \
-    void sort( SortType::Function cmp )             \
-    {                                               \
-        SortType srt( cmp );                        \
-        srt.sort( (*this) );                        \
+#define SK_IMPLEMENT_SORT2(T, SELF)                      \
+public:                                                  \
+    typedef skSort<T, SELF> SortType;                    \
+    void                    sort(SortType::Function cmp) \
+    {                                                    \
+        SortType srt(cmp);                               \
+        srt.sort((*this));                               \
     }
 
-#endif//_skTraits_h_
+#endif //_skTraits_h_

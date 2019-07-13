@@ -32,18 +32,16 @@
 class skTimerPrivate
 {
 public:
-    skTimerPrivate()
-        :   m_freq(0), m_beg(0), m_cur(0), m_mask(1)
+    skTimerPrivate() : m_freq(0), m_beg(0), m_cur(0), m_mask(1)
     {
     }
-    SKuint64        m_freq;
-    SKuint64        m_beg;
-    SKuint64        m_cur;
-    SKuint32        m_mask;
+    SKuint64 m_freq;
+    SKuint64 m_beg;
+    SKuint64 m_cur;
+    SKuint32 m_mask;
 };
 
-skTimer::skTimer()
-    :   m_private(new skTimerPrivate())
+skTimer::skTimer() : m_private(new skTimerPrivate())
 {
     reset();
 }
@@ -62,7 +60,8 @@ void skTimer::reset(void)
     proc = skMax<SKuint32>(proc, 1);
     m_private->m_mask = 1;
 
-    while (m_private->m_mask & proc) m_private->m_mask <<= 1;
+    while (m_private->m_mask & proc)
+        m_private->m_mask <<= 1;
 
     QueryPerformanceCounter((LARGE_INTEGER*)&m_private->m_beg);
     m_private->m_cur = 0;
@@ -70,7 +69,7 @@ void skTimer::reset(void)
 
 SKulong skTimer::getMilliseconds(void)
 {
-    HANDLE curThread = GetCurrentThread();
+    HANDLE    curThread = GetCurrentThread();
     DWORD_PTR old = SetThreadAffinityMask(curThread, m_private->m_mask);
     QueryPerformanceCounter((LARGE_INTEGER*)&m_private->m_cur);
     SetThreadAffinityMask(curThread, old);
@@ -79,10 +78,9 @@ SKulong skTimer::getMilliseconds(void)
     return static_cast<SKulong>((double)m_private->m_cur * 1000 / (double)m_private->m_freq);
 }
 
-
 SKulong skTimer::getMicroseconds(void)
 {
-    HANDLE curThread = GetCurrentThread();
+    HANDLE    curThread = GetCurrentThread();
     DWORD_PTR old = SetThreadAffinityMask(curThread, m_private->m_mask);
     QueryPerformanceCounter((LARGE_INTEGER*)&m_private->m_cur);
     SetThreadAffinityMask(curThread, old);
@@ -91,20 +89,15 @@ SKulong skTimer::getMicroseconds(void)
     return static_cast<SKulong>((double)m_private->m_cur * 1000000 / (double)m_private->m_freq);
 }
 
-
 void skSleep(SKuint32 ms)
 {
     ::Sleep(ms);
 }
 
-
-
 #else
-
 
 #include <sys/time.h>
 #include <unistd.h>
-
 
 class skTimerPrivate
 {
@@ -114,47 +107,36 @@ public:
     }
     struct timeval start;
     struct timeval now;
-
 };
 
-
-
-skTimer::skTimer()
-    :   m_private(new skTimerPrivate())
+skTimer::skTimer() : m_private(new skTimerPrivate())
 {
     reset();
 }
-
-
-
 
 skTimer::~skTimer()
 {
     delete m_private;
 }
 
-
 void skTimer::reset(void)
 {
     gettimeofday(&m_private->start, NULL);
 }
 
-
-
 SKulong skTimer::getMilliseconds(void)
 {
     gettimeofday(&m_private->now, NULL);
-    return (m_private->now.tv_sec - m_private->start.tv_sec) *
-           1000 + (m_private->now.tv_usec - m_private->start.tv_usec) / 1000;
+    return (m_private->now.tv_sec - m_private->start.tv_sec) * 1000 +
+           (m_private->now.tv_usec - m_private->start.tv_usec) / 1000;
 }
 
 SKulong skTimer::getMicroseconds(void)
 {
     gettimeofday(&m_private->now, NULL);
-    return (m_private->now.tv_sec - m_private->start.tv_sec) *
-           1000000 + (m_private->now.tv_usec - m_private->start.tv_usec);
+    return (m_private->now.tv_sec - m_private->start.tv_sec) * 1000000 +
+           (m_private->now.tv_usec - m_private->start.tv_usec);
 }
-
 
 void skSleep(SKuint32 ms)
 {
@@ -168,9 +150,6 @@ SKulong skGetMilliseconds(void)
     static skTimer m_timer;
     return m_timer.getMilliseconds();
 }
-
-
-
 
 SKulong skGetMicroseconds(void)
 {

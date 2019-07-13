@@ -26,38 +26,52 @@
 #ifndef _skAllocator_h_
 #define _skAllocator_h_
 
-
-
 #include "Config/skConfig.h"
 #include "skMemoryUtils.h"
 #include "skTraits.h"
 
-
 #if SK_ALLOCATOR == 1
-#define SK_DECLARE_ALLOC \
-    public:\
-    inline void* operator new(size_t size) { return skMalloc(size); }\
-    inline void operator delete(void* ptr) { skFree(ptr);     }\
-    inline void* operator new[](size_t size) { return skMalloc(size); }\
-    inline void operator delete[](void* ptr) { skFree(ptr);     }\
-    inline void* operator new(size_t size, void *ptr) { return ptr; }\
-    inline void operator delete(void *ptr, void*) {}
+#define SK_DECLARE_ALLOC                              \
+public:                                               \
+    inline void* operator new(size_t size)            \
+    {                                                 \
+        return skMalloc(size);                        \
+    }                                                 \
+    inline void operator delete(void* ptr)            \
+    {                                                 \
+        skFree(ptr);                                  \
+    }                                                 \
+    inline void* operator new[](size_t size)          \
+    {                                                 \
+        return skMalloc(size);                        \
+    }                                                 \
+    inline void operator delete[](void* ptr)          \
+    {                                                 \
+        skFree(ptr);                                  \
+    }                                                 \
+    inline void* operator new(size_t size, void* ptr) \
+    {                                                 \
+        return ptr;                                   \
+    }                                                 \
+    inline void operator delete(void* ptr, void*)     \
+    {                                                 \
+    }
 
 #else
 #define SK_DECLARE_ALLOC
 #endif
 
-
 class skAllocObject
 {
 public:
-    ~skAllocObject() {}
+    ~skAllocObject()
+    {
+    }
 
     SK_DECLARE_ALLOC;
 };
 
-
-template<typename T>
+template <typename T>
 class skMallocAllocator
 {
 public:
@@ -66,7 +80,7 @@ public:
 public:
     typedef skMallocAllocator<T> SelfType;
 
-    template<typename U>
+    template <typename U>
     struct rebind
     {
         typedef skMallocAllocator<U> other;
@@ -79,37 +93,37 @@ public:
     {
     }
 
-
     ~skMallocAllocator()
     {
     }
-
 
     explicit skMallocAllocator(const SelfType&)
     {
     }
 
-
-
-    template<typename U>
+    template <typename U>
     explicit skMallocAllocator(const skMallocAllocator<U>&)
     {
     }
 
-
-    SK_INLINE PointerType       address(ReferenceType v)            { return &v; }
-    SK_INLINE ConstPointerType  address(ConstReferenceType v) const { return &v; }
+    SK_INLINE PointerType address(ReferenceType v)
+    {
+        return &v;
+    }
+    SK_INLINE ConstPointerType address(ConstReferenceType v) const
+    {
+        return &v;
+    }
 
     SK_INLINE void construct(PointerType p, ConstReferenceType v)
     {
-        new(p) T(v);
+        new (p) T(v);
     }
 
-
-    template<typename A0>
+    template <typename A0>
     void construct_arg(PointerType p, const A0& v)
     {
-        new(p) T(v);
+        new (p) T(v);
     }
 
     PointerType allocate(SKsize nr)
@@ -152,7 +166,8 @@ public:
 
     SK_INLINE void destroy(PointerType p)
     {
-        if (p) p->~T();
+        if (p)
+            p->~T();
     }
 
     void destroy_range(PointerType beg, PointerType end)
@@ -160,7 +175,7 @@ public:
         skDestruct(beg, end);
     }
 
-    bool operator == (const SelfType&)
+    bool operator==(const SelfType&)
     {
         return true;
     }
@@ -172,9 +187,7 @@ public:
     }
 };
 
-
-
-template<typename T>
+template <typename T>
 class skNewAllocator
 {
 public:
@@ -183,52 +196,56 @@ public:
 public:
     typedef skNewAllocator<T> SelfType;
 
-    template<typename U>
+    template <typename U>
     struct rebind
     {
         typedef skNewAllocator<U> other;
     };
 
     const SKsize LIMIT = SK_MAX / (sizeof(T) * 8);
-public:
 
+public:
     explicit skNewAllocator()
     {
     }
-
 
     ~skNewAllocator()
     {
     }
 
-
     explicit skNewAllocator(const SelfType&)
     {
     }
 
-    template<typename U>
+    template <typename U>
     explicit skNewAllocator(const skNewAllocator<U>&)
     {
     }
 
-    SK_INLINE PointerType       address(ReferenceType v)            { return &v; }
-    SK_INLINE ConstPointerType  address(ConstReferenceType v) const { return &v; }
+    SK_INLINE PointerType address(ReferenceType v)
+    {
+        return &v;
+    }
+    SK_INLINE ConstPointerType address(ConstReferenceType v) const
+    {
+        return &v;
+    }
 
     void construct(PointerType p, ConstReferenceType v)
     {
-        new(p) T(v);
+        new (p) T(v);
     }
 
-    template<typename A0>
+    template <typename A0>
     void construct_arg(PointerType p, const A0& v)
     {
-        new(p) T(v);
+        new (p) T(v);
     }
 
     PointerType allocate(SKsize nr)
     {
         PointerType p = reinterpret_cast<PointerType>(new T(sizeof(T) * nr));
-        new(p) T();
+        new (p) T();
         return p;
     }
 
@@ -249,22 +266,21 @@ public:
         if (op)
         {
             __fill(p, op, os);
-            delete []op;
+            delete[] op;
         }
 
         return p;
     }
 
-
-
     void array_deallocate(PointerType p, SKsize)
     {
-        delete []p;
+        delete[] p;
     }
 
     void destroy(PointerType p)
     {
-        if (p) p->~T();
+        if (p)
+            p->~T();
     }
 
     void destroy_range(PointerType beg, PointerType end)
@@ -272,7 +288,10 @@ public:
         skDestruct(beg, end);
     }
 
-    bool operator == (const SelfType&) { return true; }
+    bool operator==(const SelfType&)
+    {
+        return true;
+    }
 
     SK_INLINE SKsize max_size(void)
     {
@@ -281,29 +300,25 @@ public:
     }
 
 private:
-
     void __fill(T* dst, T* src, const SKsize nr)
     {
-        if (nr <= 0);
+        if (nr <= 0)
+            ;
         else
         {
             SKsize i = 0;
             do
             {
                 dst[i] = src[i];
-            }
-            while (++i < nr);
+            } while (++i < nr);
         }
     }
-
 };
 
-
-
 #if SK_ALLOCATOR == 1
-    #define skAllocator skMallocAllocator
+#define skAllocator skMallocAllocator
 #else
-    #define skAllocator skNewAllocator
+#define skAllocator skNewAllocator
 #endif
 
-#endif//_skAllocator_h_
+#endif //_skAllocator_h_

@@ -31,14 +31,13 @@
 #define _SK_INITIAL_FNV 0x9E3779B1
 #define _SK_INITIAL_FNV2 0x9E3779B9
 #define _SK_MULTIPLE_FNV 0x1000193
-#define _SK_TWHASH(key) \
-        key += ~(key << 15);    \
-        key ^=  (key >> 10);    \
-        key +=  (key << 3);     \
-        key ^=  (key >> 6);     \
-        key += ~(key << 11);    \
-        key ^=  (key >> 16);
-
+#define _SK_TWHASH(key)  \
+    key += ~(key << 15); \
+    key ^= (key >> 10);  \
+    key += (key << 3);   \
+    key ^= (key >> 6);   \
+    key += ~(key << 11); \
+    key ^= (key >> 16);
 
 SK_INLINE SKhash skHash(const char* key)
 {
@@ -52,8 +51,8 @@ SK_INLINE SKhash skHash(const char* key)
 
     for (int i = 0; key[i]; i++)
     {
-        hash = hash ^ (key[i]);   // xor the low 8 bits
-        hash = hash * _SK_MULTIPLE_FNV;  // multiply by the magic number
+        hash = hash ^ (key[i]);         // xor the low 8 bits
+        hash = hash * _SK_MULTIPLE_FNV; // multiply by the magic number
     }
 
     return hash;
@@ -66,7 +65,6 @@ SK_INLINE SKhash skHash(const SKuint32& key)
     return hash;
 }
 
-
 SK_INLINE SKhash skHash(const void* key)
 {
     SKhash hash = static_cast<SKhash>(reinterpret_cast<SKuintPtr>(key));
@@ -74,4 +72,4 @@ SK_INLINE SKhash skHash(const void* key)
     return hash;
 }
 
-#endif//_skHash_h_
+#endif //_skHash_h_

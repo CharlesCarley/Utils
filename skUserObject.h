@@ -28,11 +28,12 @@
 
 #include "Config/skConfig.h"
 
-
 class skUserObject
 {
 public:
-    skUserObject() : m_object(0) {}
+    skUserObject() : m_object(0)
+    {
+    }
     ~skUserObject()
     {
         SK_ASSERT(!m_object && "Object not unbound");
@@ -60,14 +61,14 @@ public:
         unbind(reinterpret_cast<SKuintPtr>(obj));
     }
 
-    template<typename T>
+    template <typename T>
     SK_INLINE T* cast(void)
     {
         SK_ASSERT(m_object);
         return reinterpret_cast<T*>(m_object);
     }
 
-    template<typename T>
+    template <typename T>
     SK_INLINE const T* cast(void) const
     {
         SK_ASSERT(m_object);
@@ -85,10 +86,7 @@ public:
     }
 
 private:
-
     SKuintPtr m_object;
 };
 
-
-
-#endif//_skUserObject_h_
+#endif //_skUserObject_h_

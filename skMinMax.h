@@ -49,7 +49,8 @@ SK_INLINE T skMin3(const T& a, const T& b, const T& c)
     return skMin(a, skMin(b, c));
 }
 
-template <typename T>  SK_INLINE T skMax(const T& a, const T& b)
+template <typename T>
+SK_INLINE T skMax(const T& a, const T& b)
 {
     return a > b ? a : b;
 }
@@ -63,13 +64,14 @@ SK_INLINE T skMax3(const T& a, const T& b, const T& c)
 template <typename T>
 SK_INLINE T skClamp(const T& v, const T& a, const T& b)
 {
-    return v < a ? a : v > b ?  b : v;
+    return v < a ? a : v > b ? b : v;
 }
 
 template <typename T>
 void skFill(T* dst, T* src, const SKsize nr)
 {
-    if (nr <= 0);
+    if (nr <= 0)
+        ;
     else
     {
         SKsize i = 0;
@@ -79,11 +81,11 @@ void skFill(T* dst, T* src, const SKsize nr)
     }
 }
 
-
 template <typename T>
 void skFill(T* dst, const T& src, const SKsize nr)
 {
-    if (nr <= 0);
+    if (nr <= 0)
+        ;
     else
     {
         SKsize i = 0;
@@ -98,7 +100,8 @@ void skConstruct(T* beg, T* end, const T& x)
 {
     while (beg != end)
     {
-        new(beg) T(x); ++beg;
+        new (beg) T(x);
+        ++beg;
     }
 }
 
@@ -107,17 +110,18 @@ void skConstructDefault(T* beg, T* end)
 {
     while (beg != end)
     {
-        new(beg) T(); ++beg;
+        new (beg) T();
+        ++beg;
     }
 }
-
 
 template <typename T>
 void skConstructCopy(T* beg, T* end, T* oth)
 {
     while (beg != end)
     {
-        new(beg) T(*oth++); ++beg;
+        new (beg) T(*oth++);
+        ++beg;
     }
 }
 
@@ -126,8 +130,9 @@ void skDestruct(T* beg, T* end)
 {
     while (beg != end)
     {
-        beg->~T(); ++beg;
+        beg->~T();
+        ++beg;
     }
 }
 
-#endif//_skMinMax_h_
+#endif //_skMinMax_h_

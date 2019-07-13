@@ -26,23 +26,15 @@
 #include "skFileStream.h"
 #include "skPlatformHeaders.h"
 
-
-
-skFileStream::skFileStream() :
-    m_handle(0),
-    m_pos(SK_NPOS),
-    m_size(SK_NPOS),
-    m_mode(NO_INPUT)
+skFileStream::skFileStream() : 
+    m_handle(0), m_pos(SK_NPOS), m_size(SK_NPOS), m_mode(NO_INPUT)
 {
 }
-
-
 
 skFileStream::~skFileStream()
 {
     close();
 }
-
 
 void skFileStream::flush(void)
 {
@@ -53,8 +45,6 @@ void skFileStream::flush(void)
     }
 }
 
-
-
 void skFileStream::open(const char* path, Mode mode)
 {
     if (mode == NO_INPUT || !path)
@@ -63,7 +53,7 @@ void skFileStream::open(const char* path, Mode mode)
     if (m_mode != NO_INPUT)
         close();
 
-    m_handle = fopen(path, mode == READ ? "rb" : mode == WRITE_TEXT ? "w"  : "wb");
+    m_handle = fopen(path, mode == READ ? "rb" : mode == WRITE_TEXT ? "w" : "wb");
     m_mode = m_handle != 0 ? mode : NO_INPUT;
 
     if (m_mode != NO_INPUT && m_handle != 0)
@@ -72,8 +62,6 @@ void skFileStream::open(const char* path, Mode mode)
     if (m_mode == WRITE)
         m_size = 0;
 }
-
-
 
 void skFileStream::close(void)
 {
@@ -95,10 +83,9 @@ bool skFileStream::eof(void) const
     return !isOpen() || feof(static_cast<FILE*>(m_handle));
 }
 
-
 SKsize skFileStream::read(void* dst, SKsize nr) const
 {
-    if (m_mode == WRITE  || !isOpen() || !dst || nr <= 0)
+    if (m_mode == WRITE || !isOpen() || !dst || nr <= 0)
         return 0;
 
     SKsize br = fread(dst, 1, nr, static_cast<FILE*>(m_handle));
@@ -108,7 +95,7 @@ SKsize skFileStream::read(void* dst, SKsize nr) const
 
 SKsize skFileStream::write(const void* src, SKsize nr)
 {
-    if (m_mode == READ  || !isOpen() || !src || nr <= 0)
+    if (m_mode == READ || !isOpen() || !src || nr <= 0)
         return 0;
 
     SKsize bw = fwrite(src, 1, nr, static_cast<FILE*>(m_handle));
@@ -116,7 +103,6 @@ SKsize skFileStream::write(const void* src, SKsize nr)
     m_size += bw;
     return bw;
 }
-
 
 SKsize skFileStream::position(void) const
 {
@@ -127,16 +113,16 @@ SKsize skFileStream::size(void) const
 {
     if (m_size == SK_NPOS)
     {
-        long loc;
+        long  loc;
         FILE* fp = static_cast<FILE*>(m_handle);
 
-        // Grab the current position indicator 
+        // Grab the current position indicator
         loc = ftell(fp);
         fseek(fp, 0L, SEEK_END);
 
         m_size = (SKsize)ftell(fp);
 
-        // Restore position indicator 
+        // Restore position indicator
         fseek(fp, loc, SEEK_SET);
     }
     return m_size;

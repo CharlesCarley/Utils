@@ -29,7 +29,6 @@
 #include "skAllocator.h"
 #include <typeinfo>
 
-
 #if SK_PLATFORM != SK_PLATFORM_ANDROID
 
 class skValue : public skAllocObject
@@ -37,35 +36,34 @@ class skValue : public skAllocObject
 public:
     typedef std::type_info Info;
 
-
 protected:
-
     class Value : public skAllocObject
     {
     public:
-        virtual ~Value() {}
-        virtual const Info&    type(void) const = 0;
-        virtual Value*         clone(void) const = 0;
+        virtual ~Value()
+        {
+        }
+        virtual const Info& type(void) const = 0;
+        virtual Value*      clone(void) const = 0;
     };
-
 
     template <typename T>
     class ValueType : public Value
     {
     public:
-
-        ValueType(const T& v)
-            :   m_value(v)
+        ValueType(const T& v) : m_value(v)
         {
         }
 
-        virtual ~ValueType() {}
+        virtual ~ValueType()
+        {
+        }
 
-        SK_INLINE const Info&   type(void) const
+        SK_INLINE const Info& type(void) const
         {
             return typeid(T);
         }
-        SK_INLINE Value*        clone(void) const
+        SK_INLINE Value* clone(void) const
         {
             return new ValueType<T>(m_value);
         }
@@ -75,7 +73,6 @@ protected:
 
     Value* m_data;
 
-
     SK_INLINE skValue& swap(skValue& rhs)
     {
         skSwap(m_data, rhs.m_data);
@@ -83,20 +80,16 @@ protected:
     }
 
 public:
-
-    skValue()
-        :   m_data(0)
+    skValue() : m_data(0)
     {
     }
 
-    skValue(const skValue& v)
-        :   m_data(v.m_data ? v.m_data->clone() : 0)
+    skValue(const skValue& v) : m_data(v.m_data ? v.m_data->clone() : 0)
     {
     }
 
-    template<typename T>
-    skValue(const T& v)
-        :   m_data(new ValueType<T>(v))
+    template <typename T>
+    skValue(const T& v) : m_data(new ValueType<T>(v))
     {
     }
 
@@ -105,21 +98,20 @@ public:
         delete m_data;
     }
 
-    template<typename T>
-    SK_INLINE skValue& operator = (const T& rhs)
+    template <typename T>
+    SK_INLINE skValue& operator=(const T& rhs)
     {
         skValue(rhs).swap(*this);
         return *this;
     }
 
-    SK_INLINE skValue& operator = (const skValue& rhs)
+    SK_INLINE skValue& operator=(const skValue& rhs)
     {
         skValue(rhs).swap(*this);
         return *this;
     }
 
-
-    template<typename T>
+    template <typename T>
     SK_INLINE operator T(void) const
     {
         if (m_data && m_data->type() == typeid(T))
@@ -127,7 +119,7 @@ public:
         return T();
     }
 
-    template<typename T>
+    template <typename T>
     SK_INLINE T get(const T& def = T()) const
     {
         if (m_data && m_data->type() == typeid(T))
@@ -135,15 +127,14 @@ public:
         return def;
     }
 
-
     SK_INLINE bool isTypeOf(const skValue& v) const
     {
-        return m_data && v.m_data && m_data->type() ==  v.m_data->type();
+        return m_data && v.m_data && m_data->type() == v.m_data->type();
     }
     SK_INLINE bool isTypeOf(const Info& v) const
     {
-        return m_data && m_data->type() ==  v;
+        return m_data && m_data->type() == v;
     }
 };
 #endif
-#endif//_skValue_h_
+#endif //_skValue_h_

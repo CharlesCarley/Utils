@@ -27,7 +27,6 @@
 #ifndef _skFixedString_h_
 #define _skFixedString_h_
 
-
 #include "Config/skConfig.h"
 #include "Utils/skTypes.h"
 
@@ -38,46 +37,44 @@ public:
     typedef char Pointer[L + 1];
 
 public:
-    skFixedString()
-        :   m_size(0),  m_hash(SK_NPOS)
+    skFixedString() : m_size(0), m_hash(SK_NPOS)
     {
         m_buffer[m_size] = 0;
     }
 
-    skFixedString(const skFixedString& rhs)
-        :   m_size(0), m_hash(SK_NPOS)
+    skFixedString(const skFixedString& rhs) : m_size(0), m_hash(SK_NPOS)
     {
         if (rhs.size())
         {
-            SKuint16 i, os = rhs.size();
+            SKuint16    i, os = rhs.size();
             const char* cp = rhs.c_str();
 
-            for (i = 0; i < L && i < os; ++i, ++m_size) m_buffer[i] = cp[i];
+            for (i = 0; i < L && i < os; ++i, ++m_size)
+                m_buffer[i] = cp[i];
         }
         m_buffer[m_size] = 0;
     }
 
-
-    skFixedString(const char* rhs)
-        :   m_size(0), m_hash(SK_NPOS)
+    skFixedString(const char* rhs) : m_size(0), m_hash(SK_NPOS)
     {
         if (rhs)
         {
             SKuint16 i;
 
-            for (i = 0; i < L && rhs[i]; ++i, ++m_size) m_buffer[i] = rhs[i];
+            for (i = 0; i < L && rhs[i]; ++i, ++m_size)
+                m_buffer[i] = rhs[i];
         }
 
         m_buffer[m_size] = 0;
     }
 
-    skFixedString(const char* rhs, SKuint16 size)
-        :   m_size(0), m_hash(SK_NPOS)
+    skFixedString(const char* rhs, SKuint16 size) : m_size(0), m_hash(SK_NPOS)
     {
         if (rhs)
         {
             SKuint16 i;
-            for (i = 0; i < L && i < size && rhs[i]; ++i, ++m_size) m_buffer[i] = rhs[i];
+            for (i = 0; i < L && i < size && rhs[i]; ++i, ++m_size)
+                m_buffer[i] = rhs[i];
         }
         m_buffer[m_size] = 0;
     }
@@ -95,14 +92,12 @@ public:
     {
         if (ns <= L)
         {
-            //if (ns < m_size)
-            //    for (SKuint16 i = ns; i < m_size; i++) m_buffer[i] = 0;
             m_size = ns;
             m_buffer[m_size] = 0;
         }
     }
 
-    skFixedString& operator = (const skFixedString& rhs)
+    skFixedString& operator=(const skFixedString& rhs)
     {
         if (this != &rhs && rhs.m_size > 0)
         {
@@ -134,7 +129,8 @@ public:
 
     SK_INLINE void clear(void)
     {
-        m_buffer[0] = 0; m_size = 0;
+        m_buffer[0] = 0;
+        m_size = 0;
     }
 
     SK_INLINE bool empty(void) const
@@ -151,7 +147,7 @@ public:
         return L;
     }
 
-    SK_INLINE const char operator [](SKuint16 i) const
+    SK_INLINE const char operator[](SKuint16 i) const
     {
         SK_ASSERT(i < m_size && i < L);
         return m_buffer[i];
@@ -163,7 +159,7 @@ public:
         return m_buffer[i];
     }
 
-    SK_INLINE char& operator [](SKuint16 i)
+    SK_INLINE char& operator[](SKuint16 i)
     {
         SK_ASSERT(i < m_size && i < L);
         return m_buffer[i];
@@ -187,21 +183,19 @@ public:
         return m_hash;
     }
 
-    SK_INLINE bool operator == (const skFixedString& str) const
+    SK_INLINE bool operator==(const skFixedString& str) const
     {
         return hash() == str.hash();
     }
-    SK_INLINE bool operator != (const skFixedString& str) const
+    SK_INLINE bool operator!=(const skFixedString& str) const
     {
         return hash() != str.hash();
     }
 
 private:
-
-    Pointer m_buffer;
-    SKuint16 m_size;
+    Pointer        m_buffer;
+    SKuint16       m_size;
     mutable SKhash m_hash;
 };
 
-
-#endif//_skFixedString_h_
+#endif //_skFixedString_h_

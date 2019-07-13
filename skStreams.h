@@ -28,33 +28,36 @@
 
 #include "skAllocator.h"
 
-
 class skStream : public skAllocObject
 {
 public:
     enum Mode
     {
         NO_INPUT = 0,
-        READ,       //!< Opens for reading binary data
-        WRITE,      //!< Opens for writing binary data
-        WRITE_TEXT  //!< Open in text mode
+        READ,      //!< Opens for reading binary data
+        WRITE,     //!< Opens for writing binary data
+        WRITE_TEXT //!< Open in text mode
     };
 
 public:
-    skStream() {}
-    virtual ~skStream() {}
+    skStream()
+    {
+    }
+    virtual ~skStream()
+    {
+    }
 
-    virtual void open(const char* path, Mode mode) = 0;
-    virtual void close(void) = 0;
-    virtual bool isOpen(void) const = 0;
-    virtual bool eof(void) const = 0;
+    virtual void   open(const char* path, Mode mode) = 0;
+    virtual void   close(void) = 0;
+    virtual bool   isOpen(void) const = 0;
+    virtual bool   eof(void) const = 0;
     virtual SKsize read(void* dst, SKsize nr) const = 0;
     virtual SKsize write(const void* src, SKsize nr) = 0;
     virtual SKsize position(void) const = 0;
     virtual SKsize size(void) const = 0;
-    virtual void reserve(SKsize nr) {}
-
+    virtual void   reserve(SKsize nr)
+    {
+    }
 };
 
-
-#endif//_skStreams_h_
+#endif //_skStreams_h_

@@ -26,9 +26,7 @@
 #ifndef _skTimer_h_
 #define _skTimer_h_
 
-
 #include "skAllocator.h"
-
 
 class skTimer : public skAllocObject
 {
@@ -36,7 +34,7 @@ public:
     skTimer();
     ~skTimer();
 
-    void reset(void);
+    void    reset(void);
     SKulong getMilliseconds(void);
     SKulong getMicroseconds(void);
 
@@ -47,7 +45,6 @@ private:
 extern SKulong skGetMilliseconds(void);
 extern SKulong skGetMicroseconds(void);
 extern SKulong skGetTickCount(void);
-extern void skSleep(SKuint32 ms);
+extern void    skSleep(SKuint32 ms);
 
-
-#endif//_skTimer_h_
+#endif //_skTimer_h_

@@ -33,5 +33,4 @@ extern SKuint32 skRandomUnsignedInt(SKuint32 mod = SK_NPOS);
 extern double   skUnitRandom(SKuint32 mod = SK_NPOS);
 extern SKuint32 skRandom(SKuint32 mod);
 
-
-#endif//_skRandom_h_
+#endif //_skRandom_h_

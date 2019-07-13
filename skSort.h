@@ -27,30 +27,28 @@
 #define _skSort_h_
 
 #include "Config/skConfig.h"
-#include "skTraits.h"
 #include "skMinMax.h"
-
+#include "skTraits.h"
 
 template <typename T, typename C>
 struct skSort
 {
     typedef int (*Function)(T a, T b);
-    typedef typename C::Iterator Iterator;
+    typedef typename C::Iterator      Iterator;
     typedef typename C::ReferenceType ReferenceType;
 
-    skSort(Function fnc = 0)
-        :   m_sort(fnc)
+    skSort(Function fnc = 0) : m_sort(fnc)
     {
     }
 
     Function m_sort;
-    void sort(C& container)
+    void     sort(C& container)
     {
         SKsize size = container.size();
         if (!m_sort || size < 2)
             return;
 
-        bool swapped = false;
+        bool   swapped = false;
         SKsize i;
         do
         {
@@ -70,8 +68,7 @@ struct skSort
                 }
             }
             size -= 1;
-        }
-        while (swapped && size != SK_NPOS);
+        } while (swapped && size != SK_NPOS);
     }
 };
 
@@ -79,19 +76,16 @@ template <typename T, typename C>
 class skQSort
 {
 public:
-    typedef int(*Function)(T a, T b);
+    typedef int (*Function)(T a, T b);
     typedef typename C::ReferenceType ReferenceType;
-
 
 private:
     Function m_sort;
 
 public:
-    skQSort(Function fnc = 0)
-        : m_sort(fnc)
+    skQSort(Function fnc = 0) : m_sort(fnc)
     {
     }
-
 
     void sort(C& container)
     {
@@ -137,5 +131,4 @@ private:
     }
 };
 
-
-#endif//_skSort_h_
+#endif //_skSort_h_

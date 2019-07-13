@@ -28,7 +28,6 @@
 
 skString skStringConverter::BLANK = "";
 
-
 void skStringConverter::toString(skString& dest, int v)
 {
     dest = skString::format("%d", v);
@@ -74,13 +73,8 @@ double skStringConverter::toDouble(const skString& src)
     return skStringUtils::toDouble(src.c_str());
 }
 
-
 bool skStringConverter::toBool(const skString& src)
 {
-    return (
-               skStringUtils::equals(src.c_str(), "true") == 0 ||
-               skStringUtils::equals(src.c_str(), "yes") == 0  ||
-               skStringUtils::equals(src.c_str(), "1")
-           );
+    return (skStringUtils::equals(src.c_str(), "true") == 0 || skStringUtils::equals(src.c_str(), "yes") == 0 ||
+            skStringUtils::equals(src.c_str(), "1"));
 }
-

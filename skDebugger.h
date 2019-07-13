@@ -26,7 +26,6 @@
 #ifndef _skDebugger_h_
 #define _skDebugger_h_
 
-
 class skDebugger
 {
 public:
@@ -36,5 +35,4 @@ public:
 };
 #define skPrintf skDebugger::report
 
-
-#endif//_skDebugger_h_
+#endif //_skDebugger_h_

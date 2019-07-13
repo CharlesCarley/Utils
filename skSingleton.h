@@ -34,10 +34,7 @@ class skSingleton
 protected:
     static T* m_singleton;
 
-
 public:
-
-
     skSingleton()
     {
         SK_ASSERT(!m_singleton);
@@ -50,26 +47,33 @@ public:
         m_singleton = 0;
     }
 
-    SK_INLINE T& getSingleton(void)    {SK_ASSERT(m_singleton); return *m_singleton; }
-    SK_INLINE T& getSingletonPtr(void) { return  m_singleton; }
-
+    SK_INLINE T& getSingleton(void)
+    {
+        SK_ASSERT(m_singleton);
+        return *m_singleton;
+    }
+    SK_INLINE T& getSingletonPtr(void)
+    {
+        return m_singleton;
+    }
 };
 
-
-
-#define SK_DECLARE_SINGLETON(cls)       \
-    public:                             \
-    static cls& getSingleton(void);     \
+#define SK_DECLARE_SINGLETON(cls)   \
+public:                             \
+    static cls& getSingleton(void); \
     static cls* getSingletonPtr(void);
 
-#define SK_IMPLEMENT_SINGLETON(cls)                     \
-    template<> cls* skSingleton<cls>::m_singleton= 0;   \
-    cls& cls::getSingleton(void) {                      \
-        SK_ASSERT(m_singleton);                            \
-        return *m_singleton;                            \
-    }                                                   \
-    cls* cls::getSingletonPtr(void){                    \
-        return m_singleton;                             \
+#define SK_IMPLEMENT_SINGLETON(cls)         \
+    template <>                             \
+    cls* skSingleton<cls>::m_singleton = 0; \
+    cls& cls::getSingleton(void)            \
+    {                                       \
+        SK_ASSERT(m_singleton);             \
+        return *m_singleton;                \
+    }                                       \
+    cls* cls::getSingletonPtr(void)         \
+    {                                       \
+        return m_singleton;                 \
     }
 
-#endif//_skSingleton_h_
+#endif //_skSingleton_h_

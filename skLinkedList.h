@@ -26,12 +26,10 @@
 #ifndef _skLinkedList_h_
 #define _skLinkedList_h_
 
-#include "skSort.h"
 #include "skAllocator.h"
+#include "skSort.h"
 
-
-
-template<typename T>
+template <typename T>
 class skSinglyLinkedList
 {
 public:
@@ -39,22 +37,30 @@ public:
 
     typedef skSinglyLinkedList<T> SelfType;
 
-
     class Link : public skAllocObject
     {
     public:
         SK_DECLARE_TYPE(Link);
 
     public:
+        Link() : m_next(0)
+        {
+        }
+        Link(SelfType::ConstReferenceType v) : m_next(0), m_data(v)
+        {
+        }
+        ~Link()
+        {
+        }
 
-        Link() : m_next(0) {}
-        Link(SelfType::ConstReferenceType v) : m_next(0), m_data(v) {}
-        ~Link() {}
-
-
-        SK_INLINE PointerType               next(void) { return m_next; }
-        SK_INLINE SelfType::ReferenceType   data(void) { return m_data; }
-
+        SK_INLINE PointerType next(void)
+        {
+            return m_next;
+        }
+        SK_INLINE SelfType::ReferenceType data(void)
+        {
+            return m_data;
+        }
 
     private:
         friend class skSinglyLinkedList;
@@ -63,19 +69,19 @@ public:
     };
 
 private:
-
-    Link*       m_head, *m_tail;
-    SKsize      m_size;
+    Link * m_head, *m_tail;
+    SKsize m_size;
 
 public:
-
-    skSinglyLinkedList() :
-        m_size(0)
+    skSinglyLinkedList() : m_size(0)
     {
         m_head = m_tail = 0;
     }
 
-    ~skSinglyLinkedList() { clear(); }
+    ~skSinglyLinkedList()
+    {
+        clear();
+    }
 
     void clear(void)
     {
@@ -128,7 +134,7 @@ public:
     {
         SK_ASSERT(m_head);
 
-        Link* link = m_head, *prev = 0;
+        Link *link = m_head, *prev = 0;
         while (link->m_next != 0)
         {
             prev = link;
@@ -153,7 +159,7 @@ public:
         SK_ASSERT(m_head);
 
         ValueType val = m_head->m_data;
-        Link* link = m_head->m_next;
+        Link*     link = m_head->m_next;
 
         m_size--;
         delete m_head;
@@ -165,7 +171,7 @@ public:
     {
         if (!m_head)
             return;
-        Link* prev = 0, *found = 0;
+        Link *prev = 0, *found = 0;
 
         find(v, &prev, &found);
         if (found)
@@ -189,7 +195,7 @@ public:
             return SK_NPOS;
 
         SKsize foundIndex = 0;
-        Link* node = m_head;
+        Link*  node = m_head;
         while (node)
         {
             if (node->m_data == v)
@@ -200,16 +206,16 @@ public:
         return foundIndex;
     }
 
-
     ReferenceType at(SKsize idx)
     {
         SK_ASSERT(idx != SK_NPOS && idx < m_size);
 
         SKsize foundIndex = 0;
-        Link* node = m_head;
+        Link*  node = m_head;
         while (node)
         {
-            if (foundIndex == idx) break;
+            if (foundIndex == idx)
+                break;
             foundIndex++;
             node = node->m_next;
         }
@@ -217,19 +223,27 @@ public:
         return node->m_data;
     }
 
-    SK_INLINE Link*     first(void) { return m_head; }
-    SK_INLINE SKsize    size(void)  { return m_size; }
-    SK_INLINE bool      empty(void) { return m_size == 0; }
-
+    SK_INLINE Link* first(void)
+    {
+        return m_head;
+    }
+    SK_INLINE SKsize size(void)
+    {
+        return m_size;
+    }
+    SK_INLINE bool empty(void)
+    {
+        return m_size == 0;
+    }
 
 private:
-
     void find(ConstValueType v, Link** prev, Link** pos)
     {
-        if (!m_head) return;
+        if (!m_head)
+            return;
 
         SK_ASSERT(prev && pos);
-        Link* node = m_head, *last = 0;
+        Link *node = m_head, *last = 0;
         while (node)
         {
             if (node->m_data == v)
@@ -246,5 +260,4 @@ private:
     }
 };
 
-
-#endif//_skLinkedList_h_
+#endif //_skLinkedList_h_

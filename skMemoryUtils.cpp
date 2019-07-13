@@ -27,7 +27,6 @@
 #include <memory.h>
 #include <string.h>
 
-
 #if SK_ALLOCATOR == 1
 
 #define USE_DL_PREFIX
@@ -48,7 +47,7 @@ void* skCalloc(unsigned int size, unsigned int nr)
     return dlcalloc(size, nr);
 }
 
-void  skFree(void* ptr)
+void skFree(void* ptr)
 {
     dlfree(ptr);
 }
@@ -72,26 +71,22 @@ void* skCalloc(unsigned int size, unsigned int nr)
     return calloc(size, nr);
 }
 
-void  skFree(void* ptr)
+void skFree(void* ptr)
 {
     free(ptr);
 }
 
 #endif
 
-
 void* skMemset(void* ptr, int val, unsigned int nr)
 {
     return ::memset(ptr, val, nr);
 }
 
-
-
 void* skMemcpy(void* dst, const void* src, unsigned int nr)
 {
     return ::memcpy(dst, src, nr);
 }
-
 
 int skMemcmp(const void* cmp0, const void* cmp1, unsigned int nr)
 {

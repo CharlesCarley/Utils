@@ -26,12 +26,11 @@
 #ifndef _skStack_h_
 #define _skStack_h_
 
-
 #include "Config/skConfig.h"
-#include "skTraits.h"
 #include "skArray.h"
+#include "skTraits.h"
 
-template < typename T, typename Allocator = skAllocator<T> >
+template <typename T, typename Allocator = skAllocator<T> >
 class skStack
 {
 public:
@@ -41,43 +40,32 @@ public:
     typedef skArray<T, Allocator> StackType;
     typedef skStack<T, Allocator> SelfType;
 
-    typedef skPointerDecrementIterator<StackType>          Iterator;
-    typedef const skPointerDecrementIterator<StackType>    ConstIterator;
+    typedef skPointerDecrementIterator<StackType>       Iterator;
+    typedef const skPointerDecrementIterator<StackType> ConstIterator;
 
-    typedef skPointerIncrementIterator<StackType>          ReverseIterator;
-    typedef const skPointerIncrementIterator<StackType>    ConstReverseIterator;
+    typedef skPointerIncrementIterator<StackType>       ReverseIterator;
+    typedef const skPointerIncrementIterator<StackType> ConstReverseIterator;
 
     SK_IMPLEMENT_SORT(T, skStack);
-public:
 
-    skStack()
-        :   m_top(0)
+public:
+    skStack() : m_top(0)
     {
     }
 
-
-
-    skStack(SKsize rsp)
-        :   m_top(0)
+    skStack(SKsize rsp) : m_top(0)
     {
         m_stack.reserve(rsp);
     }
 
-
-
-    skStack(const SelfType& o)
-        :  m_top(o.m_top), m_stack(o.m_stack)
+    skStack(const SelfType& o) : m_top(o.m_top), m_stack(o.m_stack)
     {
     }
-
-
 
     ~skStack()
     {
         m_stack.clear();
     }
-
-
 
     SK_INLINE void clear(void)
     {
@@ -85,14 +73,11 @@ public:
         m_top = 0;
     }
 
-
-
     SK_INLINE void push(ConstReferenceType v)
     {
         m_stack.push_back(v);
         m_top = m_stack.size();
     }
-
 
     SK_INLINE void pop(void)
     {
@@ -114,15 +99,11 @@ public:
         return m_stack.at(m_top - 1);
     }
 
-
-
     SK_INLINE ConstReferenceType top(void) const
     {
         SK_ASSERT(m_top != 0);
         return m_stack.at(m_top - 1);
     }
-
-
 
     SK_INLINE ReferenceType peek(SKsize offs)
     {
@@ -130,21 +111,16 @@ public:
         return m_stack.at((m_top - 1) - offs);
     }
 
-
-
     SK_INLINE ConstReferenceType peek(SKsize offs) const
     {
         SK_ASSERT(m_top != 0 && ((m_top - 1) - offs) != SK_NPOS);
         return m_stack.at((m_top - 1) - offs);
     }
 
-
-
     void reserve(SKsize nr)
     {
         m_stack.reserve(nr);
     }
-
 
     SK_INLINE SKsize capacity(void) const
     {
@@ -171,20 +147,15 @@ public:
         return m_stack.ptr();
     }
 
-
-
     SK_INLINE Iterator iterator(void)
     {
         return m_stack.reverseIterator();
     }
 
-
     SK_INLINE ConstIterator iterator(void) const
     {
         return m_stack.reverseIterator();
     }
-
-
 
     SK_INLINE ReverseIterator reverseIterator(void)
     {
@@ -196,7 +167,7 @@ public:
         return m_stack.iterator();
     }
 
-    SelfType& operator = (const SelfType& rhs)
+    SelfType& operator=(const SelfType& rhs)
     {
         if (this != &rhs)
         {
@@ -209,7 +180,7 @@ public:
 
 private:
     mutable StackType m_stack;
-    SKsize m_top;
+    SKsize            m_top;
 };
 
-#endif//_skStack_h_
+#endif //_skStack_h_
