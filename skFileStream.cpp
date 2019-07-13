@@ -117,6 +117,7 @@ SKsize skFileStream::write(const void* src, SKsize nr)
     return bw;
 }
 
+
 SKsize skFileStream::position(void) const
 {
     return m_pos;
@@ -126,12 +127,17 @@ SKsize skFileStream::size(void) const
 {
     if (m_size == SK_NPOS)
     {
+        long loc;
         FILE* fp = static_cast<FILE*>(m_handle);
-        SKsize loc = feof(fp);
+
+        // Grab the current position indicator 
+        loc = ftell(fp);
         fseek(fp, 0L, SEEK_END);
-        m_size = ftell(fp);
+
+        m_size = (SKsize)ftell(fp);
+
+        // Restore position indicator 
         fseek(fp, loc, SEEK_SET);
     }
-
     return m_size;
 }

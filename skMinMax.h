@@ -30,7 +30,7 @@
 #include <new>
 
 template <typename T>
-SK_INLINE void skSwap(T& a, T& b)
+void skSwap(T& a, T& b)
 {
     T c(a);
     a = b;
@@ -74,9 +74,7 @@ void skFill(T* dst, T* src, const SKsize nr)
     {
         SKsize i = 0;
         do
-        {
             dst[i] = src[i];
-        }
         while (++i < nr);
     }
 }
@@ -90,9 +88,7 @@ void skFill(T* dst, const T& src, const SKsize nr)
     {
         SKsize i = 0;
         do
-        {
             dst[i] = src;
-        }
         while (++i < nr);
     }
 }

@@ -211,15 +211,8 @@ public:
     {
     }
 
-    PointerType address(ReferenceType v)
-    {
-        return &v;
-    }
-
-    ConstPointerType address(ConstReferenceType v) const
-    {
-        return &v;
-    }
+    SK_INLINE PointerType       address(ReferenceType v)            { return &v; }
+    SK_INLINE ConstPointerType  address(ConstReferenceType v) const { return &v; }
 
     void construct(PointerType p, ConstReferenceType v)
     {
