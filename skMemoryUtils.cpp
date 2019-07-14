@@ -23,9 +23,9 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "Config/skConfig.h"
 #include <memory.h>
 #include <string.h>
+#include "Config/skConfig.h"
 
 #if SK_ALLOCATOR == 1
 

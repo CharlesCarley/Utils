@@ -275,4 +275,4 @@ protected:
     SKuint16          m_size;
 };
 
-#endif //_skFixedArray_h_
+#endif  //_skFixedArray_h_

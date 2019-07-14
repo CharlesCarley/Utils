@@ -216,4 +216,4 @@ protected:
     SKuint16           m_curReduction;
 };
 
-#endif //_skParser_h_
+#endif  //_skParser_h_

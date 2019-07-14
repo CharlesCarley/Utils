@@ -133,7 +133,8 @@ public:
     }
 
     skQueueDecrementIterator(PointerType begin, SKsize size, SKsize front) :
-        m_beg(begin + (size - 1)), m_end(begin + front)
+        m_beg(begin + (size - 1)),
+        m_end(begin + front)
     {
     }
 
@@ -385,4 +386,4 @@ public:
     }
 };
 
-#endif //_skQueue_h_
+#endif  //_skQueue_h_

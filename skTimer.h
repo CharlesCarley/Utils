@@ -47,4 +47,4 @@ extern SKulong skGetMicroseconds(void);
 extern SKulong skGetTickCount(void);
 extern void    skSleep(SKuint32 ms);
 
-#endif //_skTimer_h_
+#endif  //_skTimer_h_

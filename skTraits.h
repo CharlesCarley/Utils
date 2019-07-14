@@ -87,4 +87,4 @@ public:                                                  \
         srt.sort((*this));                               \
     }
 
-#endif //_skTraits_h_
+#endif  //_skTraits_h_

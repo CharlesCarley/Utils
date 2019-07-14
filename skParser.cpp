@@ -40,7 +40,7 @@
 #define skParserTrace(x, y, z, w) (void)0
 #endif
 
-#define skLabel(x)                                                                                                     \
+#define skLabel(x) \
     x:
 #define skJmp(x) goto x
 #define skDFAedge(s, e) m_dfa->m_states[s].m_edges[e]
@@ -51,8 +51,16 @@
 #define skBufferComment(b, x) (((b[x] != '\n' && b[x - 1] != '\r') && (b[x] != '\r') && (b[x] != '\n')))
 
 skParser::skParser() :
-    m_stream(0), m_start(-1), m_symbolTable(0), m_ruleTable(0), m_dfa(0), m_lalr(0), m_buffer(0), m_len(0),
-    m_stateIdx(0), m_cur(0)
+    m_stream(0),
+    m_start(-1),
+    m_symbolTable(0),
+    m_ruleTable(0),
+    m_dfa(0),
+    m_lalr(0),
+    m_buffer(0),
+    m_len(0),
+    m_stateIdx(0),
+    m_cur(0)
 
 {
 }

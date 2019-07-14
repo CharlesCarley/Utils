@@ -131,4 +131,4 @@ private:
     }
 };
 
-#endif //_skSort_h_
+#endif  //_skSort_h_

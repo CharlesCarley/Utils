@@ -28,8 +28,7 @@
 #include "skMinMax.h"
 #include "skPlatformHeaders.h"
 
-skMemoryStream::skMemoryStream() : 
-    m_buffer(0), m_pos(0), m_size(0), m_capacity(0), m_mode(0)
+skMemoryStream::skMemoryStream() : m_buffer(0), m_pos(0), m_size(0), m_capacity(0), m_mode(0)
 {
 }
 

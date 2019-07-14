@@ -53,4 +53,4 @@
 #define skp_printf vsnprintf
 #endif
 
-#endif //_skPlatformHeaders_h_
+#endif  //_skPlatformHeaders_h_

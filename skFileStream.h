@@ -54,4 +54,4 @@ private:
     SKint32        m_mode;
 };
 
-#endif //_skFileStream_h_
+#endif  //_skFileStream_h_

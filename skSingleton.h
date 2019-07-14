@@ -76,4 +76,4 @@ public:                             \
         return m_singleton;                 \
     }
 
-#endif //_skSingleton_h_
+#endif  //_skSingleton_h_

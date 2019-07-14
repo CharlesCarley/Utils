@@ -446,4 +446,4 @@ private:
     Allocator   m_alloc;
 };
 
-#endif //_skArray_h_
+#endif  //_skArray_h_

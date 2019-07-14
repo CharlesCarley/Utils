@@ -50,7 +50,7 @@ void skDebugger::breakProcess(void)
 #endif
 }
 
-#else // SK_DEBUG
+#else  // SK_DEBUG
 
 bool skDebugger::isDebugger(void)
 {
@@ -61,7 +61,7 @@ void skDebugger::breakProcess(void)
 {
 }
 
-#endif // SK_DEBUG
+#endif  // SK_DEBUG
 
 static char ReportBuf[SK_SBUF_SIZE + 1];
 

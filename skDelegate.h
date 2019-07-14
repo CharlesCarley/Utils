@@ -134,4 +134,4 @@ protected:
     }
 };
 
-#endif //_skDelegate_h_
+#endif  //_skDelegate_h_

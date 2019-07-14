@@ -321,4 +321,4 @@ private:
 #define skAllocator skNewAllocator
 #endif
 
-#endif //_skAllocator_h_
+#endif  //_skAllocator_h_

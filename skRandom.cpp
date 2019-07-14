@@ -24,8 +24,8 @@
 -------------------------------------------------------------------------------
 */
 #include "skRandom.h"
-#include "skTimer.h"
 #include <stdlib.h>
+#include "skTimer.h"
 
 void skRandInit(SKuint32 seed)
 {

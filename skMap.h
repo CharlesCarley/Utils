@@ -614,4 +614,4 @@ private:
     TableType m_table;
 };
 
-#endif //_skMap_h_
+#endif  //_skMap_h_

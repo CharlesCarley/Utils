@@ -198,4 +198,4 @@ private:
     mutable SKhash m_hash;
 };
 
-#endif //_skFixedString_h_
+#endif  //_skFixedString_h_

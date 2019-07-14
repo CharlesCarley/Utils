@@ -80,4 +80,4 @@ private:
     int            m_mode;
 };
 
-#endif //_skMemoryStream_h_
+#endif  //_skMemoryStream_h_

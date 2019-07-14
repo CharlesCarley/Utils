@@ -48,7 +48,7 @@ namespace skStringUtils
 
     extern const SKuint8  HexTable[16];
     extern const SKuint16 BinaryTable[9];
-}; // namespace skStringUtils
+};  // namespace skStringUtils
 
 class skString
 {
@@ -274,4 +274,4 @@ SK_INLINE SKhash skHash(const skString& key)
 
 extern int skSprintf(char* dst, int max_size, const char* fmt, ...);
 
-#endif //_skString_h_
+#endif  //_skString_h_

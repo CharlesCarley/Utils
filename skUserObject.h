@@ -89,4 +89,4 @@ private:
     SKuintPtr m_object;
 };
 
-#endif //_skUserObject_h_
+#endif  //_skUserObject_h_

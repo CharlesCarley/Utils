@@ -26,8 +26,8 @@
 #ifndef _skMinMax_h_
 #define _skMinMax_h_
 
-#include "Config/skConfig.h"
 #include <new>
+#include "Config/skConfig.h"
 
 template <typename T>
 void skSwap(T& a, T& b)
@@ -135,4 +135,4 @@ void skDestruct(T* beg, T* end)
     }
 }
 
-#endif //_skMinMax_h_
+#endif  //_skMinMax_h_

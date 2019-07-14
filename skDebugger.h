@@ -35,4 +35,4 @@ public:
 };
 #define skPrintf skDebugger::report
 
-#endif //_skDebugger_h_
+#endif  //_skDebugger_h_

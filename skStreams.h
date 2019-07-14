@@ -34,9 +34,9 @@ public:
     enum Mode
     {
         NO_INPUT = 0,
-        READ,      //!< Opens for reading binary data
-        WRITE,     //!< Opens for writing binary data
-        WRITE_TEXT //!< Open in text mode
+        READ,       //!< Opens for reading binary data
+        WRITE,      //!< Opens for writing binary data
+        WRITE_TEXT  //!< Open in text mode
     };
 
 public:
@@ -60,4 +60,4 @@ public:
     }
 };
 
-#endif //_skStreams_h_
+#endif  //_skStreams_h_

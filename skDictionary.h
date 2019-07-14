@@ -145,7 +145,7 @@ public:
 
     void insert(const Key& key, const Value& val)
     {
-        if ((m_size + 1) * 2 >= m_capacity) // assure that the load factor is balanced
+        if ((m_size + 1) * 2 >= m_capacity)  // assure that the load factor is balanced
             reserve(m_size == 0 ? 16 : m_capacity * 2);
 
         if (find(key) != SK_NPOS)
@@ -332,4 +332,4 @@ private:
     }
 };
 
-#endif //_skDictionary_h_
+#endif  //_skDictionary_h_

@@ -34,4 +34,4 @@
 #include "skStack.h"
 #include "skString.h"
 
-#endif //_skTypes_h_
+#endif  //_skTypes_h_

@@ -271,4 +271,4 @@ private:
     }
 };
 
-#endif //_skDeque_h_
+#endif  //_skDeque_h_

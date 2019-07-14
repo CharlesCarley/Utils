@@ -260,4 +260,4 @@ private:
     }
 };
 
-#endif //_skLinkedList_h_
+#endif  //_skLinkedList_h_

@@ -51,8 +51,8 @@ SK_INLINE SKhash skHash(const char* key)
 
     for (int i = 0; key[i]; i++)
     {
-        hash = hash ^ (key[i]);         // xor the low 8 bits
-        hash = hash * _SK_MULTIPLE_FNV; // multiply by the magic number
+        hash = hash ^ (key[i]);          // xor the low 8 bits
+        hash = hash * _SK_MULTIPLE_FNV;  // multiply by the magic number
     }
 
     return hash;
@@ -72,4 +72,4 @@ SK_INLINE SKhash skHash(const void* key)
     return hash;
 }
 
-#endif //_skHash_h_
+#endif  //_skHash_h_

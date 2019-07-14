@@ -202,4 +202,4 @@ private:
     }
 };
 
-#endif //_skStackQueue_h_
+#endif  //_skStackQueue_h_

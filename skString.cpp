@@ -177,7 +177,7 @@ namespace skStringUtils
 
     const SKuint16 BinaryTable[9] = {256, 128, 64, 32, 16, 8, 4, 2, 1};
 
-} // namespace skStringUtils
+}  // namespace skStringUtils
 
 void skString::clear(void)
 {

@@ -728,4 +728,4 @@ private:
     mutable BaseType m_list;
 };
 
-#endif //_skList_h_
+#endif  //_skList_h_

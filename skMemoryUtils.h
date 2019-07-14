@@ -36,4 +36,4 @@ extern void* skMemset(void* ptr, int val, unsigned int nr);
 extern void* skMemcpy(void* dst, const void* src, unsigned int nr);
 extern int   skMemcmp(const void* cmp0, const void* cmp1, unsigned int nr);
 
-#endif //_skMemoryUtils_h_
+#endif  //_skMemoryUtils_h_

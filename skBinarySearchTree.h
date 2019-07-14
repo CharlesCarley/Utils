@@ -295,4 +295,4 @@ private:
     }
 };
 
-#endif //_skBinarySearchTree_h_
+#endif  //_skBinarySearchTree_h_

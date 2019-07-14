@@ -26,8 +26,8 @@
 #ifndef _skValue_h_
 #define _skValue_h_
 
-#include "skAllocator.h"
 #include <typeinfo>
+#include "skAllocator.h"
 
 #if SK_PLATFORM != SK_PLATFORM_ANDROID
 
@@ -137,4 +137,4 @@ public:
     }
 };
 #endif
-#endif //_skValue_h_
+#endif  //_skValue_h_

@@ -26,8 +26,7 @@
 #include "skFileStream.h"
 #include "skPlatformHeaders.h"
 
-skFileStream::skFileStream() : 
-    m_handle(0), m_pos(SK_NPOS), m_size(SK_NPOS), m_mode(NO_INPUT)
+skFileStream::skFileStream() : m_handle(0), m_pos(SK_NPOS), m_size(SK_NPOS), m_mode(NO_INPUT)
 {
 }
 

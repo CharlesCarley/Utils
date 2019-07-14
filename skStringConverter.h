@@ -46,4 +46,4 @@ public:
     static bool   toBool(const skString& src);
 };
 
-#endif //_skStringConverter_h_
+#endif  //_skStringConverter_h_

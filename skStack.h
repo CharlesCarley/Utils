@@ -183,4 +183,4 @@ private:
     SKsize            m_top;
 };
 
-#endif //_skStack_h_
+#endif  //_skStack_h_
