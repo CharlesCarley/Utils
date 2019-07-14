@@ -24,9 +24,14 @@
 -------------------------------------------------------------------------------
 */
 #include "skFileStream.h"
+#include "skMinMax.h"
 #include "skPlatformHeaders.h"
 
-skFileStream::skFileStream() : m_handle(0), m_pos(SK_NPOS), m_size(SK_NPOS), m_mode(NO_INPUT)
+skFileStream::skFileStream() :
+    m_handle(0),
+    m_pos(SK_NPOS),
+    m_size(SK_NPOS),
+    m_mode(NO_INPUT)
 {
 }
 
@@ -53,7 +58,7 @@ void skFileStream::open(const char* path, Mode mode)
         close();
 
     m_handle = fopen(path, mode == READ ? "rb" : mode == WRITE_TEXT ? "w" : "wb");
-    m_mode = m_handle != 0 ? mode : NO_INPUT;
+    m_mode   = m_handle != 0 ? mode : NO_INPUT;
 
     if (m_mode != NO_INPUT && m_handle != 0)
         m_pos = 0;
@@ -68,7 +73,7 @@ void skFileStream::close(void)
         fclose(static_cast<FILE*>(m_handle));
 
     m_handle = 0;
-    m_mode = NO_INPUT;
+    m_mode   = NO_INPUT;
     m_size = m_pos = SK_NPOS;
 }
 
@@ -90,6 +95,27 @@ SKsize skFileStream::read(void* dst, SKsize nr) const
     SKsize br = fread(dst, 1, nr, static_cast<FILE*>(m_handle));
     m_pos += br;
     return br;
+}
+
+
+void skFileStream::seek(SKsize offs, SKsize dir)
+{
+    if (!isOpen() || offs == SK_NPOS)
+        return;
+
+    long way = SEEK_SET;
+    if (dir == SEEK_END)
+        way = SEEK_END;
+    if (dir == SEEK_CUR)
+        way = SEEK_CUR;
+
+
+    if (fseek(static_cast<FILE*>(m_handle),
+              skClamp<SKsize>(offs, 0, m_size),
+              way) == 0)
+    {
+        m_pos = (SKsize)ftell(static_cast<FILE*>(m_handle));
+    }
 }
 
 SKsize skFileStream::write(const void* src, SKsize nr)

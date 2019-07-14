@@ -46,6 +46,7 @@ public:
     SKsize write(const void* src, SKsize nr);
     SKsize position(void) const;
     SKsize size(void) const;
+    void   seek(SKsize offs, SKsize dir);
 
 private:
     Handle         m_handle;

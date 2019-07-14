@@ -48,15 +48,23 @@ public:
     }
 
     virtual void   open(const char* path, Mode mode) = 0;
-    virtual void   close(void) = 0;
-    virtual bool   isOpen(void) const = 0;
-    virtual bool   eof(void) const = 0;
-    virtual SKsize read(void* dst, SKsize nr) const = 0;
+    virtual void   close(void)                       = 0;
+    virtual bool   isOpen(void) const                = 0;
+    virtual bool   eof(void) const                   = 0;
+    virtual SKsize read(void* dst, SKsize nr) const  = 0;
     virtual SKsize write(const void* src, SKsize nr) = 0;
-    virtual SKsize position(void) const = 0;
-    virtual SKsize size(void) const = 0;
-    virtual void   reserve(SKsize nr)
+    virtual SKsize position(void) const              = 0;
+    virtual SKsize size(void) const                  = 0;
+
+    virtual void seek(SKsize offset, SKsize dir)
     {
+        // not all streams need to seek
+    }
+
+
+    virtual void reserve(SKsize nr)
+    {
+        // not all streams need to preallocate memory
     }
 };
 
