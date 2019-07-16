@@ -5,5 +5,7 @@ set(Utils_USE_DEBUG_ASSERT      TRUE            CACHE BOOL      "Enable debug as
 set(Utils_USE_ITERATOR_DEBUG    FALSE           CACHE BOOL      "Enable state checks for iterators")
 set(Utils_OP_CHECKS			    FALSE           CACHE BOOL      "Remove state check macros.")
 set(Utils_USE_COMPILER_CHECKS   FALSE           CACHE BOOL      "Enable compile time asserts.")
+set(Utils_NO_DEBUGGER           TRUE            CACHE BOOL      "Send calls to skPrintf to printf vs skDebugger::report")
+
 
 configure_file(${Utils_SOURCE_DIR}/CMake/skConfig.h.in  ${Utils_SOURCE_DIR}/Config/skConfig.h)

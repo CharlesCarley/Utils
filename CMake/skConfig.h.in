@@ -33,6 +33,7 @@
 #cmakedefine Utils_USE_SIGNED_SIZE_T 1
 #cmakedefine Utils_OP_CHECKS 1
 #cmakedefine Utils_USE_COMPILER_CHECKS 1
+#cmakedefine Utils_NO_DEBUGGER 1
 
 #ifdef Utils_BLD_ANDROID
 #define SID_GLES 1
@@ -48,6 +49,10 @@
 
 #ifdef Utils_USE_STD_STRING_FUNCS
 #define SK_USE_STD_STRING_FUNCS 1
+#endif
+
+#ifdef Utils_NO_DEBUGGER
+#define SK_NO_DEBUGGER 1
 #endif
 
 
@@ -229,11 +234,7 @@ typedef signed int SKsize;
 typedef unsigned int SKhash;
 typedef unsigned int SKsize;
 
-// using unsigned int MAX for no position
-// even though it should be ((SKuintPtr)-1)
-// to take into account SK_ARCH_64.
-// I'm imposing this limit, which I could be
-// wrong but I've never needed even half that.
+// this needs to change to platform pointer size
 #define SK_NPOS 0xFFFFFFFF
 #define SK_NPOS16 0xFFFF
 // unsigned int MAX - 1

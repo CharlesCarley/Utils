@@ -26,6 +26,10 @@
 #ifndef _skDebugger_h_
 #define _skDebugger_h_
 
+
+#include "Utils/Config/skConfig.h"
+
+
 class skDebugger
 {
 public:
@@ -33,6 +37,14 @@ public:
     static void report(const char* msg, ...);
     static void breakProcess(void);
 };
+
+
+#ifdef SK_NO_DEBUGGER
+#include <stdio.h>
+#define skPrintf ::printf
+#else
 #define skPrintf skDebugger::report
+#endif
+
 
 #endif  //_skDebugger_h_
