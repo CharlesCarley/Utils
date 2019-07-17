@@ -31,13 +31,8 @@
 #cmakedefine Utils_USE_ITERATOR_DEBUG 1
 #cmakedefine Utils_USE_STD_STRING_FUNCS 1
 #cmakedefine Utils_USE_SIGNED_SIZE_T 1
-#cmakedefine Utils_OP_CHECKS 1
 #cmakedefine Utils_USE_COMPILER_CHECKS 1
 #cmakedefine Utils_NO_DEBUGGER 1
-
-#ifdef Utils_BLD_ANDROID
-#define SID_GLES 1
-#endif
 
 #ifdef Utils_USE_DEBUG_ASSERT
 #define SID_DEBUG_ASSERT 1
@@ -67,7 +62,7 @@
 #endif
 
 
-#if defined(SID_DEBUG_ASSERT) && (defined(DEBUG) || defined(_DEBUG))
+#if defined(SK_DEBUG_ASSERT) && (defined(DEBUG) || defined(_DEBUG))
 #include "Utils/skAssert.h"
 #define SK_DEBUG 1
 #define SK_ASSERT(x)                                            \
@@ -223,7 +218,6 @@ typedef SKint32          SKintPtr;
 typedef signed int SKhash;
 typedef signed int SKsize;
 
-// -1 for no array index &&
 #define SK_NPOS -1
 // ((1/2) - 1 unsigned int MAX
 #define SK_MAX 0x7FFFFFFE
@@ -266,7 +260,6 @@ typedef unsigned int SKsize;
 #define SK_ST_C
 #define SK_EN_C
 #endif
-
 
 #define SK_CHECK(X, VALUE) \
     {                      \
