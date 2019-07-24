@@ -43,11 +43,13 @@ public:
     {
     }
 
-    skHashTableIncrementIterator(PointerType begin, SKsize size) : skPointerIncrementIterator<T>(begin, size)
+    skHashTableIncrementIterator(PointerType begin, SKsize size) :
+        skPointerIncrementIterator<T>(begin, size)
     {
     }
 
-    explicit skHashTableIncrementIterator(T& v) : skPointerIncrementIterator<T>(v)
+    explicit skHashTableIncrementIterator(T& v) :
+        skPointerIncrementIterator<T>(v)
     {
     }
 
@@ -89,11 +91,13 @@ public:
     {
     }
 
-    skHashTableDecrementIterator(PointerType begin, SKsize size) : skPointerDecrementIterator<T>(begin, size)
+    skHashTableDecrementIterator(PointerType begin, SKsize size) :
+        skPointerDecrementIterator<T>(begin, size)
     {
     }
 
-    explicit skHashTableDecrementIterator(T& v) : skPointerDecrementIterator<T>(v)
+    explicit skHashTableDecrementIterator(T& v) :
+        skPointerDecrementIterator<T>(v)
     {
     }
 
@@ -122,15 +126,15 @@ public:
     }
 };
 
-#define _SK_UTHASHTABLE_POW2(x) \
-    --x;                        \
-    x |= x >> 16;               \
-    x |= x >> 8;                \
-    x |= x >> 4;                \
-    x |= x >> 2;                \
-    x |= x >> 1;                \
+#define _SK_HASHTABLE_POW2(x) \
+    --x;                      \
+    x |= x >> 16;             \
+    x |= x >> 8;              \
+    x |= x >> 4;              \
+    x |= x >> 2;              \
+    x |= x >> 1;              \
     ++x;
-#define _SK_UTHASHTABLE_IS_POW2(x) (x && !((x - 1) & x))
+#define _SK_HASHTABLE_IS_POW2(x) (x && !((x - 1) & x))
 
 template <typename Key, typename Value>
 class skEntry
@@ -144,11 +148,17 @@ public:
     {
     }
 
-    skEntry(const Key& k, const Value& v, SKhash hk) : first(k), second(v), hash(hk)
+    skEntry(const Key& k, const Value& v, SKhash hk) :
+        first(k),
+        second(v),
+        hash(hk)
     {
     }
 
-    explicit skEntry(const skEntry& oth) : first(oth.first), second(oth.second), hash(oth.hash)
+    explicit skEntry(const skEntry& oth) :
+        first(oth.first),
+        second(oth.second),
+        hash(oth.hash)
     {
     }
 
@@ -156,6 +166,7 @@ public:
     {
     }
 };
+
 
 // Derived from btHashTable
 // https://github.com/bulletphysics/bullet3/blob/master/src/LinearMath/btHashMap.h
@@ -181,15 +192,30 @@ public:
     typedef const skHashTableDecrementIterator<SelfType> ConstReverseIterator;
 
 public:
-    skHashTable() : m_size(0), m_capacity(0), m_iptr(0), m_nptr(0), m_bptr(0)
+    skHashTable() :
+        m_size(0),
+        m_capacity(0),
+        m_iptr(0),
+        m_nptr(0),
+        m_bptr(0)
     {
     }
 
-    skHashTable(SKsize capacity) : m_size(0), m_capacity(0), m_iptr(0), m_nptr(0), m_bptr(0)
+    skHashTable(SKsize capacity) :
+        m_size(0),
+        m_capacity(0),
+        m_iptr(0),
+        m_nptr(0),
+        m_bptr(0)
     {
     }
 
-    skHashTable(const skHashTable& rhs) : m_size(0), m_capacity(0), m_iptr(0), m_nptr(0), m_bptr(0)
+    skHashTable(const skHashTable& rhs) :
+        m_size(0),
+        m_capacity(0),
+        m_iptr(0),
+        m_nptr(0),
+        m_bptr(0)
     {
         doCopy(rhs);
     }
@@ -252,7 +278,6 @@ public:
 
     Value* get(const Key& key)
     {
-
         SKsize i = find(key);
 
         if (i == SK_NPOS)
@@ -301,7 +326,7 @@ public:
 
         m_bptr[m_size] = Pair(key, val, hk);
         m_nptr[m_size] = m_iptr[hr];
-        m_iptr[hr] = m_size++;
+        m_iptr[hr]     = m_size++;
         return true;
     }
 
@@ -322,13 +347,13 @@ public:
 
         hash = skHash(key) & (m_capacity - 1);
 
-        index = m_iptr[hash];
+        index  = m_iptr[hash];
         pindex = SK_NPOS;
 
         while (index != findex)
         {
             pindex = index;
-            index = m_nptr[index];
+            index  = m_nptr[index];
         }
 
         if (pindex != SK_NPOS)
@@ -348,14 +373,14 @@ public:
             return;
         }
 
-        lhash = m_bptr[lindex].hash & (m_capacity - 1);
-        index = m_iptr[lhash];
+        lhash  = m_bptr[lindex].hash & (m_capacity - 1);
+        index  = m_iptr[lhash];
         pindex = SK_NPOS;
 
         while (index != lindex)
         {
             pindex = index;
-            index = m_nptr[index];
+            index  = m_nptr[index];
         }
 
         if (pindex != SK_NPOS)
@@ -368,7 +393,7 @@ public:
 
         m_bptr[findex] = m_bptr[lindex];
         m_nptr[findex] = m_iptr[lhash];
-        m_iptr[lhash] = findex;
+        m_iptr[lhash]  = findex;
 
         --m_size;
         m_bptr[m_size].~Pair();
@@ -448,7 +473,7 @@ private:
             reserve(rhs.m_capacity);
 
             SKsize i, b;
-            m_size = rhs.m_size;
+            m_size     = rhs.m_size;
             m_capacity = rhs.m_capacity;
 
             b = m_size > 0 ? m_size - 1 : 0;
@@ -465,8 +490,10 @@ private:
 
     void rehash(SKsize nr)
     {
-        if (!_SK_UTHASHTABLE_IS_POW2(nr))
-            _SK_UTHASHTABLE_POW2(nr);
+        if (!_SK_HASHTABLE_IS_POW2(nr))
+        {
+            _SK_HASHTABLE_POW2(nr);
+        }
 
         m_bptr = m_alloc.array_reallocate(m_bptr, nr, m_capacity);
         m_iptr = m_ialloc.array_reallocate(m_iptr, nr, m_capacity);
@@ -480,7 +507,7 @@ private:
 
         for (i = 0; i < m_size; i++)
         {
-            h = m_bptr[i].hash & (m_capacity - 1);
+            h         = m_bptr[i].hash & (m_capacity - 1);
             m_nptr[i] = m_iptr[h];
             m_iptr[h] = i;
         }
@@ -513,7 +540,8 @@ public:
     {
     }
 
-    skHashSet(const skHashSet& oth) : m_table(oth)
+    skHashSet(const skHashSet& oth) :
+        m_table(oth)
     {
     }
 
@@ -606,7 +634,6 @@ public:
     {
         if (this != &rhs)
             m_table = rhs.m_table;
-
         return *this;
     }
 

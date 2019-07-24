@@ -78,6 +78,11 @@ void skFree(void* ptr)
 
 #endif
 
+
+#if SK_NO_HEADERS != 1
+#include <malloc.h>
+
+
 void* skMemset(void* ptr, int val, unsigned int nr)
 {
     return ::memset(ptr, val, nr);
@@ -92,3 +97,5 @@ int skMemcmp(const void* cmp0, const void* cmp1, unsigned int nr)
 {
     return ::memcmp(cmp0, cmp1, nr);
 }
+
+#endif

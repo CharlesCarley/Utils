@@ -81,7 +81,6 @@ public:
 
     struct DFAState
     {
-
         Index    m_accept;
         Index    m_edgeCount;
         DFAEdge* m_edges;
@@ -89,7 +88,6 @@ public:
 
     struct DFATable
     {
-
         Index     m_count;
         Index     m_initial;
         DFAState* m_states;
@@ -110,7 +108,6 @@ public:
 
     struct LALRTable
     {
-
         Index      m_count;
         Index      m_initial;
         LALRState* m_states;
@@ -188,7 +185,7 @@ public:
     void initialize(SKuint32 stackSize, skStream* in);
 
 protected:
-    virtual SKint16 execRule(SKuint8 rule) = 0;
+    virtual SKint16 execRule(SKuint8 rule)     = 0;
     virtual SKint16 tokenAccepted(SKint16 act) = 0;
     virtual SKint32 handleBlockComment(char* inp, SKint32 from, SKint32 len, SKint32& out, skString* bo)
     {

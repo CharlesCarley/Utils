@@ -47,19 +47,27 @@ protected:
     }
 
 public:
-    skQueueIncrementIterator() : m_beg(0), m_end(0)
+    skQueueIncrementIterator() :
+        m_beg(0),
+        m_end(0)
     {
     }
 
-    skQueueIncrementIterator(PointerType begin, SKsize size, SKsize front) : m_beg(begin + front), m_end(begin + size)
+    skQueueIncrementIterator(PointerType begin, SKsize size, SKsize front) :
+        m_beg(begin + front),
+        m_end(begin + size)
     {
     }
 
-    explicit skQueueIncrementIterator(T& v) : m_beg(v.ptr() + v.front()), m_end(v.ptr() + v.size())
+    explicit skQueueIncrementIterator(T& v) :
+        m_beg(v.ptr() + v.front()),
+        m_end(v.ptr() + v.size())
     {
     }
 
-    skQueueIncrementIterator(const skQueueIncrementIterator& rhs) : m_beg(rhs.m_beg), m_end(rhs.m_end)
+    skQueueIncrementIterator(const skQueueIncrementIterator& rhs) :
+        m_beg(rhs.m_beg),
+        m_end(rhs.m_end)
     {
     }
 
@@ -128,7 +136,9 @@ protected:
     }
 
 public:
-    skQueueDecrementIterator() : m_beg(0), m_end(0)
+    skQueueDecrementIterator() :
+        m_beg(0),
+        m_end(0)
     {
     }
 
@@ -138,11 +148,15 @@ public:
     {
     }
 
-    explicit skQueueDecrementIterator(T& v) : m_beg(v.ptr() + (v.size() - 1)), m_end(v.ptr() + v.front())
+    explicit skQueueDecrementIterator(T& v) :
+        m_beg(v.ptr() + (v.size() - 1)),
+        m_end(v.ptr() + v.front())
     {
     }
 
-    skQueueDecrementIterator(const skQueueDecrementIterator& rhs) : m_beg(rhs.m_beg), m_end(rhs.m_end)
+    skQueueDecrementIterator(const skQueueDecrementIterator& rhs) :
+        m_beg(rhs.m_beg),
+        m_end(rhs.m_end)
     {
     }
 
@@ -215,11 +229,21 @@ private:
     SKsize              m_size, m_capacity;
 
 public:
-    skQueue() : m_data(0), m_front(0), m_back(0), m_size(0), m_capacity(0)
+    skQueue() :
+        m_data(0),
+        m_front(0),
+        m_back(0),
+        m_size(0),
+        m_capacity(0)
     {
     }
 
-    skQueue(const skQueue& o) : m_data(0), m_front(0), m_back(0), m_size(0), m_capacity(0)
+    skQueue(const skQueue& o) :
+        m_data(0),
+        m_front(0),
+        m_back(0),
+        m_size(0),
+        m_capacity(0)
     {
         if (o.m_data)
         {
@@ -240,9 +264,9 @@ public:
     {
         if (m_data)
             m_alloc.array_deallocate(m_data, m_capacity);
-        m_size = 0;
-        m_front = 0;
-        m_back = 0;
+        m_size     = 0;
+        m_front    = 0;
+        m_back     = 0;
         m_capacity = 0;
     }
 
@@ -260,8 +284,8 @@ public:
         }
 
         m_front = 0;
-        m_back = nr;
-        m_size = nr;
+        m_back  = nr;
+        m_size  = nr;
     }
 
     void reserve(SKsize nr)
@@ -305,6 +329,7 @@ public:
     ReferenceType dequeue(void)
     {
         ReferenceType returnValue = m_data[m_front];
+
         m_front = (m_front + 1) % m_capacity;
         m_size--;
         return returnValue;

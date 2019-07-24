@@ -32,8 +32,29 @@ extern void* skMalloc(unsigned int size);
 extern void* skRealloc(void* ptr, unsigned int size);
 extern void* skCalloc(unsigned int size, unsigned int nr);
 extern void  skFree(void* ptr);
+
+
+#define SK_NO_HEADERS 0
+
+#if SK_NO_HEADERS != 1
+
+#include <memory.h>
+#include <malloc.h>
+
+#define skMemset(ptr, val, nr) ::memset(ptr, val, nr)
+#define skMemcpy(dst, src, nr) ::memcpy(dst, src, nr)
+#define skMemcmp(cp0, cp1, nr) ::memcmp(cp0, cp1, nr)
+
+
+#else
+
 extern void* skMemset(void* ptr, int val, unsigned int nr);
 extern void* skMemcpy(void* dst, const void* src, unsigned int nr);
 extern int   skMemcmp(const void* cmp0, const void* cmp1, unsigned int nr);
+
+
+#endif
+
+
 
 #endif  //_skMemoryUtils_h_

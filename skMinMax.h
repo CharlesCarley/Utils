@@ -70,9 +70,7 @@ SK_INLINE T skClamp(const T& v, const T& a, const T& b)
 template <typename T>
 void skFill(T* dst, T* src, const SKsize nr)
 {
-    if (nr <= 0)
-        ;
-    else
+    if (nr > 0 && nr != SK_NPOS)
     {
         SKsize i = 0;
         do
@@ -84,9 +82,7 @@ void skFill(T* dst, T* src, const SKsize nr)
 template <typename T>
 void skFill(T* dst, const T& src, const SKsize nr)
 {
-    if (nr <= 0)
-        ;
-    else
+    if (nr > 0 && nr != SK_NPOS)
     {
         SKsize i = 0;
         do

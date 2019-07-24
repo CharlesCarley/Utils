@@ -45,11 +45,13 @@ public:
     const SKuint16 LIMIT = L;
 
 public:
-    skFixedArray() : m_size(0)
+    skFixedArray() :
+        m_size(0)
     {
     }
 
-    skFixedArray(const skFixedArray& rhs) : m_size(0)
+    skFixedArray(const skFixedArray& rhs) :
+        m_size(0)
     {
         if (rhs.size())
         {
@@ -61,7 +63,8 @@ public:
     }
 
     template <const SKuint16 R>
-    skFixedArray(const skFixedArray<T, R>& rhs) : m_size(0)
+    skFixedArray(const skFixedArray<T, R>& rhs) :
+        m_size(0)
     {
         if (rhs.size())
         {
@@ -72,7 +75,8 @@ public:
         }
     }
 
-    skFixedArray(ConstPointerType rhs) : m_size(0)
+    skFixedArray(ConstPointerType rhs) :
+        m_size(0)
     {
         if (rhs)
         {
@@ -82,7 +86,8 @@ public:
         }
     }
 
-    skFixedArray(ConstPointerType rhs, SKuint16 size) : m_size(0)
+    skFixedArray(ConstPointerType rhs, SKuint16 size) :
+        m_size(0)
     {
         if (rhs)
         {

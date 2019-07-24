@@ -49,16 +49,20 @@ public:
     SK_IMPLEMENT_SORT(T, skStack);
 
 public:
-    skStack() : m_top(0)
+    skStack() :
+        m_top(0)
     {
     }
 
-    skStack(SKsize rsp) : m_top(0)
+    skStack(SKsize rsp) :
+        m_top(0)
     {
         m_stack.reserve(rsp);
     }
 
-    skStack(const SelfType& o) : m_top(o.m_top), m_stack(o.m_stack)
+    skStack(const SelfType& o) :
+        m_top(o.m_top),
+        m_stack(o.m_stack)
     {
     }
 
@@ -172,7 +176,7 @@ public:
         if (this != &rhs)
         {
             m_stack = rhs.m_stack;
-            m_top = rhs.m_top;
+            m_top   = rhs.m_top;
         }
 
         return *this;

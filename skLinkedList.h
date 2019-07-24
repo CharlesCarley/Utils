@@ -43,10 +43,13 @@ public:
         SK_DECLARE_TYPE(Link);
 
     public:
-        Link() : m_next(0)
+        Link() :
+            m_next(0)
         {
         }
-        Link(SelfType::ConstReferenceType v) : m_next(0), m_data(v)
+        Link(SelfType::ConstReferenceType v) :
+            m_next(0),
+            m_data(v)
         {
         }
         ~Link()
@@ -73,7 +76,8 @@ private:
     SKsize m_size;
 
 public:
-    skSinglyLinkedList() : m_size(0)
+    skSinglyLinkedList() :
+        m_size(0)
     {
         m_head = m_tail = 0;
     }
@@ -109,7 +113,7 @@ public:
         {
             SK_ASSERT(m_tail && m_tail->m_next == 0);
             m_tail->m_next = link;
-            m_tail = link;
+            m_tail         = link;
         }
 
         m_size++;
@@ -123,8 +127,8 @@ public:
             m_head = nd;
         else
         {
-            Link* t = m_head;
-            m_head = nd;
+            Link* t        = m_head;
+            m_head         = nd;
             m_head->m_next = t;
         }
         m_size++;
@@ -158,7 +162,7 @@ public:
     {
         SK_ASSERT(m_head);
 
-        ValueType val = m_head->m_data;
+        ValueType val  = m_head->m_data;
         Link*     link = m_head->m_next;
 
         m_size--;
@@ -195,7 +199,7 @@ public:
             return SK_NPOS;
 
         SKsize foundIndex = 0;
-        Link*  node = m_head;
+        Link*  node       = m_head;
         while (node)
         {
             if (node->m_data == v)
@@ -211,7 +215,7 @@ public:
         SK_ASSERT(idx != SK_NPOS && idx < m_size);
 
         SKsize foundIndex = 0;
-        Link*  node = m_head;
+        Link*  node       = m_head;
         while (node)
         {
             if (foundIndex == idx)
@@ -249,14 +253,14 @@ private:
             if (node->m_data == v)
             {
                 (*prev) = last;
-                (*pos) = node;
+                (*pos)  = node;
                 return;
             }
             last = node;
             node = node->m_next;
         }
         (*prev) = 0;
-        (*pos) = 0;
+        (*pos)  = 0;
     }
 };
 

@@ -41,15 +41,22 @@ public:
         Key   first;
         Value second;
 
-        Pair() : hash(SK_NPOS)
+        Pair() :
+            hash(SK_NPOS)
         {
         }
 
-        Pair(const Key& k, const Value& v, SKhash hk) : first(k), second(v), hash(hk)
+        Pair(const Key& k, const Value& v, SKhash hk) :
+            first(k),
+            second(v),
+            hash(hk)
         {
         }
 
-        Pair(const Pair& oth) : first(oth.first), second(oth.second), hash(oth.hash)
+        Pair(const Pair& oth) :
+            first(oth.first),
+            second(oth.second),
+            hash(oth.hash)
         {
         }
 
@@ -62,9 +69,9 @@ public:
         {
             if (this != &rhs)
             {
-                first = rhs.first;
+                first  = rhs.first;
                 second = rhs.second;
-                hash = rhs.hash;
+                hash   = rhs.hash;
             }
             return *this;
         }
@@ -107,11 +114,19 @@ private:
     }
 
 public:
-    skDictionary() : m_data(0), m_index(0), m_size(0), m_capacity(0)
+    skDictionary() :
+        m_data(0),
+        m_index(0),
+        m_size(0),
+        m_capacity(0)
     {
     }
 
-    skDictionary(const skDictionary& o) : m_data(0), m_index(0), m_size(0), m_capacity(0)
+    skDictionary(const skDictionary& o) :
+        m_data(0),
+        m_index(0),
+        m_size(0),
+        m_capacity(0)
     {
         SK_ASSERT(0 && "TODO");
     }
@@ -128,9 +143,9 @@ public:
             delete[] m_data;
             delete[] m_index;
         }
-        m_index = 0;
-        m_data = 0;
-        m_size = 0;
+        m_index    = 0;
+        m_data     = 0;
+        m_size     = 0;
         m_capacity = 0;
     }
 
@@ -151,8 +166,8 @@ public:
         if (find(key) != SK_NPOS)
             return;
 
-        SKhash mapping = probeKey(key);
-        m_data[m_size] = Pair(key, val, mapping);
+        SKhash mapping   = probeKey(key);
+        m_data[m_size]   = Pair(key, val, mapping);
         m_index[mapping] = m_size;
         ++m_size;
     }
@@ -180,7 +195,7 @@ public:
             while (i < m_capacity)
             {
                 mapping = probe(mapping, i++);
-                idx = m_index[mapping];
+                idx     = m_index[mapping];
                 if (idx != SK_NPOS && m_data[idx].hash == mapping && m_data[idx].first == k)
                     return idx;
             }
@@ -208,7 +223,7 @@ public:
             }
             else
             {
-                SKsize idx = m_index[mapA];
+                SKsize idx    = m_index[mapA];
                 m_index[mapB] = idx;
                 m_index[mapA] = SK_NPOS;
 
@@ -294,7 +309,7 @@ private:
     SKsize probeKey(const Key& k)
     {
         SKhash mapping = hash(k);
-        SKsize i = 0;
+        SKsize i       = 0;
         while (m_index[mapping] != SK_NPOS && i < m_capacity)
             mapping = probe(mapping, i++);
 
@@ -305,7 +320,7 @@ private:
 
     void rehash(SKsize nr)
     {
-        Pair*   data = new Pair[nr];
+        Pair*   data  = new Pair[nr];
         SKsize* index = new SKsize[nr];
         skMemset(index, SK_NPOS, (nr) * sizeof(SKsize));
 
@@ -313,21 +328,21 @@ private:
         for (i = 0; i < m_size; ++i)
         {
             mapping = hash(m_data[i].first);
-            j = 0;
+            j       = 0;
             while (index[mapping] != SK_NPOS && j < m_capacity)
                 mapping = probe(mapping, j++);
 
             SK_ASSERT(j != m_capacity);
             SK_ASSERT(index[mapping] == SK_NPOS);
 
-            data[i] = Pair(m_data[i].first, m_data[i].second, mapping);
+            data[i]        = Pair(m_data[i].first, m_data[i].second, mapping);
             index[mapping] = i;
         }
 
         delete[] m_data;
         delete[] m_index;
 
-        m_data = data;
+        m_data  = data;
         m_index = index;
     }
 };

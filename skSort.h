@@ -37,7 +37,8 @@ struct skSort
     typedef typename C::Iterator      Iterator;
     typedef typename C::ReferenceType ReferenceType;
 
-    skSort(Function fnc = 0) : m_sort(fnc)
+    skSort(Function fnc = 0) :
+        m_sort(fnc)
     {
     }
 
@@ -83,7 +84,8 @@ private:
     Function m_sort;
 
 public:
-    skQSort(Function fnc = 0) : m_sort(fnc)
+    skQSort(Function fnc = 0) :
+        m_sort(fnc)
     {
     }
 
@@ -116,7 +118,7 @@ private:
         skSwap(container[first], container[(first + last) / 2]);
 
         ReferenceType pivot = container[first];
-        lo = first;
+        lo                  = first;
         for (SKsize i = first + 1; i <= last; ++i)
         {
             if (m_sort(container[i], pivot) != 0)

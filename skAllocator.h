@@ -302,15 +302,12 @@ public:
 private:
     void __fill(T* dst, T* src, const SKsize nr)
     {
-        if (nr <= 0)
-            ;
-        else
+        if (nr > 0 && nr != SK_NPOS)
         {
             SKsize i = 0;
             do
-            {
                 dst[i] = src[i];
-            } while (++i < nr);
+            while (++i < nr);
         }
     }
 };

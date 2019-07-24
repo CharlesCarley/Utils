@@ -46,19 +46,27 @@ protected:
     }
 
 public:
-    skPointerIncrementIterator() : m_beg(0), m_end(0)
+    skPointerIncrementIterator() :
+        m_beg(0),
+        m_end(0)
     {
     }
 
-    skPointerIncrementIterator(PointerType begin, SKsize size) : m_beg(begin), m_end(begin + size)
+    skPointerIncrementIterator(PointerType begin, SKsize size) :
+        m_beg(begin),
+        m_end(begin + size)
     {
     }
 
-    explicit skPointerIncrementIterator(T& v) : m_beg(v.ptr()), m_end(v.ptr() + v.size())
+    explicit skPointerIncrementIterator(T& v) :
+        m_beg(v.ptr()),
+        m_end(v.ptr() + v.size())
     {
     }
 
-    skPointerIncrementIterator(const skPointerIncrementIterator& rhs) : m_beg(rhs.m_beg), m_end(rhs.m_end)
+    skPointerIncrementIterator(const skPointerIncrementIterator& rhs) :
+        m_beg(rhs.m_beg),
+        m_end(rhs.m_end)
     {
     }
 
@@ -126,21 +134,30 @@ protected:
     }
 
 public:
-    skPointerDecrementIterator() : m_beg(0), m_end(0)
+    skPointerDecrementIterator() :
+        m_beg(0),
+        m_end(0)
     {
     }
 
-    skPointerDecrementIterator(PointerType begin, SKsize size) : m_beg(begin + (size - 1)), m_end(begin)
+    skPointerDecrementIterator(PointerType begin, SKsize size) :
+        m_beg(begin + (size - 1)),
+        m_end(begin)
     {
     }
 
-    explicit skPointerDecrementIterator(T& v) : m_beg(v.ptr() + (v.size() - 1)), m_end(v.ptr())
+    explicit skPointerDecrementIterator(T& v) :
+        m_beg(v.ptr() + (v.size() - 1)),
+        m_end(v.ptr())
     {
     }
 
-    skPointerDecrementIterator(const skPointerDecrementIterator& rhs) : m_beg(rhs.m_beg), m_end(rhs.m_end)
+    skPointerDecrementIterator(const skPointerDecrementIterator& rhs) :
+        m_beg(rhs.m_beg),
+        m_end(rhs.m_end)
     {
     }
+
     ~skPointerDecrementIterator()
     {
     }
@@ -204,11 +221,17 @@ public:
     SK_IMPLEMENT_QSORT(T, skArray);
 
 public:
-    skArray() : m_data(0), m_size(0), m_capacity(0)
+    skArray() :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
     }
 
-    skArray(const skArray& o) : m_data(0), m_size(0), m_capacity(0)
+    skArray(const skArray& o) :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
         if (o.m_data)
         {
@@ -228,9 +251,9 @@ public:
         if (m_data)
             m_alloc.array_deallocate(m_data, m_capacity);
 
-        m_data = 0;
+        m_data     = 0;
         m_capacity = 0;
-        m_size = 0;
+        m_size     = 0;
     }
 
     const SKsize find(ConstReferenceType v) const
@@ -287,7 +310,7 @@ public:
     {
         if (nr < m_size)
         {
-            for (SKsize i = m_size; i < nr; i++)
+            for (SKsize i = nr; i < m_size; i++)
                 m_alloc.destroy(&m_data[i]);
         }
         else
@@ -304,14 +327,13 @@ public:
 
         if (nr < m_size)
         {
-            for (i = m_size; i < nr; i++)
+            for (i = nr; i < m_size; i++)
                 m_data[i].~T();
         }
         else
         {
             if (nr > m_size)
                 reserve(nr);
-
             skFill(m_data + m_size, fill, nr);
         }
         m_size = nr;
@@ -323,12 +345,12 @@ public:
             ;
         else if (m_data)
         {
-            m_data = m_alloc.array_reallocate(m_data, nr, m_size);
+            m_data     = m_alloc.array_reallocate(m_data, nr, m_size);
             m_capacity = nr;
         }
         else
         {
-            m_data = m_alloc.array_allocate(nr);
+            m_data     = m_alloc.array_allocate(nr);
             m_capacity = nr;
         }
     }

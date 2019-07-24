@@ -37,12 +37,16 @@ public:
     typedef char Pointer[L + 1];
 
 public:
-    skFixedString() : m_size(0), m_hash(SK_NPOS)
+    skFixedString() :
+        m_size(0),
+        m_hash(SK_NPOS)
     {
         m_buffer[m_size] = 0;
     }
 
-    skFixedString(const skFixedString& rhs) : m_size(0), m_hash(SK_NPOS)
+    skFixedString(const skFixedString& rhs) :
+        m_size(0),
+        m_hash(SK_NPOS)
     {
         if (rhs.size())
         {
@@ -55,7 +59,9 @@ public:
         m_buffer[m_size] = 0;
     }
 
-    skFixedString(const char* rhs) : m_size(0), m_hash(SK_NPOS)
+    skFixedString(const char* rhs) :
+        m_size(0),
+        m_hash(SK_NPOS)
     {
         if (rhs)
         {
@@ -68,7 +74,9 @@ public:
         m_buffer[m_size] = 0;
     }
 
-    skFixedString(const char* rhs, SKuint16 size) : m_size(0), m_hash(SK_NPOS)
+    skFixedString(const char* rhs, SKuint16 size) :
+        m_size(0),
+        m_hash(SK_NPOS)
     {
         if (rhs)
         {
@@ -85,14 +93,14 @@ public:
             return;
 
         m_buffer[m_size++] = ch;
-        m_buffer[m_size] = 0;
+        m_buffer[m_size]   = 0;
     }
 
     void resize(SKuint16 ns)
     {
         if (ns <= L)
         {
-            m_size = ns;
+            m_size           = ns;
             m_buffer[m_size] = 0;
         }
     }
@@ -130,7 +138,7 @@ public:
     SK_INLINE void clear(void)
     {
         m_buffer[0] = 0;
-        m_size = 0;
+        m_size      = 0;
     }
 
     SK_INLINE bool empty(void) const

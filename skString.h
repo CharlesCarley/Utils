@@ -64,21 +64,33 @@ public:
     SK_IMPLEMENT_SORT2(ValueType, skString);
 
 public:
-    skString() : m_data(0), m_size(0), m_capacity(0)
+    skString() :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
     }
 
-    skString(const ValueType* str, SKsize len = 0) : m_data(0), m_size(0), m_capacity(0)
+    skString(const ValueType* str, SKsize len = 0) :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
         alloc(str, len);
     }
 
-    skString(const skString& str) : m_data(0), m_size(0), m_capacity(0)
+    skString(const skString& str) :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
         alloc(str.c_str(), str.size());
     }
 
-    skString(const char ch, SKsize nr) : m_data(0), m_size(0), m_capacity(0)
+    skString(const char ch, SKsize nr) :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
         alloc(ch, nr);
     }

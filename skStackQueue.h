@@ -50,11 +50,17 @@ private:
     SKsize              m_size, m_capacity;
 
 public:
-    skStackQueue() : m_data(0), m_size(0), m_capacity(0)
+    skStackQueue() :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
     }
 
-    skStackQueue(const skStackQueue& o) : m_data(0), m_size(0), m_capacity(0)
+    skStackQueue(const skStackQueue& o) :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
         if (o.m_data)
         {
@@ -73,7 +79,7 @@ public:
     {
         if (m_data)
             m_alloc.array_deallocate(m_data, m_capacity);
-        m_size = 0;
+        m_size     = 0;
         m_capacity = 0;
     }
 
@@ -194,7 +200,7 @@ private:
             return pop();
         else
         {
-            ReferenceType val = pop();
+            ReferenceType val  = pop();
             ReferenceType rval = stackRecurse();
             enqueue(val);
             return rval;

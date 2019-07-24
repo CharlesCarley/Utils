@@ -41,19 +41,23 @@ private:
     mutable LinkPtr m_cur;
 
 public:
-    skListIterator() : m_cur(0)
+    skListIterator() :
+        m_cur(0)
     {
     }
 
-    skListIterator(LinkPtr first) : m_cur(first)
+    skListIterator(LinkPtr first) :
+        m_cur(first)
     {
     }
 
-    explicit skListIterator(T& v) : m_cur(v.begin())
+    explicit skListIterator(T& v) :
+        m_cur(v.begin())
     {
     }
 
-    skListIterator(const skListIterator& v) : m_cur(v.m_cur)
+    skListIterator(const skListIterator& v) :
+        m_cur(v.m_cur)
     {
     }
 
@@ -80,7 +84,7 @@ public:
     {
         SK_ITER_DEBUG(hasMoreElements());
         LinkPtrRef ret = m_cur->getLink();
-        m_cur = m_cur->getNext();
+        m_cur          = m_cur->getNext();
         return ret;
     }
 
@@ -88,7 +92,7 @@ public:
     {
         SK_ITER_DEBUG(hasMoreElements());
         LinkPtrRef ret = m_cur->getLink();
-        m_cur = m_cur->getNext();
+        m_cur          = m_cur->getNext();
         return ret;
     }
 
@@ -117,19 +121,23 @@ private:
     mutable LinkPtr m_cur;
 
 public:
-    skListReverseIterator() : m_cur(0)
+    skListReverseIterator() :
+        m_cur(0)
     {
     }
 
-    skListReverseIterator(LinkPtr first) : m_cur(first)
+    skListReverseIterator(LinkPtr first) :
+        m_cur(first)
     {
     }
 
-    explicit skListReverseIterator(T& v) : m_cur(v.end())
+    explicit skListReverseIterator(T& v) :
+        m_cur(v.end())
     {
     }
 
-    skListReverseIterator(const skListReverseIterator& v) : m_cur(v.m_cur)
+    skListReverseIterator(const skListReverseIterator& v) :
+        m_cur(v.m_cur)
     {
     }
 
@@ -156,7 +164,7 @@ public:
     {
         SK_ITER_DEBUG(hasMoreElements());
         LinkPtrRef ret = m_cur->getLink();
-        m_cur = m_cur->getPrev();
+        m_cur          = m_cur->getPrev();
         return ret;
     }
 
@@ -164,7 +172,7 @@ public:
     {
         SK_ITER_DEBUG(hasMoreElements());
         LinkPtrRef ret = m_cur->getLink();
-        m_cur = m_cur->getPrev();
+        m_cur          = m_cur->getPrev();
         return ret;
     }
 
@@ -201,8 +209,8 @@ public:
     void clear(void)
     {
         m_first = 0;
-        m_last = 0;
-        m_size = 0;
+        m_last  = 0;
+        m_size  = 0;
     }
 
     void push_back(LinkPtr link)
@@ -253,7 +261,7 @@ public:
 
     LinkPtr link_at(SKsize pos) const
     {
-        SKsize  i = 0;
+        SKsize  i    = 0;
         LinkPtr node = m_first;
 
         while (node)
@@ -325,11 +333,17 @@ public:
     class Link : public skAllocObject
     {
     public:
-        Link() : m_next(0), m_prev(0), m_data(ValueType())
+        Link() :
+            m_next(0),
+            m_prev(0),
+            m_data(ValueType())
         {
         }
 
-        explicit Link(ConstReferenceType v) : m_next(0), m_prev(0), m_data(v)
+        explicit Link(ConstReferenceType v) :
+            m_next(0),
+            m_prev(0),
+            m_data(v)
         {
         }
 
@@ -386,7 +400,7 @@ public:
         while (node)
         {
             LinkPtr temp = node;
-            node = node->m_next;
+            node         = node->m_next;
             delete temp;
         }
         m_list.clear();
@@ -560,7 +574,10 @@ public:
     class Link
     {
     public:
-        Link() : m_next(0), m_prev(0), m_data(0)
+        Link() :
+            m_next(0),
+            m_prev(0),
+            m_data(0)
         {
         }
 

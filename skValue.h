@@ -43,7 +43,7 @@ protected:
         virtual ~Value()
         {
         }
-        virtual const Info& type(void) const = 0;
+        virtual const Info& type(void) const  = 0;
         virtual Value*      clone(void) const = 0;
     };
 
@@ -51,7 +51,8 @@ protected:
     class ValueType : public Value
     {
     public:
-        ValueType(const T& v) : m_value(v)
+        ValueType(const T& v) :
+            m_value(v)
         {
         }
 
@@ -80,16 +81,19 @@ protected:
     }
 
 public:
-    skValue() : m_data(0)
+    skValue() :
+        m_data(0)
     {
     }
 
-    skValue(const skValue& v) : m_data(v.m_data ? v.m_data->clone() : 0)
+    skValue(const skValue& v) :
+        m_data(v.m_data ? v.m_data->clone() : 0)
     {
     }
 
     template <typename T>
-    skValue(const T& v) : m_data(new ValueType<T>(v))
+    skValue(const T& v) :
+        m_data(new ValueType<T>(v))
     {
     }
 
