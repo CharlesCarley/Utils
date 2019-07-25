@@ -344,7 +344,9 @@ public:
     void reserve(SKsize nr)
     {
         if (m_capacity > nr)
-            ;
+        {
+            // Skip
+        }
         else if (m_data)
         {
             m_data     = m_alloc.array_reallocate(m_data, nr, m_size);
