@@ -270,7 +270,9 @@ public:
     void push_back(ConstReferenceType v)
     {
         if (m_size > m_alloc.max_size())
-            ;
+        {
+            // do nothing
+        }
         else if (m_size == m_capacity)
         {
             reserve(m_size == 0 ? 8 : m_size * 2);

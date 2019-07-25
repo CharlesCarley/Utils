@@ -195,8 +195,11 @@ void skString::reserve(SKsize nr)
     {
         ValueType* ptr = new ValueType[nr + 1];
 
+
+
         if (m_data)
         {
+            // copy the old data over 
             skMemcpy(ptr, m_data, m_size);
             delete[] m_data;
         }
@@ -221,15 +224,19 @@ void skString::alloc(const char* str, SKsize len)
     if (!str)
         return;
 
-    m_size = len;
-    if (!m_size)
-        m_size = skStringUtils::length(str);
+    if (!len)
+        len = skStringUtils::length(str);
 
-    reserve(m_size);
-    if (m_data)
+    if (len > 0)
     {
-        skStringUtils::copyn(m_data, str, m_size);
-        m_data[m_size] = 0;
+        reserve(len);
+
+        if (m_data)
+        {
+            skStringUtils::copyn(m_data, str, len);
+            m_data[len] = 0;
+            m_size = len;
+        }
     }
 }
 
@@ -610,14 +617,14 @@ void skString::encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
 
     r  = m_size % 2;
     sh = new SKuint16[m_size + r + 1];
-    
+
     sh[m_size + r] = 0;
 
     for (i = 0; i < m_size; i += 2)
     {
         a = (double)(SKuint8)m_data[i + 0];
         b = (double)(SKuint8)m_data[i + 1];
-    
+
         sh[j++] = (SKuint16)((b + a / 256.0) * 256.0);
     }
 
