@@ -27,6 +27,8 @@
 #include "skMinMax.h"
 #include "skPlatformHeaders.h"
 
+
+
 skFileStream::skFileStream() :
     m_handle(0),
     m_pos(SK_NPOS),
@@ -40,12 +42,16 @@ skFileStream::~skFileStream()
     close();
 }
 
+
+
 void skFileStream::flush(void)
 {
-    if (m_mode == READ)
+    if (m_mode == WRITE)
     {
         if (m_handle)
+        {
             fflush(static_cast<FILE*>(m_handle));
+        }
     }
 }
 
@@ -59,11 +65,12 @@ void skFileStream::open(const char* path, Mode mode)
 
     m_handle = fopen(path, mode == READ ? "rb" : mode == WRITE_TEXT ? "w" : "wb");
     m_mode   = m_handle != 0 ? mode : NO_INPUT;
+    m_pos    = 0;
 
-    if (m_mode != NO_INPUT && m_handle != 0)
-        m_pos = 0;
+    // only used int write mode 
+    m_size = SK_NPOS;
 
-    if (m_mode == WRITE)
+    if (m_mode > READ)
         m_size = 0;
 }
 
@@ -77,11 +84,6 @@ void skFileStream::close(void)
     m_size = m_pos = SK_NPOS;
 }
 
-bool skFileStream::isOpen(void) const
-{
-    return m_mode != NO_INPUT && m_handle != 0;
-}
-
 bool skFileStream::eof(void) const
 {
     return !isOpen() || feof(static_cast<FILE*>(m_handle));
@@ -89,10 +91,13 @@ bool skFileStream::eof(void) const
 
 SKsize skFileStream::read(void* dst, SKsize nr) const
 {
-    if (m_mode == WRITE || !isOpen() || !dst || nr <= 0)
+    if (m_mode == WRITE || dst == 0)
         return 0;
 
-    SKsize br = fread(dst, 1, nr, static_cast<FILE*>(m_handle));
+    FILE* fp = static_cast<FILE*>(m_handle);
+
+    SKsize br = fread(dst, 1, nr, fp);
+
     m_pos += br;
     return br;
 }

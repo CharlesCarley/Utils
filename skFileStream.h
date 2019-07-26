@@ -40,13 +40,20 @@ public:
     void   flush(void);
     void   open(const char* path, Mode mode);
     void   close(void);
-    bool   isOpen(void) const;
+    
     bool   eof(void) const;
     SKsize read(void* dst, SKsize nr) const;
     SKsize write(const void* src, SKsize nr);
     SKsize position(void) const;
     SKsize size(void) const;
     void   seek(SKsize offs, SKsize dir);
+
+
+    SK_INLINE bool isOpen(void) const
+    {
+        return m_mode != NO_INPUT && m_handle != 0;
+    }
+
 
 private:
     Handle         m_handle;

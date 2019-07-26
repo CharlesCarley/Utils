@@ -209,22 +209,27 @@ public:
     {
         return m_data;
     }
+
     SK_INLINE PointerType ptr(void)
     {
         return m_data;
     }
+
     SK_INLINE SKsize size(void) const
     {
         return m_size;
     }
+
     SK_INLINE SKsize capacity(void) const
     {
         return m_capacity;
     }
+
     SK_INLINE bool empty(void) const
     {
         return m_size == 0 || !m_data || m_data[0] == 0;
     }
+
     SK_INLINE char at(SKsize idx) const
     {
         SK_ASSERT(idx != SK_NPOS);
@@ -255,14 +260,17 @@ public:
     {
         return skStringUtils::toBool(m_data);
     }
+
     SKint32 toInteger(void)
     {
         return skStringUtils::toInt(m_data);
     }
+
     float toFloat(void)
     {
         return skStringUtils::toFloat(m_data);
     }
+
     double toDouble(void)
     {
         return skStringUtils::toDouble(m_data);
