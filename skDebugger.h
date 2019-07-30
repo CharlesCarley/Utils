@@ -55,11 +55,22 @@ class skDebugger
 {
 public:
 
+    enum Flags
+    {
+        PF_DISABLE_COLOR    = (1 << 0),
+        PF_DEBUG_WINDOW_OUT = (1 << 1)
+    };
+
+    static void setPrintFlag(SKuint32 flag);
+
+
+
     // Halts the console and waits for the enter key
     static void pause(void);
 
     // Clears the console 
     static void clear(void);
+
 
 
     // Sets the foreground and background color of the console 
@@ -73,6 +84,8 @@ public:
 
 
 private:
+
+
 #if SK_PLATFORM == SK_PLATFORM_WIN32
     
     static void*         m_stdout;

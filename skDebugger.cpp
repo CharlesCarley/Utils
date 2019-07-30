@@ -68,7 +68,15 @@ void skDebugger::breakProcess(void)
 #endif  // SK_DEBUG
 
 
-static char ReportBuf[SK_SBUF_SIZE + 1];
+
+static SKbyte   skDebugger_ReportBuf[SK_SBUF_SIZE + 1];
+static SKuint32 skDebugger_PrintFlags = 0;
+
+
+void skDebugger::setPrintFlag(SKuint32 flag)
+{
+    skDebugger_PrintFlags = flag;
+}
 
 
 
@@ -81,7 +89,7 @@ void skDebugger::report(const char* fmt, ...)
     int     size;
     va_list lst;
     va_start(lst, fmt);
-    size = skp_printf(ReportBuf, SK_SBUF_SIZE, fmt, lst);
+    size = skp_printf(skDebugger_ReportBuf, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
 
     if (size < 0)
@@ -89,15 +97,14 @@ void skDebugger::report(const char* fmt, ...)
 
     if (size > 0)
     {
-        ReportBuf[size] = 0;
+        skDebugger_ReportBuf[size] = 0;
 
 #if SK_COMPILER == SK_COMPILER_MSVC
-
-        if (IsDebuggerPresent())
-            OutputDebugString(ReportBuf);
+        if (skDebugger_PrintFlags & skDebugger::PF_DEBUG_WINDOW_OUT && IsDebuggerPresent())
+            OutputDebugString(skDebugger_ReportBuf);
         else
 #endif
-            fprintf(stderr, "%s", ReportBuf);
+            printf("%s", skDebugger_ReportBuf);
     }
 }
 
@@ -203,6 +210,9 @@ unsigned char* skPrintUtils::getColor(skConsoleColorSpace fore, skConsoleColorSp
 
 void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
 {
+    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
+        return;
+
     // filter out invalid colors and do nothing if one is supplied
     if (fg < 0 || fg > CS_COLOR_MAX || bg < 0 || bg > CS_COLOR_MAX)
         return;
@@ -241,10 +251,11 @@ void skDebugger::clear(void)
 void skDebugger::pause(void)
 {
     char ch;
-    writeColor(CS_WHITE);
+
+    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
+        writeColor(CS_WHITE);
+
     printf("\nPress enter to continue . . .");
-
-
     getc(stdin);
     for (;;)
     {
@@ -258,7 +269,8 @@ void skDebugger::pause(void)
 
 void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
 {
-    skDebugger::writeColor(fg);
+    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
+        skDebugger::writeColor(fg);
 
     if (!fmt)
         return; 
@@ -269,7 +281,7 @@ void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
 
     va_list lst;
     va_start(lst, fmt);
-    size = skp_printf(ReportBuf, SK_SBUF_SIZE, fmt, lst);
+    size = skp_printf(skDebugger_ReportBuf, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
 
     if (size < 0)
@@ -277,7 +289,7 @@ void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
 
     if (size > 0 && size < SK_SBUF_SIZE)
     {
-        ReportBuf[size] = 0;
-        printf("%s", ReportBuf);
+        skDebugger_ReportBuf[size] = 0;
+        printf("%s", skDebugger_ReportBuf);
     }
 }
