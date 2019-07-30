@@ -29,14 +29,70 @@
 
 #include "Utils/Config/skConfig.h"
 
+enum skConsoleColorSpace
+{
+    CS_BLACK = 0,
+    CS_DARKBLUE,
+    CS_DARKGREEN,
+    CS_DARKCYAN,
+    CS_DARKRED,
+    CS_DARKMAGENTA,
+    CS_DARKYELLOW,
+    CS_LIGHT_GREY,
+    CS_GREY,
+    CS_BLUE,
+    CS_GREEN,
+    CS_CYAN,
+    CS_RED,
+    CS_MAGENTA,
+    CS_YELLOW,
+    CS_WHITE,
+    CS_COLOR_MAX
+};
+
 
 class skDebugger
 {
 public:
+
+    // Halts the console and waits for the enter key
+    static void pause(void);
+
+    // Clears the console 
+    static void clear(void);
+
+
+    // Sets the foreground and background color of the console 
+    static void writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg = CS_BLACK);
+
+
     static bool isDebugger(void);
     static void report(const char* msg, ...);
     static void breakProcess(void);
+
+
+
+private:
+#if SK_PLATFORM == SK_PLATFORM_WIN32
+    static void*         m_stdout;
+    static unsigned char COLOR_TABLE[16][16];
+    static unsigned char getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
+#else
+    static unsigned char* getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
+#endif
+
 };
+
+
+
+
+
+class skColorPrinter
+{
+public:
+    static void print(skConsoleColorSpace foreground, const char* msg, ...);
+};
+
 
 
 #ifdef SK_NO_DEBUGGER
@@ -45,6 +101,10 @@ public:
 #else
 #define skPrintf skDebugger::report
 #endif
+
+
+
+#define skCPrintf(fg, msg, ...) skColorPrinter::print(fg, msg, __VA_ARGS__)
 
 
 #endif  //_skDebugger_h_
