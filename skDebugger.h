@@ -74,11 +74,15 @@ public:
 
 private:
 #if SK_PLATFORM == SK_PLATFORM_WIN32
+    
     static void*         m_stdout;
     static unsigned char COLOR_TABLE[16][16];
     static unsigned char getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
+
 #elif SK_PLATFORM == SK_PLATFORM_LINUX
+
     static unsigned char* getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
+
 #endif
 
 };

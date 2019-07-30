@@ -264,7 +264,9 @@ void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
         return; 
 
 
-    int     size;
+    int size;
+
+
     va_list lst;
     va_start(lst, fmt);
     size = skp_printf(ReportBuf, SK_SBUF_SIZE, fmt, lst);
@@ -273,10 +275,9 @@ void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
     if (size < 0)
         size = SK_SBUF_SIZE;
 
-    if (size > 0)
+    if (size > 0 && size < SK_SBUF_SIZE)
     {
         ReportBuf[size] = 0;
         printf("%s", ReportBuf);
     }
 }
-
