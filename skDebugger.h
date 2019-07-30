@@ -77,7 +77,7 @@ private:
     static void*         m_stdout;
     static unsigned char COLOR_TABLE[16][16];
     static unsigned char getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
-#else
+#elif SK_PLATFORM == SK_PLATFORM_LINUX
     static unsigned char* getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
 #endif
 
@@ -105,6 +105,8 @@ public:
 
 
 #define skCPrintf(fg, msg, ...) skColorPrinter::print(fg, msg, __VA_ARGS__)
+#define skClear skDebugger::clear
+#define skPause skDebugger::pause
 
 
 #endif  //_skDebugger_h_
