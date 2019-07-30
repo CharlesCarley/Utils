@@ -75,6 +75,8 @@ static char ReportBuf[SK_SBUF_SIZE + 1];
 
 void skDebugger::report(const char* fmt, ...)
 {
+    if (!fmt)
+        return; 
 
     int     size;
     va_list lst;
@@ -208,7 +210,7 @@ void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
 #if SK_PLATFORM == SK_PLATFORM_LINUX
 
     unsigned char* col = getColor((skConsoleColorSpace)fg, (skConsoleColorSpace)bg);
-    skPrintf("\e[%im", col[0]);
+    printf("\e[%im", col[0]);
 
 #elif SK_PLATFORM == SK_PLATFORM_WIN32
 
@@ -256,13 +258,17 @@ void skDebugger::pause(void)
 
 void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
 {
+    skDebugger::writeColor(fg);
+
+    if (!fmt)
+        return; 
+
+
     int     size;
     va_list lst;
     va_start(lst, fmt);
     size = skp_printf(ReportBuf, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
-
-    skDebugger::writeColor(fg);
 
     if (size < 0)
         size = SK_SBUF_SIZE;
