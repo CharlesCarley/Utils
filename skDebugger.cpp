@@ -144,7 +144,7 @@ unsigned char skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpace
 
 #elif SK_PLATFORM == SK_PLATFORM_LINUX
 
-unsigned char* skPrintUtils::getColor(skConsoleColorSpace fore, skConsoleColorSpace)
+unsigned char* skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpace)
 {
     static unsigned char color[2];
     switch (fore)
