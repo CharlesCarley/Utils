@@ -252,7 +252,7 @@ void skDebugger::pause(void)
 {
     char ch;
 
-    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
+    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
         writeColor(CS_WHITE);
 
     printf("\nPress enter to continue . . .");
@@ -269,7 +269,7 @@ void skDebugger::pause(void)
 
 void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
 {
-    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
+    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
         skDebugger::writeColor(fg);
 
     if (!fmt)
