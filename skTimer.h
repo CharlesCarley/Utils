@@ -47,4 +47,7 @@ extern SKulong skGetMicroseconds(void);
 extern SKulong skGetTickCount(void);
 extern void    skSleep(SKuint32 ms);
 
+extern SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt);
+extern SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const long long &timestamp);
+
 #endif  //_skTimer_h_

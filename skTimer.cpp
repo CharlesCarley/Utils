@@ -24,15 +24,21 @@
 -------------------------------------------------------------------------------
 */
 #include "skTimer.h"
+#include <time.h>
 #include "skMinMax.h"
 #include "skPlatformHeaders.h"
+
 
 #if SK_PLATFORM == SK_PLATFORM_WIN32
 
 class skTimerPrivate
 {
 public:
-    skTimerPrivate() : m_freq(0), m_beg(0), m_cur(0), m_mask(1)
+    skTimerPrivate() :
+        m_freq(0),
+        m_beg(0),
+        m_cur(0),
+        m_mask(1)
     {
     }
     SKuint64 m_freq;
@@ -41,7 +47,8 @@ public:
     SKuint32 m_mask;
 };
 
-skTimer::skTimer() : m_private(new skTimerPrivate())
+skTimer::skTimer() :
+    m_private(new skTimerPrivate())
 {
     reset();
 }
@@ -53,25 +60,25 @@ skTimer::~skTimer()
 
 void skTimer::reset(void)
 {
-    QueryPerformanceFrequency((LARGE_INTEGER*)&m_private->m_freq);
+    QueryPerformanceFrequency((LARGE_INTEGER *)&m_private->m_freq);
 
     DWORD proc, sys;
     GetProcessAffinityMask(GetCurrentProcess(), &proc, &sys);
-    proc = skMax<SKuint32>(proc, 1);
+    proc              = skMax<SKuint32>(proc, 1);
     m_private->m_mask = 1;
 
     while (m_private->m_mask & proc)
         m_private->m_mask <<= 1;
 
-    QueryPerformanceCounter((LARGE_INTEGER*)&m_private->m_beg);
+    QueryPerformanceCounter((LARGE_INTEGER *)&m_private->m_beg);
     m_private->m_cur = 0;
 }
 
 SKulong skTimer::getMilliseconds(void)
 {
     HANDLE    curThread = GetCurrentThread();
-    DWORD_PTR old = SetThreadAffinityMask(curThread, m_private->m_mask);
-    QueryPerformanceCounter((LARGE_INTEGER*)&m_private->m_cur);
+    DWORD_PTR old       = SetThreadAffinityMask(curThread, m_private->m_mask);
+    QueryPerformanceCounter((LARGE_INTEGER *)&m_private->m_cur);
     SetThreadAffinityMask(curThread, old);
 
     m_private->m_cur -= m_private->m_beg;
@@ -81,8 +88,8 @@ SKulong skTimer::getMilliseconds(void)
 SKulong skTimer::getMicroseconds(void)
 {
     HANDLE    curThread = GetCurrentThread();
-    DWORD_PTR old = SetThreadAffinityMask(curThread, m_private->m_mask);
-    QueryPerformanceCounter((LARGE_INTEGER*)&m_private->m_cur);
+    DWORD_PTR old       = SetThreadAffinityMask(curThread, m_private->m_mask);
+    QueryPerformanceCounter((LARGE_INTEGER *)&m_private->m_cur);
     SetThreadAffinityMask(curThread, old);
 
     m_private->m_cur -= m_private->m_beg;
@@ -109,7 +116,8 @@ public:
     struct timeval now;
 };
 
-skTimer::skTimer() : m_private(new skTimerPrivate())
+skTimer::skTimer() :
+    m_private(new skTimerPrivate())
 {
     reset();
 }
@@ -160,10 +168,47 @@ SKulong skGetMicroseconds(void)
 SKulong skGetTickCount(void)
 {
 #if SK_PLATFORM == SK_PLATFORM_WIN32
-    return GetTickCount();
+    return ::GetTickCount();
 #else
     static timeval now;
     gettimeofday(&now, NULL);
     return (now.tv_sec) / 1000;
 #endif
+}
+
+SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt)
+{
+    if (!buffer || bufSize == 0 || bufSize > 64 || !fmt)
+        return SK_NPOS;
+
+    time_t now;
+    ::time(&now);
+
+    return skGetTimeString(buffer, bufSize, fmt, now);
+}
+
+
+SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const long long &timestamp)
+{
+    if (!buffer || bufSize == 0 || bufSize > 64 || !fmt)
+        return SK_NPOS;
+
+    SKuint32 bw;
+    tm* tval;
+    tval = ::localtime((time_t *)&timestamp);
+
+    if (!tval)
+    {
+        ::memset(buffer, 0, bufSize);
+        return 0;
+    }
+
+
+    bw = ::strftime(buffer, bufSize, fmt, tval);
+    if (bw != 0 && bw < bufSize)
+    {
+        buffer[bw] = 0;
+        return bw;
+    }
+    return SK_NPOS;
 }
