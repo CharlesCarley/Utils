@@ -103,7 +103,7 @@ SKsize skFileStream::read(void* dst, SKsize nr) const
 }
 
 
-void skFileStream::seek(SKsize offs, SKsize dir)
+void skFileStream::seek(SKint64 offs, SKsize dir)
 {
     if (!isOpen() || offs == SK_NPOS)
         return;
@@ -115,9 +115,7 @@ void skFileStream::seek(SKsize offs, SKsize dir)
         way = SEEK_CUR;
 
 
-    if (fseek(static_cast<FILE*>(m_handle),
-              skClamp<SKsize>(offs, 0, m_size),
-              way) == 0)
+    if (fseek(static_cast<FILE*>(m_handle), (long)offs, way) == 0)
     {
         m_pos = (SKsize)ftell(static_cast<FILE*>(m_handle));
     }

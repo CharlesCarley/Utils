@@ -37,16 +37,16 @@ public:
     skFileStream();
     virtual ~skFileStream();
 
-    void   flush(void);
-    void   open(const char* path, Mode mode);
-    void   close(void);
-    
+    void flush(void);
+    void open(const char* path, Mode mode);
+    void close(void);
+
     bool   eof(void) const;
     SKsize read(void* dst, SKsize nr) const;
     SKsize write(const void* src, SKsize nr);
     SKsize position(void) const;
     SKsize size(void) const;
-    void   seek(SKsize offs, SKsize dir);
+    void   seek(SKint64 offs, SKsize dir);
 
 
     SK_INLINE bool isOpen(void) const

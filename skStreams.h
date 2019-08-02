@@ -35,6 +35,7 @@ public:
     {
         NO_INPUT = 0,
         READ,       //!< Opens for reading binary data
+        READ_TEXT,  //!< Opens for reading in text mode
         WRITE,      //!< Opens for writing binary data
         WRITE_TEXT  //!< Open in text mode
     };
@@ -55,11 +56,7 @@ public:
     virtual SKsize write(const void* src, SKsize nr) = 0;
     virtual SKsize position(void) const              = 0;
     virtual SKsize size(void) const                  = 0;
-
-    virtual void seek(SKsize offset, SKsize dir)
-    {
-        // not all streams need to seek
-    }
+    virtual void   seek(SKint64 offset, SKsize dir)  = 0;
 
 
     virtual void reserve(SKsize nr)
