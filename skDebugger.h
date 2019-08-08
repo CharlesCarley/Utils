@@ -83,13 +83,8 @@ public:
 
 
 private:
-    friend class skColorPrinter;
-    friend extern void skConsolePrint(skConsoleColorSpace foreground, const char* msg, ...);
-    
     static skConsoleColorSpace m_cacheFore, m_cacheBack;
 
-
-    static char Buffer[SK_SBUF_SIZE + 1];
 
 #if SK_PLATFORM == SK_PLATFORM_WIN32
 

@@ -76,12 +76,10 @@ void skDebugger::breakProcess(void)
 
 
 
-static SKuint32     skPrintFlags                         = 0;
-char                skDebugger::Buffer[SK_SBUF_SIZE + 1] = {0};
-skConsoleColorSpace skDebugger::m_cacheFore              = CS_WHITE;
-skConsoleColorSpace skDebugger::m_cacheBack              = CS_BLACK;
-
-
+static SKuint32     skPrintFlags             = 0;
+static char         Buffer[SK_SBUF_SIZE + 1] = {0};
+skConsoleColorSpace skDebugger::m_cacheFore  = CS_WHITE;
+skConsoleColorSpace skDebugger::m_cacheBack  = CS_BLACK;
 
 
 
@@ -297,7 +295,7 @@ void skConsolePrint(skConsoleColorSpace fg, const char* fmt, ...)
     va_list lst;
 
     va_start(lst, fmt);
-    size = skp_printf(skDebugger::Buffer, SK_SBUF_SIZE, fmt, lst);
+    size = skp_printf(Buffer, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
 
     if (size < 0)
@@ -305,8 +303,8 @@ void skConsolePrint(skConsoleColorSpace fg, const char* fmt, ...)
 
     if (size > 0 && size < SK_SBUF_SIZE)
     {
-        skDebugger::Buffer[size] = 0;
-        puts(skDebugger::Buffer);
+        Buffer[size] = 0;
+        puts(Buffer);
     }
 }
 
