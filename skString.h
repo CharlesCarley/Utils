@@ -51,6 +51,13 @@ namespace skStringUtils
     extern const SKuint16 BinaryTable[9];
 };  // namespace skStringUtils
 
+
+#define sk_strncpy(dest, size, source, count) skStringUtils::copyn(dest, source, size, count)
+
+
+
+
+
 class skString
 {
 public:
