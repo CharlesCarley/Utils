@@ -226,15 +226,11 @@ typedef signed int SKsize;
 
 
 typedef unsigned int    SKhash;
-typedef unsigned int    SKsize;
-
-
-
-// this needs to change to platform pointer size
-const SKsize SK_NPOS = (SKsize)-1;
-const SKsize SK_MAX = ((SKsize)-1) - 1;
-const SKsize SK_NPOS16 = (SKuint16)-1;
-const SKsize SK_MAX16 = ((SKuint16)-1) - 1;
+typedef unsigned int    SKsize; // intended for arrays use SKuintPtr for varying size types
+const SKsize SK_NPOS    = (SKsize)-1;
+const SKsize SK_MAX     = ((SKsize)-1) - 1;
+const SKsize SK_NPOS16  = (SKuint16)-1;
+const SKsize SK_MAX16   = ((SKuint16)-1) - 1;
 
 #endif
 

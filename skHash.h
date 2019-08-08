@@ -27,49 +27,11 @@
 #define _skHash_h_
 
 #include "Config/skConfig.h"
-// magic numbers from http://www.isthe.com/chongo/tech/comp/fnv/
-#define _SK_INITIAL_FNV 0x9E3779B1
-#define _SK_INITIAL_FNV2 0x9E3779B9
-#define _SK_MULTIPLE_FNV 0x1000193
-#define _SK_TWHASH(key)  \
-    key += ~(key << 15); \
-    key ^= (key >> 10);  \
-    key += (key << 3);   \
-    key ^= (key >> 6);   \
-    key += ~(key << 11); \
-    key ^= (key >> 16);
 
-SK_INLINE SKhash skHash(const char* key)
-{
-    if (!key)
-        return SK_NPOS;
+extern SKhash skHash(const char* key);
+extern SKhash skHash(const char* key, SKsize len);
+extern SKhash skHash(const SKuint32& key);
+extern SKhash skHash(const void* key);
 
-    SKhash hash;
-
-    // Fowler / Noll / Vo (FNV) Hash
-    hash = (SKhash)_SK_INITIAL_FNV;
-
-    for (int i = 0; key[i]; i++)
-    {
-        hash = hash ^ (key[i]);          // xor the low 8 bits
-        hash = hash * _SK_MULTIPLE_FNV;  // multiply by the magic number
-    }
-
-    return hash;
-}
-
-SK_INLINE SKhash skHash(const SKuint32& key)
-{
-    SKhash hash = static_cast<SKhash>(key) * _SK_INITIAL_FNV;
-    _SK_TWHASH(hash);
-    return hash;
-}
-
-SK_INLINE SKhash skHash(const void* key)
-{
-    SKhash hash = static_cast<SKhash>(reinterpret_cast<SKuintPtr>(key));
-    _SK_TWHASH(hash);
-    return hash;
-}
 
 #endif  //_skHash_h_

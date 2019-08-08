@@ -38,7 +38,11 @@
 #endif
 #include <io.h>
 #include <windows.h>
+
 #else
+
+#define __STDC_WANT_LIB_EXT1__ 1
+
 #endif
 
 #include <memory.h>

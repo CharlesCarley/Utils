@@ -12,6 +12,7 @@ set(Utils_SRC
     skAssert.cpp
     skDebugger.cpp
     skFileStream.cpp
+    skHash.cpp
     skMemoryStream.cpp
     skMemoryUtils.cpp
     skString.cpp

@@ -27,6 +27,11 @@
 #include "skFixedString.h"
 #include "skPlatformHeaders.h"
 
+
+
+
+
+
 namespace skStringUtils
 {
     bool toBool(const char* in)
@@ -119,16 +124,31 @@ namespace skStringUtils
         return (SKsize)::strlen(in);
     }
 
-    SKsize copyn(char* out, const char* in, SKsize max)
+    void copyn(char* dest, const char* src, SKsize max)
     {
-        if (!in || !out)
-            return 0;
-        return (SKsize)(size_t)::strncpy(out, in, (size_t)max);
+        if (!dest || !src|| max == 0 || max == SK_NPOS)
+            return;
+
+        ::strncpy(dest, src, (size_t)max);
     }
 
-    SKsize copy(char* out, const char* in)
+
+    void copyn(char* dest, const char* src, SKsize n, SKsize max)
     {
-        return (SKsize)(size_t)strcpy(out, in);
+        if (!dest || !src || max == 0 || max == SK_NPOS)
+            return;
+#if __STDC_LIB_EXT1__
+        ::strncpy_s(dest, (size_t)n, src, (size_t)max);
+#else
+        ::strncpy(dest, src, (size_t)n);
+#endif
+
+    }
+
+
+    void copy(char* out, const char* in)
+    {
+        ::strcpy(out, in);
     }
 
     SKsize equalsn(const char* a, const char* b, SKsize max)
