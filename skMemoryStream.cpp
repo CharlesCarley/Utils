@@ -28,9 +28,19 @@
 #include "skMinMax.h"
 #include "skPlatformHeaders.h"
 
-skMemoryStream::skMemoryStream() : m_buffer(0), m_pos(0), m_size(0), m_capacity(0), m_mode(0)
+
+
+
+skMemoryStream::skMemoryStream() :
+    m_buffer(0),
+    m_pos(0),
+    m_size(0),
+    m_capacity(0),
+    m_mode(0)
 {
 }
+
+
 
 skMemoryStream::~skMemoryStream()
 {
@@ -41,7 +51,7 @@ skMemoryStream::~skMemoryStream()
     }
 
     m_size = m_pos = 0;
-    m_capacity = 0;
+    m_capacity     = 0;
 }
 
 void skMemoryStream::open(skStream::Mode mode)
@@ -67,14 +77,15 @@ void skMemoryStream::open(const skStream& cpy, skStream::Mode mode)
     }
 }
 
+
+
 void skMemoryStream::open(const void* buffer, SKsize size, skStream::Mode mode)
 {
-
     if (buffer && size > 0 && size != SK_NPOS)
     {
         m_mode = mode;
         m_size = size;
-        m_pos = 0;
+        m_pos  = 0;
 
         reserve(m_size);
         skMemcpy(m_buffer, buffer, m_size);
@@ -83,16 +94,15 @@ void skMemoryStream::open(const void* buffer, SKsize size, skStream::Mode mode)
 
 void skMemoryStream::clear(void)
 {
-
     // Keeps reserved memory for reuse
     m_size = m_pos = 0;
     if (m_buffer)
         m_buffer[0] = 0;
 }
 
+
 void skMemoryStream::close(void)
 {
-
     m_size = m_pos = 0;
     if (m_buffer)
         m_buffer[0] = 0;
@@ -182,8 +192,8 @@ void skMemoryStream::reserve(SKsize nr)
             delete[] m_buffer;
         }
 
-        m_buffer = buf;
+        m_buffer         = buf;
         m_buffer[m_size] = 0;
-        m_capacity = nr;
+        m_capacity       = nr;
     }
 }

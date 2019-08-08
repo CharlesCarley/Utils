@@ -84,7 +84,9 @@ public:
 
 
 private:
+    friend class skColorPrinter;
 
+    static char Buffer[SK_SBUF_SIZE+1];
 
 #if SK_PLATFORM == SK_PLATFORM_WIN32
     
@@ -120,10 +122,15 @@ public:
 #endif
 
 
+extern void skConsoleClear(void);
+extern void skConsolePause(void);
 
 #define skCPrintf(fg, msg, ...) skColorPrinter::print(fg, msg, __VA_ARGS__)
-#define skClear skDebugger::clear
-#define skPause skDebugger::pause
+
+
+
+#define skClear skConsoleClear
+#define skPause skConsolePause
 
 
 #endif  //_skDebugger_h_

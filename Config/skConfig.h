@@ -225,15 +225,17 @@ typedef signed int SKsize;
 #else
 
 
-typedef unsigned int SKhash;
-typedef unsigned int SKsize;
+typedef unsigned int    SKhash;
+typedef SKuintPtr       SKsize;
+
+
 
 // this needs to change to platform pointer size
-#define SK_NPOS 0xFFFFFFFF
-#define SK_NPOS16 0xFFFF
-// unsigned int MAX - 1
-#define SK_MAX 0xFFFFFFFE
-#define SK_MAX16 0xFFFE
+const SKsize SK_NPOS = (SKuintPtr)-1;
+const SKsize SK_MAX = ((SKuintPtr)-1) - 1;
+const SKsize SK_NPOS16 = (SKuint16)-1;
+const SKsize SK_MAX16 = ((SKuint16)-1) - 1;
+
 #endif
 
 
@@ -247,7 +249,7 @@ typedef unsigned int SKsize;
     typedef struct name##_t  \
     {                        \
         int unused;          \
-    } * name
+    }*name
 
 #ifdef __cplusplus
 #define SK_API extern "C"

@@ -23,11 +23,18 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "skDebugger.h"
 #include "Config/skConfig.h"
+
+#if SK_PLATFORM == SK_PLATFORM_WIN32
+#include <conio.h>
+#elif SK_PLATFORM == SK_PLATFORM_LINUX
+#include <sys/select.h>
+#else
+#endif
+
+
+#include "skDebugger.h"
 #include "skPlatformHeaders.h"
-
-
 
 
 
@@ -69,52 +76,51 @@ void skDebugger::breakProcess(void)
 
 
 
-static SKbyte   skDebugger_ReportBuf[SK_SBUF_SIZE + 1];
-static SKuint32 skDebugger_PrintFlags = 0;
+static SKuint32 skPrintFlags                         = 0;
+char            skDebugger::Buffer[SK_SBUF_SIZE + 1] = {0};
 
 
 void skDebugger::setPrintFlag(SKuint32 flag)
 {
-    skDebugger_PrintFlags = flag;
+    skPrintFlags = flag;
 }
-
 
 
 
 void skDebugger::report(const char* fmt, ...)
 {
     if (!fmt)
-        return; 
+        return;
 
     int     size;
     va_list lst;
+    
+
     va_start(lst, fmt);
-    size = skp_printf(skDebugger_ReportBuf, SK_SBUF_SIZE, fmt, lst);
+    size = skp_printf(Buffer, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
 
     if (size < 0)
-        size = SK_SBUF_SIZE;
+        size = 0;
 
-    if (size > 0)
+    if (size > 0 && size < SK_SBUF_SIZE)
     {
-        skDebugger_ReportBuf[size] = 0;
+        Buffer[size] = 0;
 
 #if SK_COMPILER == SK_COMPILER_MSVC
-        if (skDebugger_PrintFlags & skDebugger::PF_DEBUG_WINDOW_OUT && IsDebuggerPresent())
-            OutputDebugString(skDebugger_ReportBuf);
+        if (skPrintFlags & skDebugger::PF_DEBUG_WINDOW_OUT && IsDebuggerPresent())
+            OutputDebugString(Buffer);
         else
 #endif
-            printf("%s", skDebugger_ReportBuf);
+            puts(Buffer);
     }
 }
 
 
 
-
-
 #if SK_PLATFORM == SK_PLATFORM_WIN32
 
-void*         skDebugger::m_stdout              = 0;
+void*         skDebugger::m_stdout            = 0;
 unsigned char skDebugger::COLOR_TABLE[16][16] = {
     {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F},
     {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F},
@@ -210,7 +216,7 @@ unsigned char* skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpac
 
 void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
 {
-    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
+    if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
         return;
 
     // filter out invalid colors and do nothing if one is supplied
@@ -250,13 +256,13 @@ void skDebugger::clear(void)
 
 void skDebugger::pause(void)
 {
-    char ch;
-
-    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
+    if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
         writeColor(CS_WHITE);
+    puts("\nPress enter to continue . . .");
 
-    printf("\nPress enter to continue . . .");
-    getc(stdin);
+    int ch;
+
+    ch = getc(stdin);
     for (;;)
     {
         ch = getc(stdin);
@@ -269,11 +275,11 @@ void skDebugger::pause(void)
 
 void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
 {
-    if ((skDebugger_PrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
+    if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
         skDebugger::writeColor(fg);
 
     if (!fmt)
-        return; 
+        return;
 
 
     int size;
@@ -281,15 +287,27 @@ void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
 
     va_list lst;
     va_start(lst, fmt);
-    size = skp_printf(skDebugger_ReportBuf, SK_SBUF_SIZE, fmt, lst);
+    size = skp_printf(skDebugger::Buffer, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
 
     if (size < 0)
-        size = SK_SBUF_SIZE;
+        size = 0;
 
     if (size > 0 && size < SK_SBUF_SIZE)
     {
-        skDebugger_ReportBuf[size] = 0;
-        printf("%s", skDebugger_ReportBuf);
+        skDebugger::Buffer[size] = 0;
+        puts(skDebugger::Buffer);
     }
+}
+
+
+
+void skConsoleClear(void)
+{
+    skDebugger::clear();
+}
+
+void skConsolePause(void)
+{
+    skDebugger::pause();
 }
