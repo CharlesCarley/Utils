@@ -212,7 +212,6 @@ unsigned char* skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpac
     color[1] = color[0];
     return color;
 }
-
 #endif
 
 
@@ -222,13 +221,13 @@ void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
     if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
         return;
 
-
-
-
     // filter out invalid colors and do nothing if one is supplied
     if (fg < 0 || fg > CS_COLOR_MAX || bg < 0 || bg > CS_COLOR_MAX || (m_cacheFore == fg && m_cacheBack == bg))
         return;
 
+    
+    // Remember the last set color so the 
+    // colors are not unnecessarily being set.
     m_cacheFore = fg;
     m_cacheBack = bg;
 
@@ -239,10 +238,8 @@ void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
     printf("\e[%im", col[0]);
 
 #elif SK_PLATFORM == SK_PLATFORM_WIN32
-
     if (m_stdout == 0)
         m_stdout = ::GetStdHandle(STD_OUTPUT_HANDLE);
-
 
     ::SetConsoleTextAttribute(m_stdout, getColor(m_cacheFore, m_cacheBack));
 #endif
@@ -255,13 +252,10 @@ void skDebugger::clear(void)
     system("cls");
 
 #else
-
-
     printf("\33c");
-
-
 #endif
 }
+
 
 
 void skDebugger::pause(void)
