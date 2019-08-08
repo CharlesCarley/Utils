@@ -54,7 +54,6 @@ enum skConsoleColorSpace
 class skDebugger
 {
 public:
-
     enum Flags
     {
         PF_DISABLE_COLOR    = (1 << 0),
@@ -68,12 +67,12 @@ public:
     // Halts the console and waits for the enter key
     static void pause(void);
 
-    // Clears the console 
+    // Clears the console
     static void clear(void);
 
 
 
-    // Sets the foreground and background color of the console 
+    // Sets the foreground and background color of the console
     static void writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg = CS_BLACK);
 
 
@@ -85,11 +84,15 @@ public:
 
 private:
     friend class skColorPrinter;
+    friend extern void skConsolePrint(skConsoleColorSpace foreground, const char* msg, ...);
+    
+    static skConsoleColorSpace m_cacheFore, m_cacheBack;
 
-    static char Buffer[SK_SBUF_SIZE+1];
+
+    static char Buffer[SK_SBUF_SIZE + 1];
 
 #if SK_PLATFORM == SK_PLATFORM_WIN32
-    
+
     static void*         m_stdout;
     static unsigned char COLOR_TABLE[16][16];
     static unsigned char getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
@@ -99,17 +102,6 @@ private:
     static unsigned char* getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
 
 #endif
-
-};
-
-
-
-
-
-class skColorPrinter
-{
-public:
-    static void print(skConsoleColorSpace foreground, const char* msg, ...);
 };
 
 
@@ -124,10 +116,7 @@ public:
 
 extern void skConsoleClear(void);
 extern void skConsolePause(void);
-
-#define skCPrintf(fg, msg, ...) skColorPrinter::print(fg, msg, __VA_ARGS__)
-
-
+extern void skConsolePrint(skConsoleColorSpace foreground, const char* msg, ...);
 
 #define skClear skConsoleClear
 #define skPause skConsolePause

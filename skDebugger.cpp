@@ -76,8 +76,13 @@ void skDebugger::breakProcess(void)
 
 
 
-static SKuint32 skPrintFlags                         = 0;
-char            skDebugger::Buffer[SK_SBUF_SIZE + 1] = {0};
+static SKuint32     skPrintFlags                         = 0;
+char                skDebugger::Buffer[SK_SBUF_SIZE + 1] = {0};
+skConsoleColorSpace skDebugger::m_cacheFore              = CS_WHITE;
+skConsoleColorSpace skDebugger::m_cacheBack              = CS_BLACK;
+
+
+
 
 
 void skDebugger::setPrintFlag(SKuint32 flag)
@@ -219,13 +224,20 @@ void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
     if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
         return;
 
+
+
+
     // filter out invalid colors and do nothing if one is supplied
-    if (fg < 0 || fg > CS_COLOR_MAX || bg < 0 || bg > CS_COLOR_MAX)
+    if (fg < 0 || fg > CS_COLOR_MAX || bg < 0 || bg > CS_COLOR_MAX || (m_cacheFore == fg && m_cacheBack == bg))
         return;
+
+    m_cacheFore = fg;
+    m_cacheBack = bg;
+
 
 #if SK_PLATFORM == SK_PLATFORM_LINUX
 
-    unsigned char* col = getColor((skConsoleColorSpace)fg, (skConsoleColorSpace)bg);
+    unsigned char* col = getColor(m_cacheFore, m_cacheBack);
     printf("\e[%im", col[0]);
 
 #elif SK_PLATFORM == SK_PLATFORM_WIN32
@@ -233,8 +245,8 @@ void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
     if (m_stdout == 0)
         m_stdout = ::GetStdHandle(STD_OUTPUT_HANDLE);
 
-    ::SetConsoleTextAttribute(m_stdout, getColor((skConsoleColorSpace)fg, (skConsoleColorSpace)bg));
 
+    ::SetConsoleTextAttribute(m_stdout, getColor(m_cacheFore, m_cacheBack));
 #endif
 }
 
@@ -273,19 +285,17 @@ void skDebugger::pause(void)
 
 
 
-void skColorPrinter::print(skConsoleColorSpace fg, const char* fmt, ...)
+
+void skConsolePrint(skConsoleColorSpace fg, const char* fmt, ...)
 {
     if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
         skDebugger::writeColor(fg);
 
     if (!fmt)
         return;
-
-
     int size;
-
-
     va_list lst;
+
     va_start(lst, fmt);
     size = skp_printf(skDebugger::Buffer, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
