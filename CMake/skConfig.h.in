@@ -30,16 +30,11 @@
 #cmakedefine Utils_USE_DEBUG_ASSERT 1
 #cmakedefine Utils_USE_ITERATOR_DEBUG 1
 #cmakedefine Utils_USE_STD_STRING_FUNCS 1
-#cmakedefine Utils_USE_SIGNED_SIZE_T 1
 #cmakedefine Utils_USE_COMPILER_CHECKS 1
 #cmakedefine Utils_NO_DEBUGGER 1
 
 #ifdef Utils_USE_DEBUG_ASSERT
 #define SID_DEBUG_ASSERT 1
-#endif
-
-#ifdef Utils_USE_SIGNED_SIZE_T
-#define SK_USE_SIGNED_SIZE_T 1
 #endif
 
 #ifdef Utils_USE_STD_STRING_FUNCS
@@ -214,17 +209,6 @@ typedef SKint32          SKintPtr;
 #endif
 
 
-#ifdef SK_USE_SIGNED_SIZE_T
-typedef signed int SKhash;
-typedef signed int SKsize;
-
-#define SK_NPOS -1
-// ((1/2) - 1 unsigned int MAX
-#define SK_MAX 0x7FFFFFFE
-
-#else
-
-
 typedef unsigned int    SKhash;
 typedef unsigned int    SKsize; // intended for arrays use SKuintPtr for varying size types
 const SKsize SK_NPOS    = (SKsize)-1;
@@ -232,7 +216,6 @@ const SKsize SK_MAX     = ((SKsize)-1) - 1;
 const SKsize SK_NPOS16  = (SKuint16)-1;
 const SKsize SK_MAX16   = ((SKuint16)-1) - 1;
 
-#endif
 
 
 #if SK_ITERATOR_DEBUG == 1

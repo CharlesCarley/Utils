@@ -27,7 +27,7 @@
 #define _skFixedArray_h_
 
 #include "Config/skConfig.h"
-#include "Utils/skTypes.h"
+#include "Utils/skArray.h"
 
 template <typename T, const SKuint16 L>
 class skFixedArray

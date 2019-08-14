@@ -54,7 +54,6 @@ set(Utils_HDR
     skStringConverter.h
     skTimer.h
     skTraits.h
-    skTypes.h
     skUserObject.h
     skValue.h
 

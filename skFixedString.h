@@ -28,7 +28,6 @@
 #define _skFixedString_h_
 
 #include "Config/skConfig.h"
-#include "Utils/skTypes.h"
 
 template <const SKuint16 L>
 class skFixedString
