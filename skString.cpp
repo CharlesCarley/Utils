@@ -29,9 +29,6 @@
 
 
 
-
-
-
 namespace skStringUtils
 {
     bool toBool(const char* in)
@@ -48,29 +45,27 @@ namespace skStringUtils
     {
         return ::atoi(in);
     }
+
+
     float toFloat(const char* in)
     {
         return (float)::atof(in);
     }
+
     double toDouble(const char* in)
     {
         return (double)::atof(in);
     }
 
-
     SKsize length(const char* in)
     {
-        if (!in)
-            return 0;
-
-        return (SKsize)::strlen(in);
+        return in && *in ? (SKsize)::strlen(in) : 0;
     }
 
     void copyn(char* dest, const char* src, SKsize max)
     {
-        if (!dest || !src|| max == 0 || max == SK_NPOS)
+        if (!dest || !src || max == 0 || max == SK_NPOS)
             return;
-
         ::strncpy(dest, src, (size_t)max);
     }
 
@@ -84,23 +79,21 @@ namespace skStringUtils
 #else
         ::strncpy(dest, src, (size_t)n);
 #endif
-
     }
 
 
     void copy(char* out, const char* in)
     {
-        ::strcpy(out, in);
+        if (out && in && *in)
+            ::strcpy(out, in);
     }
 
     SKsize equalsn(const char* a, const char* b, SKsize max)
     {
         if (!a || !b)
             return 1;
-
         if (*a != *b)
             return 1;
-
         return (SKsize)(size_t)strncmp(a, b, (size_t)max);
     }
 
@@ -108,23 +101,32 @@ namespace skStringUtils
     {
         if (!a || !b)
             return 1;
-
         if (*a != *b)
             return 1;
-
         return (SKsize)strcmp(a, b);
     }
 
     const SKuint8 HexTable[16] = {
-        '0', '1', '2', '3',
-        '4', '5', '6', '7',
-        '8', '9', 'A', 'B',
-        'C', 'D', 'E', 'F',
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'F',
     };
 
     const SKuint16 BinaryTable[9] = {256, 128, 64, 32, 16, 8, 4, 2, 1};
 }
-
 
 
 
@@ -147,7 +149,6 @@ void skString::reserve(SKsize nr)
 
         if (m_data)
         {
-            // copy the old data over 
             skMemcpy(ptr, m_data, m_size);
             delete[] m_data;
         }
@@ -185,7 +186,7 @@ void skString::alloc(const char* str, SKsize len)
         {
             skStringUtils::copyn(m_data, str, len);
             m_data[len] = 0;
-            m_size = len;
+            m_size      = len;
         }
     }
 }
@@ -321,7 +322,6 @@ SKsize skString::find(char ch) const
                 return (SKsize)diff;
         }
     }
-
     return SK_NPOS;
 }
 
@@ -561,7 +561,6 @@ void skString::fromBinary(void)
 
 void skString::encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
 {
-
     SKsize i, j = 0, r;
     double a, b;
 

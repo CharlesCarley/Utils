@@ -30,6 +30,8 @@
 #include "skArray.h"
 #include "skSort.h"
 
+
+
 template <typename T, typename Allocator = skAllocator<T> >
 class skDeque
 {
@@ -51,11 +53,17 @@ private:
     Allocator   m_alloc;
 
 public:
-    skDeque() : m_data(0), m_size(0), m_capacity(0)
+    skDeque() :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
     }
 
-    skDeque(const skDeque& o) : m_data(0), m_size(0), m_capacity(0)
+    skDeque(const skDeque& o) :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
         if (o.m_data)
         {
@@ -74,9 +82,9 @@ public:
     {
         if (m_data)
             m_alloc.array_deallocate(m_data, m_capacity);
-        m_data = 0;
+        m_data     = 0;
         m_capacity = 0;
-        m_size = 0;
+        m_size     = 0;
     }
 
     SKsize find(ConstReferenceType v)
@@ -152,12 +160,12 @@ public:
             ;
         else if (m_data)
         {
-            m_data = m_alloc.array_reallocate(m_data, nr, m_size);
+            m_data     = m_alloc.array_reallocate(m_data, nr, m_size);
             m_capacity = nr;
         }
         else
         {
-            m_data = m_alloc.array_allocate(nr);
+            m_data     = m_alloc.array_allocate(nr);
             m_capacity = nr;
         }
     }
@@ -263,7 +271,7 @@ private:
             return pop();
         else
         {
-            ReferenceType val = pop();
+            ReferenceType val  = pop();
             ReferenceType rval = stackRecurse();
             push_back(val);
             return rval;

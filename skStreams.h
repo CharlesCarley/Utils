@@ -41,9 +41,11 @@ public:
     };
 
 public:
+   
     skStream()
     {
     }
+
     virtual ~skStream()
     {
     }
