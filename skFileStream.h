@@ -57,8 +57,6 @@ public:
 
 private:
     Handle         m_handle;
-    mutable SKsize m_pos;
-    mutable SKsize m_size;
     SKint32        m_mode;
 };
 
