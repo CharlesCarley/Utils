@@ -229,9 +229,9 @@ public:
     }
 
     skArray(const skArray& o) :
-        m_capacity(0),
+        m_data(0),
         m_size(o.size()),
-        m_data(0)
+        m_capacity(0)
     {
         if (o.m_data)
         {
