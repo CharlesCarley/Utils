@@ -229,16 +229,17 @@ public:
     }
 
     skArray(const skArray& o) :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
+        m_capacity(0),
+        m_size(o.size()),
+        m_data(0)
     {
         if (o.m_data)
         {
-            m_size = o.size();
             reserve(m_size);
             skFill(m_data, o.m_data, m_size);
         }
+        else
+            m_size = 0;
     }
 
     ~skArray()
