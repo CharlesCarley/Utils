@@ -69,9 +69,8 @@ public:
     }
 
     void clear(void);
-
-    SKsize seek(SKint32 off, SKint32 way);
-    void   reserve(SKsize nr);
+    void seek(SKint64 offset, SKsize dir);
+    void reserve(SKsize nr);
 
 private:
     char*          m_buffer;

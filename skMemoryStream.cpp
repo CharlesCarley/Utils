@@ -30,7 +30,6 @@
 
 
 
-
 skMemoryStream::skMemoryStream() :
     m_buffer(0),
     m_pos(0),
@@ -108,16 +107,14 @@ void skMemoryStream::close(void)
         m_buffer[0] = 0;
 }
 
-SKsize skMemoryStream::seek(SKint32 off, SKint32 way)
+void skMemoryStream::seek(SKint64 offset, SKsize dir)
 {
-    if (way == SEEK_SET)
-        m_pos = skClamp<SKsize>(off, 0, m_size);
-    else if (way == SEEK_CUR)
-        m_pos = skClamp<SKsize>(m_pos + off, 0, m_size);
-    else if (way == SEEK_END)
+    if (dir == SEEK_SET)
+        m_pos = skClamp<SKsize>((SKsize)offset, 0, m_size);
+    else if (dir == SEEK_CUR)
+        m_pos = skClamp<SKsize>(m_pos + (SKsize)offset, 0, m_size);
+    else if (dir == SEEK_END)
         m_pos = m_size;
-
-    return m_pos;
 }
 
 SKsize skMemoryStream::read(void* dest, SKsize nr) const

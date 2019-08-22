@@ -81,7 +81,6 @@ namespace skStringUtils
 #endif
     }
 
-
     void copy(char* out, const char* in)
     {
         if (out && in && *in)
