@@ -42,13 +42,8 @@ skFileStream::~skFileStream()
 
 void skFileStream::flush(void)
 {
-    if (m_mode == WRITE)
-    {
-        if (m_handle)
-        {
-            fflush(static_cast<FILE*>(m_handle));
-        }
-    }
+    if (m_mode == WRITE && m_handle)
+        fflush(static_cast<FILE*>(m_handle));
 }
 
 void skFileStream::open(const char* path, Mode mode)
@@ -56,7 +51,7 @@ void skFileStream::open(const char* path, Mode mode)
     if (mode == NO_INPUT || !path)
         return;
 
-    if (m_mode != NO_INPUT)
+    if (m_mode != NO_INPUT) 
         close();
 
     m_handle = fopen(path, mode == READ ? "rb" : mode == WRITE_TEXT ? "w" : "wb");
@@ -74,12 +69,14 @@ void skFileStream::close(void)
 
 bool skFileStream::eof(void) const
 {
-    return !isOpen() || feof(static_cast<FILE*>(m_handle));
+    if (!isOpen())
+        return true;
+    return feof(static_cast<FILE*>(m_handle));
 }
 
 SKsize skFileStream::read(void* dst, SKsize nr) const
 {
-    if (m_mode == WRITE || dst == 0)
+    if (m_mode == WRITE || dst == 0 || !isOpen())
         return 0;
     return fread(dst, 1, nr, static_cast<FILE*>(m_handle));
 }
@@ -98,7 +95,7 @@ void skFileStream::seek(SKint64 offs, SKsize dir)
     else
         way = SEEK_SET;
 
-    (void)fseek(static_cast<FILE*>(m_handle), (long)offs, way);
+    fseek(static_cast<FILE*>(m_handle), (long)offs, way);
 }
 
 SKsize skFileStream::write(const void* src, SKsize nr)
@@ -110,22 +107,23 @@ SKsize skFileStream::write(const void* src, SKsize nr)
 
 SKsize skFileStream::position(void) const
 {
-    return (SKsize)ftell(static_cast<FILE*>(m_handle));
+    return isOpen() ? (SKsize) ftell(static_cast<FILE*>(m_handle)) : SK_NPOS;
 }
 
 SKsize skFileStream::size(void) const
 {
-    SKsize size;
-    long  loc;
-    FILE* fp = static_cast<FILE*>(m_handle);
+    SKsize size = SK_NPOS;
+    if (isOpen())
+    {
+        long  loc;
+        FILE* fp = static_cast<FILE*>(m_handle);
 
-    // Grab the current position indicator
-    loc = ftell(fp);
-    fseek(fp, 0L, SEEK_END);
+        loc = ftell(fp);
+        fseek(fp, 0L, SEEK_END);
 
-    size = (SKsize)ftell(fp);
+        size = (SKsize)ftell(fp);
 
-    // Restore position indicator
-    fseek(fp, loc, SEEK_SET);
+        fseek(fp, loc, SEEK_SET);
+    }
     return size;
 }
