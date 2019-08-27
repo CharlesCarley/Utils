@@ -196,7 +196,6 @@ skParser::Message skParser::parseImpl(void)
         {
             SKint32 out = -1;
 
-            bool isBlock = skStringUtils::equalsn(m_buffer + m_cur, "=>>>", 4) == 0;
             m_cur = handleBlockComment(m_buffer, m_cur, m_len - 1, out, &tmpBuf);
 
             if (m_cur == -1)

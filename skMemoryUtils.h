@@ -39,7 +39,7 @@ extern void  skFree(void* ptr);
 #if SK_NO_HEADERS != 1
 
 #include <memory.h>
-#include <malloc.h>
+//#include <malloc.h>
 
 #define skMemset(ptr, val, nr) ::memset(ptr, val, nr)
 #define skMemcpy(dst, src, nr) ::memcpy(dst, src, nr)
