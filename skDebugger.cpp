@@ -144,9 +144,9 @@ unsigned char skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpace
     return COLOR_TABLE[back][fore];
 }
 
+#else
 
-#elif SK_PLATFORM == SK_PLATFORM_LINUX
-
+#if SK_PLATFORM == SK_PLATFORM_LINUX || SK_PLATFORM == SK_PLATFORM_APPLE
 unsigned char* skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpace)
 {
     static unsigned char color[2];
@@ -200,12 +200,16 @@ unsigned char* skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpac
     case CS_WHITE:
         color[0] = 37;
         break;
+    case CS_COLOR_MAX:
+    default:
+            break;
     }
 
     // leaving out the background color for now...
     color[1] = color[0];
     return color;
 }
+#endif
 #endif
 
 
@@ -223,7 +227,7 @@ void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
     m_cacheFore = fg;
     m_cacheBack = bg;
 
-#if SK_PLATFORM == SK_PLATFORM_LINUX
+#if SK_PLATFORM == SK_PLATFORM_LINUX || SK_PLATFORM == SK_PLATFORM_APPLE
     unsigned char* col = getColor(m_cacheFore, m_cacheBack);
     printf("\e[%im", col[0]);
 
@@ -244,10 +248,10 @@ void skDebugger::clear(void)
 {
 #if SK_PLATFORM == SK_PLATFORM_WIN32
     system("cls");
+#elif  SK_PLATFORM == SK_PLATFORM_APPLE
+    system("clear");
 #elif SK_PLATFORM == SK_PLATFORM_LINUX
     printf("\33c");
-#else
-    // untested
 #endif
 }
 

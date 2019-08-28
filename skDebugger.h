@@ -92,8 +92,7 @@ private:
     static unsigned char COLOR_TABLE[16][16];
     static unsigned char getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
 
-#elif SK_PLATFORM == SK_PLATFORM_LINUX
-
+#elif SK_PLATFORM == SK_PLATFORM_LINUX || SK_PLATFORM == SK_PLATFORM_APPLE
     static unsigned char* getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
 
 #endif
