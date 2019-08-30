@@ -30,7 +30,6 @@
 #include "Utils/skArray.h"
 #include "Utils/skMap.h"
 #include "Utils/skMemoryUtils.h"
-#include "Utils/skMinMax.h"
 
 namespace skStringUtils
 {

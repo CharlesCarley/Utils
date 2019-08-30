@@ -144,7 +144,7 @@ public:
     Value  second;
     SKsize hash;
 
-    skEntry()
+    skEntry(): hash(0)
     {
     }
 
@@ -419,7 +419,7 @@ public:
     }
     SK_INLINE SKsize capacity(void) const
     {
-        return capacity;
+        return m_capacity;
     }
     SK_INLINE bool empty(void) const
     {

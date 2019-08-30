@@ -52,8 +52,7 @@ SKhash skHash(const char* key)
 // Fowler/Noll/Vo (FNV) Hash
 SKhash skHash(const char* key, SKsize len)
 {
-    SKsize i = 0;
-
+    SKsize i;
     SKhash hash = (SKhash)_SK_INITIAL_FNV;
 
     for (i = 0; key[i] && i < len; i++)

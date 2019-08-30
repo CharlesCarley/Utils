@@ -27,17 +27,21 @@
 #define _skDelegate_h_
 
 #include "Config/skConfig.h"
-#include "skStack.h"
+
 
 template <typename R, typename A1>
 class skSimpleDelegate
 {
 public:
-    skSimpleDelegate() : m_object(0), m_call(0)
+    skSimpleDelegate() :
+        m_object(0),
+        m_call(0)
     {
     }
 
-    skSimpleDelegate(const skSimpleDelegate& rhs) : m_object(rhs.m_object), m_call(rhs.m_call)
+    skSimpleDelegate(const skSimpleDelegate& rhs) :
+        m_object(rhs.m_object),
+        m_call(rhs.m_call)
     {
     }
 
@@ -46,7 +50,7 @@ public:
     {
         skSimpleDelegate d;
         d.m_object = reinterpret_cast<void*>(obj);
-        d.m_call = &skSimpleDelegate::call<T, Method>;
+        d.m_call   = &skSimpleDelegate::template call<T, Method>;
         return d;
     }
 
@@ -60,7 +64,7 @@ public:
         if (this != &rhs)
         {
             m_object = rhs.m_object;
-            m_call = rhs.m_call;
+            m_call   = rhs.m_call;
         }
 
         return *this;
@@ -84,11 +88,15 @@ template <typename R>
 class skSimpleDelegate2
 {
 public:
-    skSimpleDelegate2() : m_object(0), m_call(0)
+    skSimpleDelegate2() :
+        m_object(0),
+        m_call(0)
     {
     }
 
-    skSimpleDelegate2(const skSimpleDelegate2& rhs) : m_object(rhs.m_object), m_call(rhs.m_call)
+    skSimpleDelegate2(const skSimpleDelegate2& rhs) :
+        m_object(rhs.m_object),
+        m_call(rhs.m_call)
     {
     }
 
@@ -97,7 +105,7 @@ public:
     {
         skSimpleDelegate2 d;
         d.m_object = reinterpret_cast<void*>(obj);
-        d.m_call = &skSimpleDelegate2 ::call<T, Method>;
+        d.m_call   = &skSimpleDelegate2 ::template call<T, Method>;
         return d;
     }
 
@@ -116,7 +124,7 @@ public:
         if (this != &rhs)
         {
             m_object = rhs.m_object;
-            m_call = rhs.m_call;
+            m_call   = rhs.m_call;
         }
         return *this;
     }

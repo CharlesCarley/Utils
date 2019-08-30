@@ -55,7 +55,8 @@ public:
     {
         if (rhs.size())
         {
-            SKuint16         i, os = rhs.size();
+            SKuint16         i;
+            const SKuint16 os = rhs.size();
             ConstPointerType cp = rhs.ptr();
             for (i = 0; i < L && i < os; ++i, ++m_size)
                 m_data[i] = cp[i];
@@ -68,7 +69,8 @@ public:
     {
         if (rhs.size())
         {
-            SKuint16         i, os = rhs.size();
+            SKuint16         i;
+            const SKuint16 os = rhs.size();
             ConstPointerType cp = rhs.ptr();
             for (i = 0; i < L && i < os; ++i, ++m_size)
                 m_data[i] = cp[i];

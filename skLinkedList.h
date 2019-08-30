@@ -47,7 +47,7 @@ public:
             m_next(0)
         {
         }
-        Link(SelfType::ConstReferenceType v) :
+        Link(typename SelfType::ConstReferenceType v) :
             m_next(0),
             m_data(v)
         {
@@ -60,15 +60,15 @@ public:
         {
             return m_next;
         }
-        SK_INLINE SelfType::ReferenceType data(void)
+        SK_INLINE typename SelfType::ReferenceType data(void)
         {
             return m_data;
         }
 
     private:
         friend class skSinglyLinkedList;
-        PointerType         m_next;
-        SelfType::ValueType m_data;
+        PointerType                  m_next;
+        typename SelfType::ValueType m_data;
     };
 
 private:

@@ -91,12 +91,11 @@ void skDebugger::report(const char* fmt, ...)
     if (!fmt)
         return;
 
-    int     size;
     va_list lst;
 
 
     va_start(lst, fmt);
-    size = skp_printf(Buffer, SK_SBUF_SIZE, fmt, lst);
+    int size = skp_printf(Buffer, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
 
     if (size < 0)
@@ -255,11 +254,11 @@ void skDebugger::pause(void)
         writeColor(CS_WHITE);
 
     puts("\nPress enter to continue . . .");
-    int ch;
-    ch = getc(stdin);
+
+    getc(stdin);
     for (;;)
     {
-        ch = getc(stdin);
+        int ch = getc(stdin);
         if (ch == '\n' || ch == '\r')
             break;
     }
@@ -273,11 +272,10 @@ void skConsolePrint(skConsoleColorSpace fg, const char* fmt, ...)
 
     if (!fmt)
         return;
-    int     size;
     va_list lst;
 
     va_start(lst, fmt);
-    size = skp_printf(Buffer, SK_SBUF_SIZE, fmt, lst);
+    int size = skp_printf(Buffer, SK_SBUF_SIZE, fmt, lst);
     va_end(lst);
 
     if (size < 0)

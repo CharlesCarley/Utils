@@ -53,6 +53,10 @@ skMemoryStream::~skMemoryStream()
     m_capacity     = 0;
 }
 
+void skMemoryStream::flush(void)
+{
+}
+
 void skMemoryStream::open(skStream::Mode mode)
 {
     m_mode = mode;

@@ -49,7 +49,8 @@ public:
     {
         if (rhs.size())
         {
-            SKuint16    i, os = rhs.size();
+            SKuint16    i;
+            const SKuint16 os = rhs.size();
             const char* cp = rhs.c_str();
 
             for (i = 0; i < L && i < os; ++i, ++m_size)

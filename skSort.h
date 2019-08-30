@@ -28,7 +28,6 @@
 
 #include "Config/skConfig.h"
 #include "skMinMax.h"
-#include "skTraits.h"
 
 template <typename T, typename C>
 struct skSort

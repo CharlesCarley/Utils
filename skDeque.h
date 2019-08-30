@@ -87,11 +87,6 @@ public:
         m_size     = 0;
     }
 
-    SKsize find(ConstReferenceType v)
-    {
-        return SK_NPOS;
-    }
-
     SK_INLINE void push_front(ConstReferenceType v)
     {
         if (m_size == 0)

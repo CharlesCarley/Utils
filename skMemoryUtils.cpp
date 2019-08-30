@@ -24,7 +24,6 @@
 -------------------------------------------------------------------------------
 */
 #include <stdlib.h>
-#include <memory.h>
 #include <string.h>
 #include "Config/skConfig.h"
 
@@ -79,7 +78,6 @@ void skFree(void* ptr)
 
 
 #if SK_NO_HEADERS != 1
-#include <stdlib.h>
 
 
 void* skMemset(void* ptr, int val, unsigned int nr)

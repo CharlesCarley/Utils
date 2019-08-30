@@ -739,8 +739,17 @@ public:
     }
 
 private:
-    skListClass& operator=(const skListClass& rhs);
-    skListClass(const skListClass& rhs);
+    skListClass& operator=(const skListClass& rhs)
+    {
+        // no assignment
+        return *this;
+    }
+
+    skListClass(const skListClass& rhs)
+    {
+        // no copy
+    }
+
 
     mutable BaseType m_list;
 };

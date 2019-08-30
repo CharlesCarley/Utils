@@ -26,10 +26,13 @@
 #ifndef _skDictionary_h_
 #define _skDictionary_h_
 
+#include <memory.h>
 #include "Config/skConfig.h"
 #include "Utils/skArray.h"
 #include "Utils/skMap.h"
 #include "Utils/skTraits.h"
+
+
 
 template <typename Key, typename Value>
 class skDictionary
@@ -116,17 +119,17 @@ private:
 public:
     skDictionary() :
         m_data(0),
-        m_index(0),
         m_size(0),
-        m_capacity(0)
+        m_capacity(0),
+        m_index(0)
     {
     }
 
     skDictionary(const skDictionary& o) :
         m_data(0),
-        m_index(0),
         m_size(0),
-        m_capacity(0)
+        m_capacity(0),
+        m_index(0)
     {
         SK_ASSERT(0 && "TODO");
     }
@@ -212,8 +215,8 @@ public:
         SKsize A = find(k), B = m_size - 1;
         if (A != SK_NPOS)
         {
-            SKsize mapB = m_data[B].hash;
-            SKsize mapA = m_data[A].hash;
+            const SKsize mapB = m_data[B].hash;
+            const SKsize mapA = m_data[A].hash;
 
             m_size--;
             if (m_size == 0)
@@ -223,9 +226,9 @@ public:
             }
             else
             {
-                SKsize idx    = m_index[mapA];
-                m_index[mapB] = idx;
-                m_index[mapA] = SK_NPOS;
+                const SKsize idx = m_index[mapA];
+                m_index[mapB]    = idx;
+                m_index[mapA]    = SK_NPOS;
 
                 skSwap(m_data[A], m_data[B]);
             }

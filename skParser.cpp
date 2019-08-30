@@ -25,7 +25,6 @@
 */
 #include "skParser.h"
 #include "skDebugger.h"
-#include "skFixedString.h"
 #include "skStreams.h"
 #include "skValue.h"
 
@@ -54,13 +53,15 @@ skParser::skParser() :
     m_stream(0),
     m_start(-1),
     m_symbolTable(0),
+    m_charsets(0),
     m_ruleTable(0),
     m_dfa(0),
     m_lalr(0),
     m_buffer(0),
     m_len(0),
     m_stateIdx(0),
-    m_cur(0)
+    m_cur(0),
+    m_curReduction(0)
 
 {
 }
@@ -107,7 +108,7 @@ skParser::Message skParser::parseImpl(void)
 
     SKint16               dfa_state, dfa_accept, dfa_len, char_set, cntr, dfa_prev;
     SKint16               dfa_cs, c1, c2;
-    skParser::LALRAction* action = 0;
+    skParser::LALRAction* action;
     StackItem             item;
     item.m_ptr = 0;
     char*    dfa_buf;

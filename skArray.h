@@ -257,7 +257,7 @@ public:
         m_size     = 0;
     }
 
-    const SKsize find(ConstReferenceType v) const
+    SKsize find(ConstReferenceType v) const
     {
         SKsize i;
         for (i = 0; i < m_size; i++)

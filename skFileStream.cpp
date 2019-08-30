@@ -37,7 +37,7 @@ skFileStream::skFileStream() :
 
 skFileStream::~skFileStream()
 {
-    close();
+    skFileStream::close();
 }
 
 void skFileStream::flush(void)
@@ -115,10 +115,9 @@ SKsize skFileStream::size(void) const
     SKsize size = SK_NPOS;
     if (isOpen())
     {
-        long  loc;
         FILE* fp = static_cast<FILE*>(m_handle);
 
-        loc = ftell(fp);
+        long loc = ftell(fp);
         fseek(fp, 0L, SEEK_END);
 
         size = (SKsize)ftell(fp);

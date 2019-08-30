@@ -64,7 +64,7 @@ public:                                               \
 class skAllocObject
 {
 public:
-    ~skAllocObject()
+    virtual ~skAllocObject()
     {
     }
 
@@ -180,7 +180,7 @@ public:
         return true;
     }
 
-    SK_INLINE SKsize max_size(void)
+    SK_INLINE SKsize max_size(void) const
     {
         // < actual
         return LIMIT;
@@ -244,7 +244,7 @@ public:
 
     PointerType allocate(SKsize nr)
     {
-        PointerType p = reinterpret_cast<PointerType>(new T(sizeof(T) * nr));
+        const PointerType p = reinterpret_cast<PointerType>(new T(sizeof(T) * nr));
         new (p) T();
         return p;
     }
