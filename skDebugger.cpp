@@ -117,9 +117,7 @@ void skDebugger::report(const char* fmt, ...)
 
 
 #if SK_PLATFORM == SK_PLATFORM_WIN32
-
-void*         skDebugger::m_stdout            = 0;
-unsigned char skDebugger::COLOR_TABLE[16][16] = {
+const unsigned char COLOR_TABLE[16][16] = {
     {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F},
     {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F},
     {0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F},
@@ -232,14 +230,9 @@ void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
     printf("\e[%im", col[0]);
 
 #elif SK_PLATFORM == SK_PLATFORM_WIN32
-    if (m_stdout == 0)
-        m_stdout = ::GetStdHandle(STD_OUTPUT_HANDLE);
-
-    ::SetConsoleTextAttribute(m_stdout, getColor(m_cacheFore, m_cacheBack));
+    ::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), getColor(m_cacheFore, m_cacheBack));
 #else
-
     // untested
-
 #endif
 }
 
