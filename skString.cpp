@@ -62,15 +62,15 @@ namespace skStringUtils
         return in && *in ? (SKsize)::strlen(in) : 0;
     }
 
-    void copyn(char* dest, const char* src, SKsize max)
+    void copyn(char* dest, const char* src, SKsize nr)
     {
         size_t len = length(src);
-        if (len > max)
-            len = max;
+        if (len > nr)
+            len = nr;
 
         ::strncpy(dest, src, (size_t)len);
 
-        if (len <= max)
+        if (len <= nr)
             dest[len] = 0;
     }
 
