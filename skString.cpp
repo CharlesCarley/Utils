@@ -72,19 +72,9 @@ namespace skStringUtils
     {
         if (!dest || !src || !*src || destLen == 0)
             return;
-
-        #if SK_COMPILER == SK_COMPILER_MSVC
-
-        ::strncpy_s(dest, 
-            (size_t)destLen, 
-            src, 
-            (size_t)srcLen);
-
-        #else
-
+        if (destLen > srcLen)
+            destLen = srcLen;
         ::strncpy(dest, src, (size_t)destLen);
-
-        #endif
     }
 
     void copy(char* out, const char* in)
@@ -181,7 +171,7 @@ void skString::alloc(const char* str, SKsize len)
         return;
 
     if (!len)
-        len = skStringUtils::length(str)+1;
+        len = skStringUtils::length(str);
 
     if (len > 0)
     {
