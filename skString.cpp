@@ -66,11 +66,11 @@ namespace skStringUtils
     {
         size_t len = length(src);
         if (len > max)
-            len = max-1;
+            len = max;
 
         ::strncpy(dest, src, (size_t)len);
 
-        if (len + 1 < max)
+        if (len <= max)
             dest[len] = 0;
     }
 
