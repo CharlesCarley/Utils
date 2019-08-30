@@ -64,17 +64,14 @@ namespace skStringUtils
 
     void copyn(char* dest, const char* src, SKsize max)
     {
-        copyn(dest, src, max, length(src));
-    }
+        size_t len = length(src);
+        if (len > max)
+            len = max-1;
 
+        ::strncpy(dest, src, (size_t)len);
 
-    void copyn(char* dest, const char* src, SKsize destLen, SKsize srcLen)
-    {
-        if (!dest || !src || !*src || destLen == 0)
-            return;
-        if (destLen > srcLen)
-            destLen = srcLen;
-        ::strncpy(dest, src, (size_t)destLen);
+        if (len + 1 < max)
+            dest[len] = 0;
     }
 
     void copy(char* out, const char* in)
@@ -179,7 +176,7 @@ void skString::alloc(const char* str, SKsize len)
 
         if (m_data)
         {
-            skStringUtils::copyn(m_data, str, len, skStringUtils::length(str));
+            skStringUtils::copyn(m_data, str, len);
             m_data[len] = 0;
             m_size      = len;
         }

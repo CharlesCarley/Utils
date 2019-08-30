@@ -36,7 +36,6 @@ namespace skStringUtils
     extern SKsize length(const char* in);
     extern void   copy(char* dest, const char* src);
     extern void   copyn(char* dest, const char* src, SKsize n);
-    extern void   copyn(char* dest, const char* src, SKsize n, SKsize max);
     extern SKsize equals(const char* a, const char* b);
     extern SKsize equalsn(const char* a, const char* b, SKsize n);
 
@@ -51,7 +50,7 @@ namespace skStringUtils
 };  // namespace skStringUtils
 
 
-#define sk_strncpy(dest, size, source, count) skStringUtils::copyn(dest, source, size, count)
+#define sk_strncpy(dest, size, source, count) skStringUtils::copyn(dest, source, size)
 
 
 
