@@ -35,7 +35,6 @@ set(Utils_HDR
     skFixedArray.h
     skFixedString.h
     skHash.h
-    skLinkedList.h
     skList.h
     skMap.h
     skMemoryStream.h

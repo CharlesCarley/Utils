@@ -33,9 +33,9 @@ template <typename T>
 class skListIterator
 {
 public:
-    typedef typename T::LinkPtr         LinkPtr;
-    typedef typename T::LinkPtrRef      LinkPtrRef;
-    typedef typename T::ConstLinkPtrRef ConstLinkPtrRef;
+    typedef typename T::LinkPtr      LinkPtr;
+    typedef typename T::DataRef      DataRef;
+    typedef typename T::ConstDataRef ConstDataRef;
 
 private:
     mutable LinkPtr m_cur;
@@ -80,32 +80,32 @@ public:
         m_cur = m_cur->getNext();
     }
 
-    LinkPtrRef getNext(void)
+    DataRef getNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        LinkPtrRef ret = m_cur->getLink();
-        m_cur          = m_cur->getNext();
+        DataRef ret = m_cur->getData();
+        m_cur       = m_cur->getNext();
         return ret;
     }
 
-    ConstLinkPtrRef getNext(void) const
+    ConstDataRef getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        LinkPtrRef ret = m_cur->getLink();
-        m_cur          = m_cur->getNext();
+        DataRef ret = m_cur->getData();
+        m_cur       = m_cur->getNext();
         return ret;
     }
 
-    SK_INLINE LinkPtrRef peekNext(void)
+    SK_INLINE DataRef peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return m_cur->getLink();
+        return m_cur->getData();
     }
 
-    SK_INLINE ConstLinkPtrRef peekNext(void) const
+    SK_INLINE ConstDataRef peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return m_cur->getLink();
+        return m_cur->getData();
     }
 };
 
@@ -113,9 +113,9 @@ template <typename T>
 class skListReverseIterator
 {
 public:
-    typedef typename T::LinkPtr         LinkPtr;
-    typedef typename T::LinkPtrRef      LinkPtrRef;
-    typedef typename T::ConstLinkPtrRef ConstLinkPtrRef;
+    typedef typename T::LinkPtr      LinkPtr;
+    typedef typename T::DataRef      DataRef;
+    typedef typename T::ConstDataRef ConstDataRef;
 
 private:
     mutable LinkPtr m_cur;
@@ -160,34 +160,343 @@ public:
         m_cur = m_cur->getPrev();
     }
 
-    LinkPtrRef getNext(void)
+    DataRef getNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        LinkPtrRef ret = m_cur->getLink();
-        m_cur          = m_cur->getPrev();
+        DataRef ret = m_cur->getData();
+        m_cur       = m_cur->getPrev();
         return ret;
     }
 
-    ConstLinkPtrRef getNext(void) const
+    ConstDataRef getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        LinkPtrRef ret = m_cur->getLink();
-        m_cur          = m_cur->getPrev();
+        DataRef ret = m_cur->getData();
+        m_cur       = m_cur->getPrev();
         return ret;
     }
 
-    SK_INLINE LinkPtrRef peekNext(void)
+    SK_INLINE DataRef peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return m_cur->getLink();
+        return m_cur->getData();
     }
 
-    SK_INLINE ConstLinkPtrRef peekNext(void) const
+    SK_INLINE ConstDataRef peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return m_cur->getLink();
+        return m_cur->getData();
     }
 };
+
+
+
+template <typename T>
+class skSinglyLinkedList
+{
+public:
+    SK_DECLARE_TYPE(T);
+
+    typedef skSinglyLinkedList<T>          SelfType;
+    typedef skListIterator<SelfType>       Iterator;
+    typedef const skListIterator<SelfType> ConstIterator;
+
+    class Link : public skAllocObject
+    {
+    public:
+        SK_DECLARE_TYPE(Link);
+
+    public:
+        Link() :
+            m_next(0)
+        {
+        }
+        Link(typename SelfType::ConstReferenceType v) :
+            m_next(0),
+            m_data(v)
+        {
+        }
+        ~Link()
+        {
+        }
+
+        SK_INLINE PointerType getNext(void)
+        {
+            return m_next;
+        }
+
+        SK_INLINE typename SelfType::ReferenceType getData(void)
+        {
+            return m_data;
+        }
+
+    private:
+        friend class skSinglyLinkedList;
+        PointerType                           m_next;
+        typename typename SelfType::ValueType m_data;
+    };
+
+
+
+    typedef Link*              LinkPtr;
+    typedef ReferenceType      DataRef;
+    typedef ConstReferenceType ConstDataRef;
+
+
+private:
+    Link * m_head, *m_tail;
+    SKsize m_size;
+
+
+public:
+    skSinglyLinkedList() :
+        m_head(0),
+        m_tail(0),
+        m_size(0)
+    {
+    }
+
+    ~skSinglyLinkedList()
+    {
+        clear();
+    }
+
+
+    void clear(void)
+    {
+        Link* node = m_head;
+        while (node != 0)
+        {
+            Link* tlink = node->m_next;
+            delete node;
+            node = tlink;
+        }
+        m_tail = 0;
+        m_head = 0;
+        m_size = 0;
+    }
+
+    void push_back(ConstReferenceType v)
+    {
+        Link* node = new Link(v);
+        if (!m_head)
+        {
+            m_head = node;
+            m_tail = node;
+        }
+        else
+        {
+            SK_ASSERT(m_tail && m_tail->m_next == 0);
+
+            m_tail->m_next = node;
+            m_tail         = node;
+        }
+        m_size++;
+    }
+
+    void push_front(ConstReferenceType v)
+    {
+        Link* node = new Link(v);
+        if (!m_head)
+        {
+            m_head = node;
+            m_tail = node;
+        }
+        else
+        {
+            node->m_next = m_head;
+            m_head       = node;
+        }
+        m_size++;
+    }
+
+    void push_ordered(ConstReferenceType v)
+    {
+        Link* node = new Link(v);
+
+        Link *prev, *next;
+        if (!m_head)
+        {
+            m_head = node;
+            m_tail = node;
+        }
+        else
+        {
+            if (v < m_head->m_data)
+            {
+                node->m_next = m_head;
+                m_head       = node;
+            }
+            else
+            {
+                prev = m_head;
+                next = m_head;
+
+                while (next != 0 && next->m_data <= v)
+                {
+                    prev = next;
+                    next = next->m_next;
+                }
+                prev->m_next = node;
+                node->m_next = next;
+                if (next == 0)
+                     m_tail = prev;
+            }
+        }
+        m_size++;
+    }
+
+
+    ValueType pop_back(void)
+    {
+        SK_ASSERT(m_head);
+        Link *link = m_head, *prev = 0;
+        while (link->m_next != 0)
+        {
+            prev = link;
+            link = link->m_next;
+        }
+
+        ValueType val = link->m_data;
+        if (prev)
+            prev->m_next = 0;
+
+        m_tail = prev;
+
+        delete link;
+        m_size--;
+
+        if (m_size == 0)
+            m_head = m_tail = 0;
+
+        return val;
+    }
+
+    ValueType pop_front(void)
+    {
+        SK_ASSERT(m_head);
+
+        ValueType val  = m_head->m_data;
+        Link*     link = m_head->m_next;
+
+        m_size--;
+        delete m_head;
+        m_head = link;
+
+        return val;
+    }
+
+    void erase(ConstReferenceType v)
+    {
+        if (!m_head)
+            return;
+        Link *prev = 0, *found = 0;
+
+        find(v, &prev, &found);
+        if (found)
+        {
+            Link* t = found->m_next;
+            if (prev)
+                prev->m_next = t;
+
+            m_tail = prev;
+            if (found == m_head)
+                m_head = 0;
+
+            delete found;
+            m_size--;
+        }
+    }
+
+    SKsize find(ConstValueType v)
+    {
+        if (!m_head)
+            return SK_NPOS;
+
+        SKsize foundIndex = 0;
+        Link*  node       = m_head;
+        while (node)
+        {
+            if (node->m_data == v)
+                break;
+            foundIndex++;
+            node = node->m_next;
+        }
+        return foundIndex;
+    }
+
+    ReferenceType at(SKsize idx)
+    {
+        SK_ASSERT(idx != SK_NPOS && idx < m_size);
+
+        SKsize foundIndex = 0;
+        Link*  node       = m_head;
+        while (node)
+        {
+            if (foundIndex == idx)
+                break;
+            foundIndex++;
+            node = node->m_next;
+        }
+        SK_ASSERT(node);
+        return node->m_data;
+    }
+
+    SK_INLINE Link* first(void)
+    {
+        return m_head;
+    }
+
+    SK_INLINE Link* last(void)
+    {
+        return m_tail;
+    }
+
+    SK_INLINE SKsize size(void)
+    {
+        return m_size;
+    }
+    SK_INLINE bool empty(void)
+    {
+        return m_size == 0;
+    }
+
+
+    Iterator iterator(void)
+    {
+        return Iterator(m_head);
+    }
+
+    ConstIterator const_iterator(void) const
+    {
+        return ConstIterator(m_head);
+    }
+
+
+private:
+    void find(ConstValueType v, Link** prev, Link** pos)
+    {
+        if (!m_head)
+            return;
+
+        SK_ASSERT(prev && pos);
+        Link *node = m_head, *last = 0;
+        while (node)
+        {
+            if (node->m_data == v)
+            {
+                (*prev) = last;
+                (*pos)  = node;
+                return;
+            }
+            last = node;
+            node = node->m_next;
+        }
+        (*prev) = 0;
+        (*pos)  = 0;
+    }
+};
+
 
 template <typename T, typename LinkPtr>
 class skListBase
@@ -351,7 +660,7 @@ public:
         {
         }
 
-        SK_INLINE ReferenceType getLink(void)
+        SK_INLINE ReferenceType getData(void)
         {
             return m_data;
         }
@@ -373,8 +682,8 @@ public:
         friend class skListReverseIterator<skList<T> >;
     };
     typedef Link*                LinkPtr;
-    typedef ReferenceType        LinkPtrRef;
-    typedef ConstReferenceType   ConstLinkPtrRef;
+    typedef ReferenceType        DataRef;
+    typedef ConstReferenceType   ConstDataRef;
     typedef skListBase<T, Link*> BaseType;
 
 public:
@@ -559,8 +868,8 @@ public:
 
 public:
     typedef T*       LinkPtr;
-    typedef T*       LinkPtrRef;
-    typedef const T* ConstLinkPtrRef;
+    typedef T*       DataRef;
+    typedef const T* ConstDataRef;
 
     typedef skListBase<LinkPtr, LinkPtr> BaseType;
 
@@ -584,14 +893,17 @@ public:
         ~Link()
         {
         }
-        SK_INLINE LinkPtrRef getLink(void)
+
+        SK_INLINE DataRef getData(void)
         {
             return m_data;
         }
+
         SK_INLINE LinkPtr getNext(void)
         {
             return m_next;
         }
+
         SK_INLINE LinkPtr getPrev(void)
         {
             return m_prev;
