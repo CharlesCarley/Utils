@@ -412,18 +412,22 @@ public:
     {
         return m_data;
     }
+
     SK_INLINE PointerType ptr(void)
     {
         return m_data;
     }
+
     SK_INLINE bool valid(void) const
     {
         return m_data != 0;
     }
+
     SK_INLINE SKsize capacity(void) const
     {
         return m_capacity;
     }
+
     SK_INLINE SKsize size(void) const
     {
         return m_size;
