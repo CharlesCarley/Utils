@@ -86,3 +86,8 @@ SKhash skHash(const void* key)
     _SK_TWHASH(hash);
     return hash;
 }
+
+SKhash skHash(const SKuint64& key)
+{
+    return skHash((void*)key);
+}
