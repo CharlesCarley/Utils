@@ -84,7 +84,7 @@ void skMemoryStream::open(const skStream& cpy, skStream::Mode mode)
 
 void skMemoryStream::open(const void* buffer, SKsize size, skStream::Mode mode)
 {
-    if (buffer && size > 0 && size != SK_NPOS)
+    if (buffer && size > 0 && size != npos)
     {
         m_mode = mode;
         m_size = size;
@@ -124,7 +124,7 @@ void skMemoryStream::seek(SKint64 offset, SKsize dir)
 SKsize skMemoryStream::read(void* dest, SKsize nr) const
 {
     if (m_mode == skStream::WRITE)
-        return SK_NPOS;
+        return npos;
 
     if (m_pos > m_size)
         return 0;
@@ -145,7 +145,7 @@ SKsize skMemoryStream::read(void* dest, SKsize nr) const
 SKsize skMemoryStream::write(const void* src, SKsize nr)
 {
     if (m_mode == skStream::READ || !src)
-        return SK_NPOS;
+        return npos;
 
     if (m_pos > m_size)
         return 0;
@@ -178,7 +178,7 @@ SKsize skMemoryStream::writef(const char* fmt, ...)
         return write(tmp, size);
     }
 
-    return SK_NPOS;
+    return npos;
 }
 
 void skMemoryStream::reserve(SKsize nr)

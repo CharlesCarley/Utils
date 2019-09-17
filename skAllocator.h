@@ -202,7 +202,8 @@ public:
         typedef skNewAllocator<U> other;
     };
 
-    const SKsize LIMIT = SK_MAX / (sizeof(T) * 8);
+    const SKsize npos = (SKsize)-1;
+    const SKsize LIMIT = (npos) / (sizeof(T) * 8);
 
 public:
     explicit skNewAllocator()
@@ -302,7 +303,7 @@ public:
 private:
     void __fill(T* dst, T* src, const SKsize nr)
     {
-        if (nr > 0 && nr != SK_NPOS)
+        if (nr > 0 && nr != npos)
         {
             SKsize i = 0;
             do

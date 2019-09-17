@@ -52,7 +52,7 @@ struct skSort
         SKsize i;
         do
         {
-            if (size - 1 == SK_NPOS)
+            if (size - 1 == -1)
                 break;
 
             Iterator it = container.iterator();
@@ -68,7 +68,7 @@ struct skSort
                 }
             }
             size -= 1;
-        } while (swapped && size != SK_NPOS);
+        } while (swapped && size != -1);
     }
 };
 
@@ -102,7 +102,7 @@ private:
     {
         SKsize pivot;
 
-        if (first < last && last != SK_NPOS)
+        if (first < last && last != -1)
         {
             pivot = _partition(container, first, last);
             _sort(container, first, pivot - 1);

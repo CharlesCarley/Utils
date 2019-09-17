@@ -30,7 +30,8 @@
 #include "skArray.h"
 #include "skTraits.h"
 
-template <typename T, typename Allocator = skAllocator<T> >
+template <typename T, 
+    typename Allocator = skAllocator<T> >
 class skStack
 {
 public:
@@ -38,13 +39,17 @@ public:
 
 public:
     typedef skArray<T, Allocator> StackType;
-    typedef skStack<T, Allocator> SelfType;
+    typedef skStack<T, Allocator>    SelfType;
+
+    typedef SKuint32 SizeType;
 
     typedef skPointerDecrementIterator<StackType>       Iterator;
     typedef const skPointerDecrementIterator<StackType> ConstIterator;
 
     typedef skPointerIncrementIterator<StackType>       ReverseIterator;
     typedef const skPointerIncrementIterator<StackType> ConstReverseIterator;
+
+    const SizeType npos = -1;
 
     SK_IMPLEMENT_SORT(T, skStack);
 
@@ -54,7 +59,7 @@ public:
     {
     }
 
-    skStack(SKsize rsp) :
+    skStack(SizeType rsp) :
         m_top(0)
     {
         m_stack.reserve(rsp);
@@ -89,7 +94,7 @@ public:
         m_top = m_stack.size();
     }
 
-    SK_INLINE void pop(SKsize nr)
+    SK_INLINE void pop(SizeType nr)
     {
         while (nr-- && !m_stack.empty())
             m_stack.pop_back();
@@ -109,32 +114,32 @@ public:
         return m_stack.at(m_top - 1);
     }
 
-    SK_INLINE ReferenceType peek(SKsize offs)
+    SK_INLINE ReferenceType peek(SizeType offs)
     {
         SK_ASSERT(m_top != 0 && ((m_top - 1) - offs) != SK_NPOS);
         return m_stack.at((m_top - 1) - offs);
     }
 
-    SK_INLINE ConstReferenceType peek(SKsize offs) const
+    SK_INLINE ConstReferenceType peek(SizeType offs) const
     {
         SK_ASSERT(m_top != 0 && ((m_top - 1) - offs) != SK_NPOS);
         return m_stack.at((m_top - 1) - offs);
     }
 
-    void reserve(SKsize nr)
+    void reserve(SizeType nr)
     {
         m_stack.reserve(nr);
     }
 
-    SK_INLINE SKsize capacity(void) const
+    SK_INLINE SizeType capacity(void) const
     {
         return m_stack.capacity();
     }
-    SK_INLINE SKsize size(void) const
+    SK_INLINE SizeType size(void) const
     {
         return m_stack.size();
     }
-    SK_INLINE SKsize itop(void) const
+    SK_INLINE SizeType itop(void) const
     {
         return m_top - 1;
     }
@@ -184,7 +189,7 @@ public:
 
 private:
     mutable StackType m_stack;
-    SKsize            m_top;
+    SizeType          m_top;
 };
 
 #endif  //_skStack_h_

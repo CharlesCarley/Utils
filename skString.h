@@ -62,12 +62,15 @@ public:
     SK_DECLARE_ALLOC;
     SK_DECLARE_TYPE(char);
 
-    typedef skPointerIncrementIterator<skString>       Iterator;
-    typedef const skPointerIncrementIterator<skString> ConstIterator;
-    typedef skPointerDecrementIterator<skString>       ReverseIterator;
-    typedef const skPointerDecrementIterator<skString> ConstReverseIterator;
+
+    typedef skPointerIncrementIterator<skString, SKsize>       Iterator;
+    typedef const skPointerIncrementIterator<skString, SKsize> ConstIterator;
+    typedef skPointerDecrementIterator<skString, SKsize>       ReverseIterator;
+    typedef const skPointerDecrementIterator<skString, SKsize> ConstReverseIterator;
 
     SK_IMPLEMENT_SORT2(ValueType, skString);
+
+	static const SKsize npos = -1;
 
 public:
     skString() :
@@ -151,9 +154,9 @@ public:
         return append(rhs);
     }
 
-    SK_INLINE skString operator+=(const skString& rhs)
+    SK_INLINE skString& operator+=(const skString& rhs)
     {
-        return append(rhs);
+        return this->append(rhs);
     }
 
     SK_INLINE char operator[](SKsize idx) const
@@ -176,7 +179,7 @@ public:
         return append(rhs.c_str(), rhs.size());
     }
 
-    skString substr(SKsize pos, SKsize nr = 0) const;
+    skString substr(SKsize pos, SKsize nr) const;
     void     substr(skString& dest, SKsize pos, SKsize nr = 0) const;
 
     void   swap(skString& rhs);

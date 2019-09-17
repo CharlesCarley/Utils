@@ -45,7 +45,9 @@ public:
         Value second;
 
         Pair() :
-            hash(SK_NPOS)
+            first(),
+            second(),
+            hash(-1)
         {
         }
 
@@ -85,7 +87,7 @@ public:
 
     private:
         friend class skDictionary;
-        SKsize hash;
+        SKuint32 hash;
     };
 
     SK_DECLARE_TYPE(Pair);
@@ -96,22 +98,24 @@ public:
     typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
     typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
 
+    const SKuint32 npos = -1;
+
 private:
     PointerType m_data;
-    SKsize      m_size, m_capacity;
-    SKsize*     m_index;
+    SKuint32      m_size, m_capacity;
+    SKuint32*     m_index;
 
-    SK_INLINE SKsize hash(const Key& key) const
+    SK_INLINE SKuint32 hash(const Key& key) const
     {
         return skHash(key) % (m_capacity);
     }
 
-    SK_INLINE SKsize linearProbe(const SKhash& key, SKsize i) const
+    SK_INLINE SKuint32 linearProbe(const SKhash& key, SKuint32 i) const
     {
         return (key + i) % (m_capacity);
     }
 
-    SK_INLINE SKsize probe(const SKhash& key, SKsize i) const
+    SK_INLINE SKuint32 probe(const SKhash& key, SKuint32 i) const
     {
         return linearProbe(key, i);
     }
@@ -152,7 +156,7 @@ public:
         m_capacity = 0;
     }
 
-    void reserve(SKsize nr)
+    void reserve(SKuint32 nr)
     {
         if (nr > m_capacity)
         {
@@ -166,7 +170,7 @@ public:
         if ((m_size + 1) * 2 >= m_capacity)  // assure that the load factor is balanced
             reserve(m_size == 0 ? 16 : m_capacity * 2);
 
-        if (find(key) != SK_NPOS)
+        if (find(key) != npos)
             return;
 
         SKhash mapping   = probeKey(key);
@@ -179,30 +183,30 @@ public:
     {
         if (m_size == 0)
             return false;
-        return find(key) != SK_NPOS;
+        return find(key) != npos;
     }
 
-    SKsize find(const Key& k) const
+    SKuint32 find(const Key& k) const
     {
         if (m_size == 0)
-            return SK_NPOS;
+            return npos;
 
         SKhash mapping = hash(k);
-        if (m_index[mapping] == SK_NPOS)
-            return SK_NPOS;
+        if (m_index[mapping] == npos)
+            return npos;
 
-        SKsize idx = m_index[mapping];
+        SKuint32 idx = m_index[mapping];
         if (m_data[idx].hash != mapping || m_data[idx].first != k)
         {
-            SKsize i = 0;
+            SKuint32 i = 0;
             while (i < m_capacity)
             {
                 mapping = probe(mapping, i++);
                 idx     = m_index[mapping];
-                if (idx != SK_NPOS && m_data[idx].hash == mapping && m_data[idx].first == k)
+                if (idx != npos && m_data[idx].hash == mapping && m_data[idx].first == k)
                     return idx;
             }
-            idx = SK_NPOS;
+            idx = npos;
         }
         return idx;
     }
@@ -212,48 +216,48 @@ public:
         if (m_size == 0)
             return;
 
-        SKsize A = find(k), B = m_size - 1;
-        if (A != SK_NPOS)
+        SKuint32 A = find(k), B = m_size - 1;
+        if (A != npos)
         {
-            const SKsize mapB = m_data[B].hash;
-            const SKsize mapA = m_data[A].hash;
+            const SKuint32 mapB = m_data[B].hash;
+            const SKuint32 mapA = m_data[A].hash;
 
             m_size--;
             if (m_size == 0)
             {
-                m_index[mapA] = SK_NPOS;
-                m_index[mapB] = SK_NPOS;
+                m_index[mapA] = npos;
+                m_index[mapB] = npos;
             }
             else
             {
-                const SKsize idx = m_index[mapA];
+                const SKuint32 idx = m_index[mapA];
                 m_index[mapB]    = idx;
-                m_index[mapA]    = SK_NPOS;
+                m_index[mapA]    = npos;
 
                 skSwap(m_data[A], m_data[B]);
             }
         }
     }
 
-    SK_INLINE ReferenceType operator[](SKsize idx)
+    SK_INLINE ReferenceType operator[](SKuint32 idx)
     {
         SK_ASSERT(idx >= 0 && idx < m_size);
         return m_data[idx];
     }
 
-    SK_INLINE ConstReferenceType operator[](SKsize idx) const
+    SK_INLINE ConstReferenceType operator[](SKuint32 idx) const
     {
         SK_ASSERT(idx >= 0 && idx < m_size);
         return m_data[idx];
     }
 
-    SK_INLINE ReferenceType at(SKsize idx)
+    SK_INLINE ReferenceType at(SKuint32 idx)
     {
         SK_ASSERT(idx >= 0 && idx < m_size);
         return m_data[idx];
     }
 
-    SK_INLINE ConstReferenceType at(SKsize idx) const
+    SK_INLINE ConstReferenceType at(SKuint32 idx) const
     {
         SK_ASSERT(idx >= 0 && idx < m_size);
         return m_data[idx];
@@ -267,7 +271,7 @@ public:
     {
         return m_data;
     }
-    SK_INLINE const SKsize* iptr(void) const
+    SK_INLINE const SKuint32* iptr(void) const
     {
         return m_index;
     }
@@ -275,11 +279,11 @@ public:
     {
         return m_data != 0;
     }
-    SK_INLINE SKsize capacity(void) const
+    SK_INLINE SKuint32 capacity(void) const
     {
         return m_capacity;
     }
-    SK_INLINE SKsize size(void) const
+    SK_INLINE SKuint32 size(void) const
     {
         return m_size;
     }
@@ -309,34 +313,34 @@ public:
     }
 
 private:
-    SKsize probeKey(const Key& k)
+    SKuint32 probeKey(const Key& k)
     {
         SKhash mapping = hash(k);
-        SKsize i       = 0;
-        while (m_index[mapping] != SK_NPOS && i < m_capacity)
+        SKuint32 i       = 0;
+        while (m_index[mapping] != npos && i < m_capacity)
             mapping = probe(mapping, i++);
 
         SK_ASSERT(i != m_capacity);
-        SK_ASSERT(m_index[mapping] == SK_NPOS);
+        SK_ASSERT(m_index[mapping] == npos);
         return mapping;
     }
 
-    void rehash(SKsize nr)
+    void rehash(SKuint32 nr)
     {
         Pair*   data  = new Pair[nr];
-        SKsize* index = new SKsize[nr];
-        skMemset(index, SK_NPOS, (nr) * sizeof(SKsize));
+        SKuint32* index = new SKuint32[nr];
+        skMemset(index, npos, (nr) * sizeof(SKuint32));
 
-        SKsize i, mapping, j;
+        SKuint32 i, mapping, j;
         for (i = 0; i < m_size; ++i)
         {
             mapping = hash(m_data[i].first);
             j       = 0;
-            while (index[mapping] != SK_NPOS && j < m_capacity)
+            while (index[mapping] != npos && j < m_capacity)
                 mapping = probe(mapping, j++);
 
             SK_ASSERT(j != m_capacity);
-            SK_ASSERT(index[mapping] == SK_NPOS);
+            SK_ASSERT(index[mapping] == npos);
 
             data[i]        = Pair(m_data[i].first, m_data[i].second, mapping);
             index[mapping] = i;

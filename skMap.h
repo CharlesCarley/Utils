@@ -35,15 +35,14 @@ class skHashTableIncrementIterator : public skPointerIncrementIterator<T>
 public:
     typedef typename T::PairValueType PairValueType;
     typedef typename T::PairKeyType   PairKeyType;
-
-    typedef typename T::PointerType PointerType;
+    typedef typename T::PointerType   PointerType;
 
 public:
     skHashTableIncrementIterator()
     {
     }
 
-    skHashTableIncrementIterator(PointerType begin, SKsize size) :
+    skHashTableIncrementIterator(PointerType begin, SKuint32 size) :
         skPointerIncrementIterator<T>(begin, size)
     {
     }
@@ -91,7 +90,7 @@ public:
     {
     }
 
-    skHashTableDecrementIterator(PointerType begin, SKsize size) :
+    skHashTableDecrementIterator(PointerType begin, SKuint32 size) :
         skPointerDecrementIterator<T>(begin, size)
     {
     }
@@ -140,9 +139,9 @@ template <typename Key, typename Value>
 class skEntry
 {
 public:
-    Key    first;
-    Value  second;
-    SKsize hash;
+    Key      first;
+    Value    second;
+    SKuint32 hash;
 
     skEntry(): hash(0)
     {
@@ -174,22 +173,25 @@ template <typename Key, typename Value, typename Allocator = skAllocator<skEntry
 class skHashTable
 {
 public:
-    typedef skAllocator<SKsize>                IndexAllocator;
+    typedef skAllocator<SKuint32>                IndexAllocator;
     typedef skHashTable<Key, Value, Allocator> SelfType;
 
 public:
     typedef skEntry<Key, Value> Pair;
     SK_DECLARE_TYPE(Pair);
 
-    typedef SKsize* IndexArray;
-    typedef Key     PairKeyType;
-    typedef Value   PairValueType;
+    typedef SKuint32* IndexArray;
+    typedef Key       PairKeyType;
+    typedef Value     PairValueType;
 
     typedef skHashTableIncrementIterator<SelfType>       Iterator;
     typedef const skHashTableIncrementIterator<SelfType> ConstIterator;
 
     typedef skHashTableDecrementIterator<SelfType>       ReverseIterator;
     typedef const skHashTableDecrementIterator<SelfType> ConstReverseIterator;
+
+	static const SKuint32 npos = -1;
+
 
 public:
     skHashTable() :
@@ -201,7 +203,7 @@ public:
     {
     }
 
-    skHashTable(SKsize capacity) :
+    skHashTable(SKuint32 capacity) :
         m_size(0),
         m_capacity(0),
         m_iptr(0),
@@ -245,32 +247,32 @@ public:
         m_size = m_capacity = 0;
     }
 
-    Value& at(SKsize i)
+    Value& at(SKuint32 i)
     {
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
         return m_bptr[i].second;
     }
-    Value& operator[](SKsize i)
+    Value& operator[](SKuint32 i)
     {
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
         return m_bptr[i].second;
     }
-    const Value& at(SKsize i) const
+    const Value& at(SKuint32 i) const
     {
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
         return m_bptr[i].second;
     }
-    const Value& operator[](SKsize i) const
+    const Value& operator[](SKuint32 i) const
     {
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
         return m_bptr[i].second;
     }
-    Key& keyAt(SKsize i)
+    Key& keyAt(SKuint32 i)
     {
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
         return m_bptr[i].first;
     }
-    const Key& keyAt(SKsize i) const
+    const Key& keyAt(SKuint32 i) const
     {
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
         return m_bptr[i].first;
@@ -278,9 +280,9 @@ public:
 
     Value* get(const Key& key)
     {
-        SKsize i = find(key);
+        SKuint32 i = find(key);
 
-        if (i == SK_NPOS)
+        if (i == npos)
             return 0;
 
         return &m_bptr[i].second;
@@ -295,16 +297,16 @@ public:
         return get(key);
     }
 
-    SKsize find(const Key& key) const
+    SKuint32 find(const Key& key) const
     {
         if (empty())
-            return SK_NPOS;
+            return npos;
 
-        SKsize hk = skHash(key);
+        SKuint32 hk = skHash(key);
         SKhash hr = (hk & (m_capacity - 1));
-        SKsize fh = m_iptr[hr];
+        SKuint32 fh = m_iptr[hr];
 
-        while (fh != SK_NPOS && hk != m_bptr[fh].hash)
+        while (fh != npos && hk != m_bptr[fh].hash)
             fh = m_nptr[fh];
 
         return fh;
@@ -314,14 +316,14 @@ public:
     {
         if (!empty())
         {
-            if (find(key) != SK_NPOS)
+            if (find(key) != npos)
                 return false;
         }
 
         if (m_size == m_capacity)
             reserve(m_size == 0 ? 32 : m_size * 2);
 
-        SKsize hk = skHash(key);
+        SKuint32 hk = skHash(key);
         SKhash hr = hk & (m_capacity - 1);
 
         m_bptr[m_size] = Pair(key, val, hk);
@@ -338,7 +340,7 @@ public:
     void remove(const Key& key)
     {
         SKhash hash, lhash;
-        SKsize index, pindex, findex;
+        SKuint32 index, pindex, findex;
 
         if (empty())
             return;
@@ -348,7 +350,7 @@ public:
         hash = skHash(key) & (m_capacity - 1);
 
         index  = m_iptr[hash];
-        pindex = SK_NPOS;
+        pindex = npos;
 
         while (index != findex)
         {
@@ -356,7 +358,7 @@ public:
             index  = m_nptr[index];
         }
 
-        if (pindex != SK_NPOS)
+        if (pindex != npos)
         {
             SK_ASSERT(m_nptr[pindex] == findex);
             m_nptr[pindex] = m_nptr[findex];
@@ -364,7 +366,7 @@ public:
         else
             m_iptr[hash] = m_nptr[findex];
 
-        SKsize lindex = m_size - 1;
+        SKuint32 lindex = m_size - 1;
 
         if (lindex == findex)
         {
@@ -375,7 +377,7 @@ public:
 
         lhash  = m_bptr[lindex].hash & (m_capacity - 1);
         index  = m_iptr[lhash];
-        pindex = SK_NPOS;
+        pindex = npos;
 
         while (index != lindex)
         {
@@ -383,7 +385,7 @@ public:
             index  = m_nptr[index];
         }
 
-        if (pindex != SK_NPOS)
+        if (pindex != npos)
         {
             SK_ASSERT(m_nptr[pindex] == lindex);
             m_nptr[pindex] = m_nptr[lindex];
@@ -413,11 +415,11 @@ public:
         return m_bptr != 0;
     }
 
-    SK_INLINE SKsize size(void) const
+    SK_INLINE SKuint32 size(void) const
     {
         return m_size;
     }
-    SK_INLINE SKsize capacity(void) const
+    SK_INLINE SKuint32 capacity(void) const
     {
         return m_capacity;
     }
@@ -446,23 +448,23 @@ public:
         return m_bptr && m_size > 0 ? ConstReverseIterator(m_bptr, m_size) : ConstReverseIterator();
     }
 
-    void reserve(SKsize nr)
+    void reserve(SKuint32 nr)
     {
-        if (m_capacity < nr && nr != SK_NPOS)
+        if (m_capacity < nr && nr != npos)
             rehash(nr);
     }
 
 private:
-    void _zeroIndices(SKsize from, SKsize to)
+    void _zeroIndices(SKuint32 from, SKuint32 to)
     {
         if (to <= 0 || from >= to)
             return;
 
-        SKsize i = from;
+        SKuint32 i = from;
 
         do
         {
-            m_iptr[i] = m_nptr[i] = SK_NPOS;
+            m_iptr[i] = m_nptr[i] = npos;
         } while (++i < to);
     }
 
@@ -472,7 +474,7 @@ private:
         {
             reserve(rhs.m_capacity);
 
-            SKsize i, b;
+            SKuint32 i, b;
             m_size     = rhs.m_size;
             m_capacity = rhs.m_capacity;
 
@@ -488,7 +490,7 @@ private:
         }
     }
 
-    void rehash(SKsize nr)
+    void rehash(SKuint32 nr)
     {
         if (!_SK_HASHTABLE_IS_POW2(nr))
         {
@@ -502,7 +504,7 @@ private:
         m_capacity = nr;
         SK_ASSERT(m_bptr && m_iptr && m_nptr);
 
-        SKsize i, h;
+        SKuint32 i, h;
         _zeroIndices(0, m_capacity);
 
         for (i = 0; i < m_size; i++)
@@ -513,13 +515,16 @@ private:
         }
     }
 
-    SKsize         m_size, m_capacity;
+    SKuint32         m_size, m_capacity;
     IndexArray     m_iptr;
     IndexArray     m_nptr;
     PointerType    m_bptr;
     Allocator      m_alloc;
     IndexAllocator m_ialloc;
 };
+
+
+
 
 template <typename T, typename Allocator = skAllocator<skEntry<T, bool> > >
 class skHashSet
@@ -529,6 +534,8 @@ public:
     SK_DECLARE_REF_TYPE(TableType);
 
     typedef skHashSet<T, Allocator> SelfType;
+
+    static const SKuint32 npos = -1;
 
     typedef skPointerIncrementIterator<SelfType>       Iterator;
     typedef const skPointerIncrementIterator<SelfType> ConstIterator;
@@ -564,36 +571,36 @@ public:
         m_table.remove(v);
     }
 
-    SKsize find(const T& v)
+    SKuint32 find(const T& v)
     {
         return m_table.find(v);
     }
 
-    SK_INLINE T& operator[](SKsize idx)
+    SK_INLINE T& operator[](SKuint32 idx)
     {
         SK_ASSERT(idx >= 0 && idx < size());
         return m_table.at(idx);
     }
 
-    SK_INLINE const T& operator[](SKsize idx) const
+    SK_INLINE const T& operator[](SKuint32 idx) const
     {
         SK_ASSERT(idx >= 0 && idx < size());
         return m_table.at(idx);
     }
 
-    SK_INLINE T& at(SKsize idx)
+    SK_INLINE T& at(SKuint32 idx)
     {
         SK_ASSERT(idx >= 0 && idx < size());
         return m_table.at(idx);
     }
 
-    SK_INLINE const T& at(SKsize idx) const
+    SK_INLINE const T& at(SKuint32 idx) const
     {
         SK_ASSERT(idx >= 0 && idx < size());
         return m_table.at(idx);
     }
 
-    SK_INLINE SKsize size(void) const
+    SK_INLINE SKuint32 size(void) const
     {
         return m_table.size();
     }

@@ -51,7 +51,7 @@ public:
 
     SK_INLINE bool eof(void) const
     {
-        return m_pos != SK_NPOS;
+        return m_pos != npos;
     }
 
     SKsize read(void* dst, SKsize nr) const;

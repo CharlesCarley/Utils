@@ -40,6 +40,9 @@ public:
         WRITE_TEXT  //!< Open in text mode
     };
 
+
+    const SKsize npos = -1;
+
 public:
    
     skStream()

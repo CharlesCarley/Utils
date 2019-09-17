@@ -63,7 +63,7 @@ void skTimer::reset(void)
     QueryPerformanceFrequency((LARGE_INTEGER *)&m_private->m_freq);
 
     DWORD proc, sys;
-    GetProcessAffinityMask(GetCurrentProcess(), &proc, &sys);
+    GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&proc, (PDWORD_PTR)&sys);
     proc              = skMax<SKuint32>(proc, 1);
     m_private->m_mask = 1;
 
@@ -179,7 +179,7 @@ SKulong skGetTickCount(void)
 SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt)
 {
     if (!buffer || bufSize == 0 || bufSize > 64 || !fmt)
-        return SK_NPOS;
+        return SK_NPOS32;
 
     time_t now;
     ::time(&now);
@@ -191,9 +191,9 @@ SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt)
 SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const long long &timestamp)
 {
     if (!buffer || bufSize == 0 || bufSize > 64 || !fmt)
-        return SK_NPOS;
+        return SK_NPOS32;
 
-    SKuint32 bw;
+    SKuint64 bw;
     tm* tval;
     tval = ::localtime((time_t *)&timestamp);
 
@@ -208,7 +208,7 @@ SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const lo
     if (bw != 0 && bw < bufSize)
     {
         buffer[bw] = 0;
-        return bw;
+        return (SKuint32)bw;
     }
-    return SK_NPOS;
+    return SK_NPOS32;
 }

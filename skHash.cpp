@@ -43,9 +43,9 @@
 SKhash skHash(const char* key)
 {
     if (!key)
-        return SK_NPOS;
+        return (SKhash)-1;
 
-    return skHash(key, skStringUtils::length(key));
+	return skHash(key, skStringUtils::length(key));
 }
 
 

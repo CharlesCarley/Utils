@@ -255,7 +255,7 @@ void skDebugger::pause(void)
 
     puts("\nPress enter to continue . . .");
 
-    getc(stdin);
+    (void)getc(stdin);
     for (;;)
     {
         int ch = getc(stdin);

@@ -85,7 +85,7 @@ void skParser::initialize(SKuint32 stackSize, skStream* in)
     m_input.reserve(32);
     m_stack.reserve(stackSize);
 
-    m_len = in->size();
+    m_len      = (SKuint32)in->size();
     m_stateIdx = m_lalr->m_initial;
 
     StackItem item;

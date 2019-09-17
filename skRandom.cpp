@@ -29,10 +29,10 @@
 
 void skRandInit(SKuint32 seed)
 {
-    if (seed != SK_NPOS)
+    if (seed != SK_NPOS32)
         ::srand(seed);
     else
-        ::srand(skGetTickCount() % (SK_NPOS - 1));
+        ::srand(skGetTickCount() % (SK_NPOS32 - 1));
 }
 
 SKuint32 skRandom(SKuint32 mod)
@@ -46,7 +46,7 @@ SKuint32 skRandomUnsignedInt(SKuint32 mod)
     if (r < 0)
         r = -r;
 
-    if (mod != SK_NPOS)
+    if (mod != SK_NPOS32)
         r %= mod;
 
     return (SKuint32)r;
@@ -56,7 +56,7 @@ double skUnitRandom(SKuint32 mod)
 {
     if (mod == 0)
         mod = 256;
-    if (mod == SK_NPOS)
+    if (mod == SK_NPOS32)
         mod = 256;
     return (double)skRandomUnsignedInt(mod) / (double)mod;
 }

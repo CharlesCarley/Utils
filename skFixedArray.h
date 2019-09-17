@@ -42,7 +42,9 @@ public:
     SK_DECLARE_TYPE(T);
     SK_IMPLEMENT_QSORT(T, SelfType);
 
-    const SKuint16 LIMIT = L;
+    static const SKuint16 LIMIT = L;
+    static const SKuint16 npos = -1;
+
 
 public:
     skFixedArray() :

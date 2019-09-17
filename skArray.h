@@ -29,7 +29,7 @@
 #include "skAllocator.h"
 #include "skSort.h"
 
-template <typename T>
+template <typename T, typename SizeType = SKuint32>
 class skPointerIncrementIterator
 {
 public:
@@ -52,7 +52,7 @@ public:
     {
     }
 
-    skPointerIncrementIterator(PointerType begin, SKsize size) :
+    skPointerIncrementIterator(PointerType begin, SizeType size) :
         m_beg(begin),
         m_end(begin + size)
     {
@@ -117,7 +117,7 @@ public:
     }
 };
 
-template <typename T>
+template <typename T, typename SizeType = SKuint32>
 class skPointerDecrementIterator
 {
 public:
@@ -140,7 +140,7 @@ public:
     {
     }
 
-    skPointerDecrementIterator(PointerType begin, SKsize size) :
+    skPointerDecrementIterator(PointerType begin, SizeType size) :
         m_beg(begin + (size - 1)),
         m_end(begin)
     {
@@ -205,18 +205,24 @@ public:
     }
 };
 
-template <typename T, typename Allocator = skAllocator<T> >
+template <typename T,
+          typename Allocator = skAllocator<T> >
 class skArray
 {
 public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef skArray<T, Allocator>                      SelfType;
+    typedef skArray<T, Allocator>               SelfType;
     typedef skPointerIncrementIterator<SelfType>       Iterator;
     typedef const skPointerIncrementIterator<SelfType> ConstIterator;
     typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
     typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
+
+    typedef SKuint32 SizeType;
+
+    const SizeType npos = -1;
+
 
     SK_IMPLEMENT_QSORT(T, skArray);
 
@@ -257,9 +263,9 @@ public:
         m_size     = 0;
     }
 
-    SKsize find(ConstReferenceType v) const
+    SizeType find(ConstReferenceType v) const
     {
-        SKsize i;
+        SizeType i;
         for (i = 0; i < m_size; i++)
         {
             if (m_data[i] == v)
@@ -297,11 +303,11 @@ public:
         remove(find(v));
     }
 
-    void remove(SKsize pos)
+    void remove(SizeType pos)
     {
         if (m_size > 0)
         {
-            if (pos != SK_NPOS)
+            if (pos != npos)
             {
                 skSwap(m_data[pos], m_data[m_size - 1]);
                 m_alloc.destroy(&m_data[--m_size]);
@@ -309,11 +315,11 @@ public:
         }
     }
 
-    void resize(SKsize nr)
+    void resize(SizeType nr)
     {
         if (nr < m_size)
         {
-            for (SKsize i = nr; i < m_size; i++)
+            for (SizeType i = nr; i < m_size; i++)
                 m_alloc.destroy(&m_data[i]);
         }
         else
@@ -324,9 +330,9 @@ public:
         m_size = nr;
     }
 
-    void resize(SKsize nr, ConstReferenceType fill)
+    void resize(SizeType nr, ConstReferenceType fill)
     {
-        SKsize i;
+        SizeType i;
 
         if (nr < m_size)
         {
@@ -342,7 +348,7 @@ public:
         m_size = nr;
     }
 
-    void reserve(SKsize nr)
+    void reserve(SizeType nr)
     {
         if (m_capacity > nr)
         {
@@ -360,25 +366,25 @@ public:
         }
     }
 
-    SK_INLINE ReferenceType operator[](SKsize idx)
+    SK_INLINE ReferenceType operator[](SizeType idx)
     {
         SK_ASSERT(idx >= 0 && idx < m_capacity);
         return m_data[idx];
     }
 
-    SK_INLINE ConstReferenceType operator[](SKsize idx) const
+    SK_INLINE ConstReferenceType operator[](SizeType idx) const
     {
         SK_ASSERT(idx >= 0 && idx < m_capacity);
         return m_data[idx];
     }
 
-    SK_INLINE ReferenceType at(SKsize idx)
+    SK_INLINE ReferenceType at(SizeType idx)
     {
         SK_ASSERT(idx >= 0 && idx < m_capacity);
         return m_data[idx];
     }
 
-    SK_INLINE ConstReferenceType at(SKsize idx) const
+    SK_INLINE ConstReferenceType at(SizeType idx) const
     {
         SK_ASSERT(idx >= 0 && idx < m_capacity);
         return m_data[idx];
@@ -412,23 +418,19 @@ public:
     {
         return m_data;
     }
-
     SK_INLINE PointerType ptr(void)
     {
         return m_data;
     }
-
     SK_INLINE bool valid(void) const
     {
         return m_data != 0;
     }
-
-    SK_INLINE SKsize capacity(void) const
+    SK_INLINE SizeType capacity(void) const
     {
         return m_capacity;
     }
-
-    SK_INLINE SKsize size(void) const
+    SK_INLINE SizeType size(void) const
     {
         return m_size;
     }
@@ -473,7 +475,7 @@ public:
 
 private:
     PointerType m_data;
-    SKsize      m_size, m_capacity;
+    SizeType    m_size, m_capacity;
     Allocator   m_alloc;
 };
 

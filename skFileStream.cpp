@@ -78,13 +78,14 @@ SKsize skFileStream::read(void* dst, SKsize nr) const
 {
     if (m_mode == WRITE || dst == 0 || !isOpen())
         return 0;
-    return fread(dst, 1, nr, static_cast<FILE*>(m_handle));
+
+	return fread(dst, 1, nr, static_cast<FILE*>(m_handle));
 }
 
 
 void skFileStream::seek(SKint64 offs, SKsize dir)
 {
-    if (!isOpen() || offs == SK_NPOS)
+    if (!isOpen() || offs == npos)
         return;
 
     long way;
@@ -107,12 +108,12 @@ SKsize skFileStream::write(const void* src, SKsize nr)
 
 SKsize skFileStream::position(void) const
 {
-    return isOpen() ? (SKsize) ftell(static_cast<FILE*>(m_handle)) : SK_NPOS;
+    return isOpen() ? (SKsize) ftell(static_cast<FILE*>(m_handle)) : npos;
 }
 
 SKsize skFileStream::size(void) const
 {
-    SKsize size = SK_NPOS;
+    SKsize size = npos;
     if (isOpen())
     {
         FILE* fp = static_cast<FILE*>(m_handle);
