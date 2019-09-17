@@ -42,8 +42,8 @@ public:
     SK_DECLARE_TYPE(T);
     SK_IMPLEMENT_QSORT(T, SelfType);
 
-    const SKuint16 LIMIT = L;
-    const SKuint16 npos = -1;
+    const SKuint16 limit = L;
+    const SKuint16 npos = SK_NPOS16;
 
 
 public:

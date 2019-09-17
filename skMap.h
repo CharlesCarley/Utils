@@ -190,8 +190,7 @@ public:
     typedef skHashTableDecrementIterator<SelfType>       ReverseIterator;
     typedef const skHashTableDecrementIterator<SelfType> ConstReverseIterator;
 
-	static const SKuint32 npos = -1;
-
+	const SKuint32 npos = SK_NPOS32;
 
 public:
     skHashTable() :
@@ -533,14 +532,13 @@ public:
     typedef skHashTable<T, bool, Allocator> TableType;
     SK_DECLARE_REF_TYPE(TableType);
 
-    typedef skHashSet<T, Allocator> SelfType;
-
-    static const SKuint32 npos = -1;
-
+    typedef skHashSet<T, Allocator>                    SelfType;
     typedef skPointerIncrementIterator<SelfType>       Iterator;
     typedef const skPointerIncrementIterator<SelfType> ConstIterator;
     typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
     typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
+
+    const SKuint32 npos = SK_NPOS32;
 
 public:
     skHashSet()
