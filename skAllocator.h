@@ -85,10 +85,12 @@ public:
     {
         typedef skMallocAllocator<U> other;
     };
-    const SKsize npos =-1;
-    const SKsize LIMIT = npos / (sizeof(T) * 8);
+
+    const SKsize npos  = -1;
+    const SKsize limit = npos / (sizeof(T) * 8);
 
 public:
+
     explicit skMallocAllocator()
     {
     }
@@ -182,8 +184,7 @@ public:
 
     SK_INLINE SKsize max_size(void) const
     {
-        // < actual
-        return LIMIT;
+        return limit;
     }
 };
 
@@ -203,7 +204,7 @@ public:
     };
 
     const SKsize npos = (SKsize)-1;
-    const SKsize LIMIT = (npos) / (sizeof(T) * 8);
+    const SKsize limit = (npos) / (sizeof(T) * 8);
 
 public:
     explicit skNewAllocator()
@@ -297,7 +298,7 @@ public:
     SK_INLINE SKsize max_size(void)
     {
         // < actual
-        return LIMIT;
+        return limit;
     }
 
 private:
