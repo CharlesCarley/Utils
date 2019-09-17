@@ -233,7 +233,7 @@ public:
     private:
         friend class skSinglyLinkedList;
         PointerType                           m_next;
-        typename typename SelfType::ValueType m_data;
+        typename SelfType::ValueType m_data;
     };
 
 
@@ -411,7 +411,7 @@ public:
     SKsize find(ConstValueType v)
     {
         if (!m_head)
-            return SK_NPOS;
+            return -1;
 
         SKsize foundIndex = 0;
         Link*  node       = m_head;
@@ -427,7 +427,7 @@ public:
 
     ReferenceType at(SKsize idx)
     {
-        SK_ASSERT(idx != SK_NPOS && idx < m_size);
+        SK_ASSERT(idx != -1 && idx < m_size);
 
         SKsize foundIndex = 0;
         Link*  node       = m_head;

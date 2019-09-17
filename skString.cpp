@@ -285,6 +285,7 @@ void skString::split(skArray<skString>& dst, const char* op) const
     }
 }
 
+
 skString skString::format(const char* fmt, ...)
 {
     static char buf[1025];

@@ -35,17 +35,19 @@ class skFixedString
 public:
     typedef char Pointer[L + 1];
 
+
+
 public:
     skFixedString() :
         m_size(0),
-        m_hash(SK_NPOS)
+        m_hash(-1)
     {
         m_buffer[m_size] = 0;
     }
 
     skFixedString(const skFixedString& rhs) :
         m_size(0),
-        m_hash(SK_NPOS)
+        m_hash(-1)
     {
         if (rhs.size())
         {
@@ -61,7 +63,7 @@ public:
 
     skFixedString(const char* rhs) :
         m_size(0),
-        m_hash(SK_NPOS)
+        m_hash(-1)
     {
         if (rhs)
         {
@@ -76,7 +78,7 @@ public:
 
     skFixedString(const char* rhs, SKuint16 size) :
         m_size(0),
-        m_hash(SK_NPOS)
+        m_hash(-1)
     {
         if (rhs)
         {
@@ -111,7 +113,7 @@ public:
         {
             SKuint16 i;
             m_size = 0;
-            m_hash = SK_NPOS;
+            m_hash = -1;
             for (i = 0; i < L && i < rhs.m_size; ++i, ++m_size)
                 m_buffer[i] = rhs.m_buffer[i];
             m_buffer[m_size] = 0;
@@ -181,11 +183,11 @@ public:
 
     SKsize hash(void) const
     {
-        if (m_hash != SK_NPOS)
+        if (m_hash != -1)
             return m_hash;
 
         if (m_size == 0 || !m_buffer)
-            return SK_NPOS;
+            return -1;
 
         m_hash = skHash(m_buffer);
         return m_hash;

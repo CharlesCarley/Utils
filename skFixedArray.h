@@ -42,8 +42,8 @@ public:
     SK_DECLARE_TYPE(T);
     SK_IMPLEMENT_QSORT(T, SelfType);
 
-    static const SKuint16 LIMIT = L;
-    static const SKuint16 npos = -1;
+    const SKuint16 LIMIT = L;
+    const SKuint16 npos = -1;
 
 
 public:
@@ -137,14 +137,14 @@ public:
             if (m_data[i] == v)
                 return i;
         }
-        return SK_NPOS16;
+        return npos16;
     }
 
     void remove(SKuint16 pos)
     {
         if (m_size > 0)
         {
-            if (pos < SK_NPOS16)
+            if (pos < npos16)
             {
                 skSwap(m_data[pos], m_data[m_size - 1]);
                 m_data[m_size - 1].~T();

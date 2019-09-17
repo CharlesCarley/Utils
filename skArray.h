@@ -271,7 +271,7 @@ public:
             if (m_data[i] == v)
                 return i;
         }
-        return SK_NPOS;
+        return npos;
     }
 
     void push_back(ConstReferenceType v)

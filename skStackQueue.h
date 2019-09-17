@@ -147,14 +147,14 @@ public:
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
         SK_ASSERT(m_data);
-        SK_ASSERT(idx != SK_NPOS && idx < m_size);
+        SK_ASSERT(idx != npos && idx < m_size);
         return m_data[(m_size - 1) - idx];
     }
 
     SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
         SK_ASSERT(m_data);
-        SK_ASSERT(idx != SK_NPOS && idx < m_size);
+        SK_ASSERT(idx != npos && idx < m_size);
         return m_data[(m_size - 1) - idx];
     }
 

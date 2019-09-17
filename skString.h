@@ -70,7 +70,7 @@ public:
 
     SK_IMPLEMENT_SORT2(ValueType, skString);
 
-	static const SKsize npos = -1;
+	const SKsize npos = -1;
 
 public:
     skString() :
@@ -161,7 +161,7 @@ public:
 
     SK_INLINE char operator[](SKsize idx) const
     {
-        SK_ASSERT(idx != SK_NPOS);
+        SK_ASSERT(idx != npos);
         return m_data ? m_data[idx] : 0;
     }
 
@@ -241,7 +241,7 @@ public:
 
     SK_INLINE char at(SKsize idx) const
     {
-        SK_ASSERT(idx != SK_NPOS);
+        SK_ASSERT(idx != npos);
         return m_data ? m_data[idx] : 0;
     }
 

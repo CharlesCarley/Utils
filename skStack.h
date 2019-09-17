@@ -116,13 +116,13 @@ public:
 
     SK_INLINE ReferenceType peek(SizeType offs)
     {
-        SK_ASSERT(m_top != 0 && ((m_top - 1) - offs) != SK_NPOS);
+        SK_ASSERT(m_top != 0 && ((m_top - 1) - offs) != npos);
         return m_stack.at((m_top - 1) - offs);
     }
 
     SK_INLINE ConstReferenceType peek(SizeType offs) const
     {
-        SK_ASSERT(m_top != 0 && ((m_top - 1) - offs) != SK_NPOS);
+        SK_ASSERT(m_top != 0 && ((m_top - 1) - offs) != npos);
         return m_stack.at((m_top - 1) - offs);
     }
 
