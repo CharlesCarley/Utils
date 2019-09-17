@@ -31,14 +31,15 @@
 #include "skTraits.h"
 
 template <typename T, typename Allocator = skAllocator<T> >
-class skStack : public skTypeTraits<T>
+class skStack
 {
+public:
+    SK_DECLARE_TYPE(T);
+
 public:
     typedef skStack<T, Allocator>                       SelfType;
     typedef skPointerDecrementIterator<SelfType>        Iterator;
     typedef const skPointerDecrementIterator<SelfType>  ConstIterator;
-
-    const SKuint32 npos = SK_NPOS32;
 
 public:
     skStack() :

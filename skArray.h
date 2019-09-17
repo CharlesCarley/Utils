@@ -30,8 +30,12 @@
 #include "skSort.h"
 
 template <typename T, typename SizeType = SKuint32>
-class skPointerIncrementIterator : public skReferencedTypeTraits<T>
+class skPointerIncrementIterator
 {
+public:
+    SK_DECLARE_REF_TYPE(T);
+
+
 protected:
     mutable PointerType m_beg;
     mutable PointerType m_end;
@@ -115,8 +119,12 @@ public:
 };
 
 template <typename T, typename SizeType = SKuint32>
-class skPointerDecrementIterator : public skReferencedTypeTraits<T>
+class skPointerDecrementIterator
 {
+public:
+    SK_DECLARE_REF_TYPE(T);
+
+
 protected:
     mutable PointerType m_beg;
     mutable PointerType m_end;
@@ -199,28 +207,24 @@ public:
     }
 };
 
-template <typename T,
-          typename Allocator = skAllocator<T> >
+template <typename T, typename Allocator = skAllocator<T> >
 class skArray
 {
 public:
     SK_DECLARE_TYPE(T);
 
-public:
-    typedef skArray<T, Allocator>               SelfType;
-    typedef skPointerIncrementIterator<SelfType>       Iterator;
-    typedef const skPointerIncrementIterator<SelfType> ConstIterator;
-    typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
-    typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
 
-    typedef SKuint32 SizeType;
+    typedef skArray<T, Allocator> SelfType;
+    typedef SKuint32              SizeType;
 
-    const SizeType npos = -1;
-
+    typedef skPointerIncrementIterator<SelfType, SizeType>       Iterator;
+    typedef const skPointerIncrementIterator<SelfType, SizeType> ConstIterator;
+    typedef skPointerDecrementIterator<SelfType, SizeType>       ReverseIterator;
+    typedef const skPointerDecrementIterator<SelfType, SizeType> ConstReverseIterator;
 
     SK_IMPLEMENT_QSORT(T, skArray);
-
 public:
+
     skArray() :
         m_data(0),
         m_size(0),
@@ -251,7 +255,6 @@ public:
     {
         if (m_data)
             m_alloc.array_deallocate(m_data, m_capacity);
-
         m_data     = 0;
         m_capacity = 0;
         m_size     = 0;
@@ -265,7 +268,7 @@ public:
             if (m_data[i] == v)
                 return i;
         }
-        return npos;
+        return SK_NPOS32;
     }
 
     void push_back(ConstReferenceType v)
@@ -301,7 +304,7 @@ public:
     {
         if (m_size > 0)
         {
-            if (pos != npos)
+            if (pos != SK_NPOS32)
             {
                 skSwap(m_data[pos], m_data[m_size - 1]);
                 m_alloc.destroy(&m_data[--m_size]);
@@ -330,13 +333,14 @@ public:
 
         if (nr < m_size)
         {
-            for (i = nr; i < m_size; i++)
+            for (i = nr; i < m_size; i++) 
                 m_data[i].~T();
         }
         else
         {
-            if (nr > m_size)
+            if (nr > m_size) 
                 reserve(nr);
+
             skFill(m_data + m_size, fill, nr);
         }
         m_size = nr;
@@ -412,22 +416,27 @@ public:
     {
         return m_data;
     }
+
     SK_INLINE PointerType ptr(void)
     {
         return m_data;
     }
+
     SK_INLINE bool valid(void) const
     {
         return m_data != 0;
     }
+
     SK_INLINE SizeType capacity(void) const
     {
         return m_capacity;
     }
+
     SK_INLINE SizeType size(void) const
     {
         return m_size;
     }
+
     SK_INLINE bool empty(void) const
     {
         return m_size == 0;
