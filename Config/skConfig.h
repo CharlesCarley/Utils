@@ -216,6 +216,7 @@ const SKuint16          SK_MAX16   = ((SKuint16)-1) - 1;
 const SKuint32          SK_NPOS32  = (SKuint32)-1;
 const SKuint32          SK_MAX32   = ((SKuint32)-1) - 1;
 
+
 #if SK_ITERATOR_DEBUG == 1
 #define SK_ITER_DEBUG(x) SK_ASSERT(x)
 #else

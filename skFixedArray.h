@@ -137,14 +137,14 @@ public:
             if (m_data[i] == v)
                 return i;
         }
-        return npos16;
+        return SK_NPOS16;
     }
 
     void remove(SKuint16 pos)
     {
         if (m_size > 0)
         {
-            if (pos < npos16)
+            if (pos < SK_NPOS16)
             {
                 skSwap(m_data[pos], m_data[m_size - 1]);
                 m_data[m_size - 1].~T();
