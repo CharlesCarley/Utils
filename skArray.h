@@ -30,11 +30,8 @@
 #include "skSort.h"
 
 template <typename T, typename SizeType = SKuint32>
-class skPointerIncrementIterator
+class skPointerIncrementIterator : public skReferencedTypeTraits<T>
 {
-public:
-    SK_DECLARE_REF_TYPE(T);
-
 protected:
     mutable PointerType m_beg;
     mutable PointerType m_end;
@@ -118,11 +115,8 @@ public:
 };
 
 template <typename T, typename SizeType = SKuint32>
-class skPointerDecrementIterator
+class skPointerDecrementIterator : public skReferencedTypeTraits<T>
 {
-public:
-    SK_DECLARE_REF_TYPE(T);
-
 protected:
     mutable PointerType m_beg;
     mutable PointerType m_end;
