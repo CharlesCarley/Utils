@@ -470,7 +470,7 @@ public:
             {
                 clear();
                 resize(rhs.m_size);
-                skFill(m_data, rhs.m_data, rhs.m_size);
+                m_alloc.fill(m_data, rhs.m_data, rhs.m_size);
             }
         }
         return *this;

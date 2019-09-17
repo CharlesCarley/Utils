@@ -262,12 +262,12 @@ public:
         return new T[nr];
     }
 
-    PointerType array_reallocate(PointerType op, SKsize nr, SKsize os)
+    PointerType array_reallocate(ConstPointerType op, SKsize nr, SKsize os)
     {
         PointerType p = new T[nr];
         if (op)
         {
-            __fill(p, op, os);
+            fill(p, op, os);
             delete[] op;
         }
 
@@ -301,8 +301,8 @@ public:
         return limit;
     }
 
-private:
-    void __fill(T* dst, T* src, const SKsize nr)
+
+    void fill(PointerType dst, ConstPointerType src, const SKsize nr)
     {
         if (nr > 0 && nr != npos)
         {
