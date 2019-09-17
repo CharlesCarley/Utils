@@ -30,7 +30,7 @@
 #include "skArray.h"
 #include "skTraits.h"
 
-template <typename T, typename Allocator = skAllocator<T> >
+template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skStack
 {
 public:

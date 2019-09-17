@@ -29,6 +29,7 @@
 #include "Config/skConfig.h"
 #include "skMemoryUtils.h"
 #include "skTraits.h"
+#include "skMinMax.h"
 
 #if SK_ALLOCATOR == 1
 #define SK_DECLARE_ALLOC                              \
@@ -71,26 +72,51 @@ public:
     SK_DECLARE_ALLOC;
 };
 
-template <typename T>
-class skMallocAllocator
+
+template <typename T, typename SizeType = SKsize>
+class skAllocBase
+{
+public:
+    SK_DECLARE_TYPE(T);
+    
+    const SizeType npos = (SizeType)-1;
+    const SizeType limit = npos / (sizeof(T) * 8);
+
+    SK_INLINE SizeType max_size(void) const
+    {
+        return limit;
+    }
+
+    void fill(PointerType dst, ConstPointerType src, const SKsize nr)
+    {
+        if (nr > 0 && nr != npos)
+        {
+            SKsize i = 0;
+            do
+                dst[i] = src[i];
+            while (++i < nr);
+        }
+    }
+};
+
+
+
+template <typename T, typename SizeType = SKsize>
+class skMallocAllocator : public skAllocBase<T, SizeType>
 {
 public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef skMallocAllocator<T> SelfType;
+    typedef skMallocAllocator<T, SizeType> SelfType;
 
     template <typename U>
     struct rebind
     {
-        typedef skMallocAllocator<U> other;
+        typedef skMallocAllocator<U, SizeType> other;
     };
 
-    const SKsize npos  = -1;
-    const SKsize limit = npos / (sizeof(T) * 8);
-
 public:
-
     explicit skMallocAllocator()
     {
     }
@@ -177,36 +203,25 @@ public:
         skDestruct(beg, end);
     }
 
-    bool operator==(const SelfType&)
-    {
-        return true;
-    }
-
-    SK_INLINE SKsize max_size(void) const
-    {
-        return limit;
-    }
 };
 
-template <typename T>
-class skNewAllocator
+template <typename T, typename SizeType = SKsize>
+class skNewAllocator : public skAllocBase<T, SizeType> 
 {
 public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef skNewAllocator<T> SelfType;
+    typedef skNewAllocator<T, SizeType> SelfType;
 
     template <typename U>
     struct rebind
     {
-        typedef skNewAllocator<U> other;
+        typedef skNewAllocator<U, SizeType> other;
     };
 
-    const SKsize npos = (SKsize)-1;
-    const SKsize limit = (npos) / (sizeof(T) * 8);
-
 public:
+ 
     explicit skNewAllocator()
     {
     }
@@ -220,7 +235,7 @@ public:
     }
 
     template <typename U>
-    explicit skNewAllocator(const skNewAllocator<U>&)
+    explicit skNewAllocator(const skNewAllocator<U, SizeType>&)
     {
     }
 
@@ -228,6 +243,7 @@ public:
     {
         return &v;
     }
+
     SK_INLINE ConstPointerType address(ConstReferenceType v) const
     {
         return &v;
@@ -267,7 +283,7 @@ public:
         PointerType p = new T[nr];
         if (op)
         {
-            fill(p, op, os);
+            SelfType::fill(p, op, os);
             delete[] op;
         }
 
@@ -281,38 +297,15 @@ public:
 
     void destroy(PointerType p)
     {
-        if (p)
-            p->~T();
+        if (p) p->~T();
     }
 
     void destroy_range(PointerType beg, PointerType end)
     {
         skDestruct(beg, end);
     }
-
-    bool operator==(const SelfType&)
-    {
-        return true;
-    }
-
-    SK_INLINE SKsize max_size(void)
-    {
-        // < actual
-        return limit;
-    }
-
-
-    void fill(PointerType dst, ConstPointerType src, const SKsize nr)
-    {
-        if (nr > 0 && nr != npos)
-        {
-            SKsize i = 0;
-            do
-                dst[i] = src[i];
-            while (++i < nr);
-        }
-    }
 };
+
 
 #if SK_ALLOCATOR == 1
 #define skAllocator skMallocAllocator

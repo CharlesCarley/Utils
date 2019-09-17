@@ -207,12 +207,11 @@ public:
     }
 };
 
-template <typename T, typename Allocator = skAllocator<T> >
+template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skArray
 {
 public:
     SK_DECLARE_TYPE(T);
-
 
     typedef skArray<T, Allocator> SelfType;
     typedef SKuint32              SizeType;
@@ -223,8 +222,9 @@ public:
     typedef const skPointerDecrementIterator<SelfType, SizeType> ConstReverseIterator;
 
     SK_IMPLEMENT_QSORT(T, skArray);
-public:
 
+
+public:
     skArray() :
         m_data(0),
         m_size(0),
@@ -341,26 +341,25 @@ public:
             if (nr > m_size) 
                 reserve(nr);
 
-            skFill(m_data + m_size, fill, nr);
+            m_alloc.fill(m_data + m_size, fill, nr);
         }
         m_size = nr;
     }
 
     void reserve(SizeType nr)
     {
-        if (m_capacity > nr)
+        if (m_capacity < nr && nr < m_alloc.max_size())
         {
-            // Skip
-        }
-        else if (m_data)
-        {
-            m_data     = m_alloc.array_reallocate(m_data, nr, m_size);
-            m_capacity = nr;
-        }
-        else
-        {
-            m_data     = m_alloc.array_allocate(nr);
-            m_capacity = nr;
+            if (m_data)
+            {
+                m_data = m_alloc.array_reallocate(m_data, nr, m_size);
+                m_capacity = nr;
+            }
+            else
+            {
+                m_data = m_alloc.array_allocate(nr);
+                m_capacity = nr;
+            }
         }
     }
 
