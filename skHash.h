@@ -31,6 +31,7 @@
 extern SKhash skHash(const char* key);
 extern SKhash skHash(const char* key, SKsize len);
 extern SKhash skHash(const SKuint32& key);
+extern SKhash skHash(const SKuint64& key);
 extern SKhash skHash(const void* key);
 
 
