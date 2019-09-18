@@ -271,7 +271,7 @@ public:
             if (m_data[i] == v)
                 return i;
         }
-        return SK_NPOS32;
+        return SelfType::npos;
     }
 
     void push_back(ConstReferenceType v)
@@ -308,7 +308,7 @@ public:
     {
         if (m_size > 0)
         {
-            if (pos != SK_NPOS32)
+            if (pos != SelfType::npos)
             {
                 skSwap(m_data[pos], m_data[m_size - 1]);
                 m_alloc.destroy(&m_data[--m_size]);

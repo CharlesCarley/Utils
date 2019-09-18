@@ -29,7 +29,6 @@
 #include "Config/skConfig.h"
 #include "skMemoryUtils.h"
 #include "skTraits.h"
-#include "skMinMax.h"
 
 #if SK_ALLOCATOR == 1
 #define SK_DECLARE_ALLOC                              \
@@ -100,13 +99,13 @@ template <typename T, typename SizeType, const SizeType alloc_limit>
 const SizeType skAllocBase<T, SizeType, alloc_limit>::limit = alloc_limit;
 
 template <typename T, typename SizeType, const SizeType alloc_limit>
-const SizeType skAllocBase<T, SizeType, alloc_limit>::npos = ((SizeType)-1);
+const SizeType skAllocBase<T, SizeType, alloc_limit>::npos = SK_MKNPOS(SizeType);
 
 
 
 template <typename T,
           typename SizeType   = SKsize,
-          const SizeType alloc_limit = SK_NPOSH>
+          const SizeType alloc_limit = SK_MKMX(SizeType)>
 class skMallocAllocator : public skAllocBase<T, SizeType, alloc_limit>
 {
 public:
@@ -212,7 +211,7 @@ public:
 
 template <typename T,
           typename SizeType   = SKsize,
-          const SizeType alloc_limit = SK_NPOSH>
+          const SizeType alloc_limit = SK_MKMX(SizeType)>
 class skNewAllocator : public skAllocBase<T, SizeType, alloc_limit>
 {
 public:
