@@ -37,9 +37,9 @@ public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef skStack<T, Allocator>                       SelfType;
-    typedef skPointerDecrementIterator<SelfType>        Iterator;
-    typedef const skPointerDecrementIterator<SelfType>  ConstIterator;
+    typedef skStack<T, Allocator>                      SelfType;
+    typedef skPointerDecrementIterator<SelfType>       Iterator;
+    typedef const skPointerDecrementIterator<SelfType> ConstIterator;
 
 public:
     skStack() :
@@ -94,8 +94,9 @@ public:
 
     void reserve(SKuint32 nr)
     {
-        if (m_capacity < nr && nr < m_alloc.limit)
+        if (m_capacity < nr && nr + 1 < m_alloc.limit)
         {
+            nr = skMin<SKuint32>(nr, m_alloc.limit);
             if (m_data)
             {
                 m_data     = m_alloc.array_reallocate(m_data, nr, m_size);
@@ -211,7 +212,7 @@ public:
     {
         if (this != &rhs)
         {
-            // at this point it's assumed 
+            // at this point it's assumed
             // that if this array is being assigned
             // and it has allocated memory from the free-list,
             // the allocated data has already been returned

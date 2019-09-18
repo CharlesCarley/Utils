@@ -27,6 +27,7 @@
 #define _skArray_h_
 
 #include "skAllocator.h"
+#include "skMinMax.h"
 #include "skSort.h"
 
 template <typename T, typename SizeType = SKuint32>
@@ -207,6 +208,8 @@ public:
     }
 };
 
+
+
 template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skArray
 {
@@ -240,7 +243,7 @@ public:
         if (o.m_data)
         {
             reserve(m_size);
-            skFill(m_data, o.m_data, m_size);
+            m_alloc.fill(m_data, o.m_data, m_size);
         }
         else
             m_size = 0;
@@ -273,17 +276,18 @@ public:
 
     void push_back(ConstReferenceType v)
     {
-        if (m_size > m_alloc.max_size())
+        if (m_size + 1 <= m_alloc.limit)
         {
-            // do nothing
-        }
-        else if (m_size == m_capacity)
-        {
-            reserve(m_size == 0 ? 8 : m_size * 2);
-            m_data[m_size++] = v;
+            if (m_size + 1 > m_capacity)
+            {
+                reserve(m_size == 0 ? 8 : m_size * 2);
+                m_data[m_size++] = v;
+            }
+            else
+                m_data[m_size++] = v;
         }
         else
-            m_data[m_size++] = v;
+            throw m_alloc.limit;
     }
 
     void pop_back(void)
@@ -333,12 +337,12 @@ public:
 
         if (nr < m_size)
         {
-            for (i = nr; i < m_size; i++) 
+            for (i = nr; i < m_size; i++)
                 m_data[i].~T();
         }
         else
         {
-            if (nr > m_size) 
+            if (nr > m_size)
                 reserve(nr);
 
             m_alloc.fill(m_data + m_size, fill, nr);
@@ -348,16 +352,18 @@ public:
 
     void reserve(SizeType nr)
     {
-        if (m_capacity < nr && nr < m_alloc.max_size())
+        if (m_capacity < nr)
         {
+            nr = skMin<SKuint32>(nr, m_alloc.limit);
+
             if (m_data)
             {
-                m_data = m_alloc.array_reallocate(m_data, nr, m_size);
+                m_data     = m_alloc.array_reallocate(m_data, nr, m_size);
                 m_capacity = nr;
             }
             else
             {
-                m_data = m_alloc.array_allocate(nr);
+                m_data     = m_alloc.array_allocate(nr);
                 m_capacity = nr;
             }
         }

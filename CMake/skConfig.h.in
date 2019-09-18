@@ -211,13 +211,15 @@ typedef SKint32          SKintPtr;
 
 typedef unsigned int    SKhash;
 typedef SKuintPtr		SKsize;
-const SKsize            SK_NPOS    = (SKsize)-1;
+const SKsize            SK_NPOS     = (SKsize)-1;
+const SKsize            SK_NPOSH   = SK_NPOS / 2;
 const SKsize            SK_MAX     = ((SKsize)-1) - 1;
 const SKuint16          SK_NPOS16  = (SKuint16)-1;
 const SKuint16          SK_MAX16   = ((SKuint16)-1) - 1;
+const SKuint16          SK_NPOS16H = SK_NPOS16 / 2;
 const SKuint32          SK_NPOS32  = (SKuint32)-1;
 const SKuint32          SK_MAX32   = ((SKuint32)-1) - 1;
-
+const SKuint32          SK_NPOS32H = SK_NPOS32 / 2;
 
 #if SK_ITERATOR_DEBUG == 1
 #define SK_ITER_DEBUG(x) SK_ASSERT(x)

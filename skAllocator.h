@@ -73,23 +73,20 @@ public:
 };
 
 
-template <typename T, typename SizeType = SKsize>
+template <typename T, typename UnsignedSizeType, const UnsignedSizeType alloc_limit>
 class skAllocBase
 {
 public:
     SK_DECLARE_TYPE(T);
-    
-    const SizeType npos = (SizeType)-1;
-    const SizeType limit = npos / (sizeof(T) * 8);
+    typedef UnsignedSizeType SizeType;
 
-    SK_INLINE SizeType max_size(void) const
-    {
-        return limit;
-    }
+    static const SizeType npos;
+    static const SizeType limit;
 
-    void fill(PointerType dst, ConstPointerType src, const SKsize nr)
+
+    void fill(PointerType dst, ConstPointerType src, const SizeType nr)
     {
-        if (nr > 0 && nr != npos)
+        if (nr > 0 && nr <= limit && nr != npos)
         {
             SKsize i = 0;
             do
@@ -99,21 +96,29 @@ public:
     }
 };
 
+template <typename T, typename SizeType, const SizeType alloc_limit>
+const SizeType skAllocBase<T, SizeType, alloc_limit>::limit = alloc_limit;
+
+template <typename T, typename SizeType, const SizeType alloc_limit>
+const SizeType skAllocBase<T, SizeType, alloc_limit>::npos = ((SizeType)-1);
 
 
-template <typename T, typename SizeType = SKsize>
-class skMallocAllocator : public skAllocBase<T, SizeType>
+
+template <typename T,
+          typename SizeType   = SKsize,
+          const SizeType alloc_limit = SK_NPOSH>
+class skMallocAllocator : public skAllocBase<T, SizeType, alloc_limit>
 {
 public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef skMallocAllocator<T, SizeType> SelfType;
+    typedef skMallocAllocator<T, SizeType, alloc_limit> SelfType;
 
     template <typename U>
     struct rebind
     {
-        typedef skMallocAllocator<U, SizeType> other;
+        typedef skMallocAllocator<U, SizeType, alloc_limit> other;
     };
 
 public:
@@ -205,19 +210,21 @@ public:
 
 };
 
-template <typename T, typename SizeType = SKsize>
-class skNewAllocator : public skAllocBase<T, SizeType> 
+template <typename T,
+          typename SizeType   = SKsize,
+          const SizeType alloc_limit = SK_NPOSH>
+class skNewAllocator : public skAllocBase<T, SizeType, alloc_limit>
 {
 public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef skNewAllocator<T, SizeType> SelfType;
+    typedef skNewAllocator<T, SizeType, alloc_limit> SelfType;
 
     template <typename U>
     struct rebind
     {
-        typedef skNewAllocator<U, SizeType> other;
+        typedef skNewAllocator<U, SizeType, alloc_limit> other;
     };
 
 public:
@@ -235,7 +242,7 @@ public:
     }
 
     template <typename U>
-    explicit skNewAllocator(const skNewAllocator<U, SizeType>&)
+    explicit skNewAllocator(const skNewAllocator<U, SizeType, alloc_limit>&)
     {
     }
 
