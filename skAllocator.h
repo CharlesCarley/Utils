@@ -166,7 +166,10 @@ public:
 
     PointerType array_allocate(SKsize nr)
     {
-        nr = skMin<SizeType>(nr, SelfType::limit);
+        if (nr > SelfType::limit)
+            throw SelfType::limit;
+
+
         PointerType p = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * nr));
         skConstructDefault(p, p + nr);
         return p;
@@ -174,40 +177,41 @@ public:
 
     PointerType array_allocate(SKsize nr, ConstReferenceType val)
     {
-        nr = skMin<SizeType>(nr, SelfType::limit);
+        if (nr > SelfType::limit)
+            throw SelfType::limit;
 
-        PointerType p = reinterpret_cast<PointerType>(
+        PointerType ptr = reinterpret_cast<PointerType>(
             skMalloc(sizeof(T) * nr)
         );
 
-        skConstruct(p, p + nr, val);
-        return p;
+        skConstruct(ptr, ptr + nr, val);
+        return ptr;
     }
 
 
-    PointerType array_reallocate(PointerType op, SKsize nr, SKsize os)
+    PointerType array_reallocate(PointerType oldPtr, SKsize nr, SKsize os)
     {
-        PointerType p = reinterpret_cast<PointerType>(
-            skRealloc(op, sizeof(T) * nr)
+        PointerType ptr = reinterpret_cast<PointerType>(
+            skRealloc(oldPtr, sizeof(T) * nr)
             );
-        if (op)
-            skConstructDefault(p + os, p + nr);
+        if (oldPtr)
+            skConstructDefault(ptr + os, ptr + nr);
         else
-            skConstructDefault(p, p + nr);
-        return p;
+            skConstructDefault(ptr, ptr + nr);
+        return ptr;
     }
-
 
     void array_deallocate(PointerType p, SKsize nr)
     {
-        skDestruct(p, p + nr);
+        if (nr <= SelfType::limit)
+            skDestruct(p, p + nr);
+
         skFree(p);
     }
 
     SK_INLINE void destroy(PointerType p)
     {
-        if (p)
-            p->~T();
+        if (p) p->~T();
     }
 
     void destroy_range(PointerType beg, PointerType end)
