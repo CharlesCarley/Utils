@@ -61,7 +61,7 @@ public:
 
     skStack(const SelfType& o)
     {
-        if (o.m_capacity > 0 && o.m_capacity < SK_NPOS32)
+        if (o.m_capacity > 0 && o.m_capacity < m_alloc.limit)
         {
             m_capacity = 0;
             m_data     = 0;
@@ -119,7 +119,7 @@ public:
         if (m_data)
         {
             m_data[m_size++] = v;
-            m_top            = m_size;
+            m_top = m_size;
         }
     }
 
@@ -184,7 +184,7 @@ public:
 
     SK_INLINE bool empty(void) const
     {
-        return m_size == 0 || m_size == SK_NPOS32;
+        return m_size == 0 || m_size >= m_alloc.limit;
     }
 
     SK_INLINE ConstPointerType ptr(void) const
@@ -217,10 +217,9 @@ public:
             // and it has allocated memory from the free-list,
             // the allocated data has already been returned
 
-            if (rhs.m_capacity > 0 && rhs.m_capacity < SK_NPOS32)
+            if (rhs.m_capacity > 0 && rhs.m_capacity < m_alloc.limit)
             {
                 reserve(rhs.m_capacity);
-
                 ConstPointerType pt = rhs.ptr();
                 for (m_size = 0; m_size < rhs.m_size && m_data; ++m_size)
                     m_data[m_size] = pt[m_size];

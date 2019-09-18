@@ -92,7 +92,7 @@ void skFill(T* dst, const T& src, const SKsize nr)
 }
 
 template <typename T>
-void skConstruct(T* beg, T* end, const T& x)
+void skConstruct(T* beg, const T* end, const T& x)
 {
     while (beg != end)
     {
@@ -102,7 +102,7 @@ void skConstruct(T* beg, T* end, const T& x)
 }
 
 template <typename T>
-void skConstructDefault(T* beg, T* end)
+void skConstructDefault(T* beg, const T* end)
 {
     while (beg != end)
     {
@@ -112,7 +112,7 @@ void skConstructDefault(T* beg, T* end)
 }
 
 template <typename T>
-void skConstructCopy(T* beg, T* end, T* oth)
+void skConstructCopy(T* beg, const T* end, const T* oth)
 {
     while (beg != end)
     {
@@ -122,7 +122,7 @@ void skConstructCopy(T* beg, T* end, T* oth)
 }
 
 template <typename T>
-void skDestruct(T* beg, T* end)
+void skDestruct(T* beg, const T* end)
 {
     while (beg != end)
     {

@@ -29,6 +29,7 @@
 #include "Config/skConfig.h"
 #include "skMemoryUtils.h"
 #include "skTraits.h"
+#include "skMinMax.h"
 
 #if SK_ALLOCATOR == 1
 #define SK_DECLARE_ALLOC                              \
@@ -161,14 +162,15 @@ public:
     PointerType allocate(SKsize nr)
     {
         PointerType p = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * nr));
-        skConstruct(p, p + nr, T());
+        skConstructDefault(p, p + nr);
         return p;
     }
 
-    void deallocate(PointerType p)
+    void deallocate(PointerType& p)
     {
         destroy(p);
         skFree(p);
+        p = nullptr;
     }
 
     PointerType array_allocate(SKsize nr)
@@ -268,15 +270,14 @@ public:
 
     PointerType allocate(SKsize nr)
     {
-        const PointerType p = reinterpret_cast<PointerType>(new T(sizeof(T) * nr));
-        new (p) T();
-        return p;
+        return new T;
     }
 
-    void deallocate(PointerType p)
+    void deallocate(PointerType& p)
     {
         destroy(p);
         operator delete(p);
+        p = nullptr;
     }
 
     PointerType array_allocate(SKsize nr)
