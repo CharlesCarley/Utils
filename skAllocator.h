@@ -139,15 +139,6 @@ public:
     {
     }
 
-    SK_INLINE PointerType address(ReferenceType v)
-    {
-        return &v;
-    }
-    SK_INLINE ConstPointerType address(ConstReferenceType v) const
-    {
-        return &v;
-    }
-
     SK_INLINE void construct(PointerType p, ConstReferenceType v)
     {
         new (p) T(v);
@@ -159,10 +150,10 @@ public:
         new (p) T(v);
     }
 
-    PointerType allocate(SKsize nr)
+    PointerType allocate(void)
     {
-        PointerType p = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * nr));
-        skConstructDefault(p, p + nr);
+        PointerType p = reinterpret_cast<PointerType>(skMalloc(sizeof(T)));
+        skConstructDefault(p, p + 1);
         return p;
     }
 
@@ -175,22 +166,37 @@ public:
 
     PointerType array_allocate(SKsize nr)
     {
+        nr = skMin<SizeType>(nr, SelfType::limit);
         PointerType p = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * nr));
         skConstructDefault(p, p + nr);
         return p;
     }
 
+    PointerType array_allocate(SKsize nr, ConstReferenceType val)
+    {
+        nr = skMin<SizeType>(nr, SelfType::limit);
+
+        PointerType p = reinterpret_cast<PointerType>(
+            skMalloc(sizeof(T) * nr)
+        );
+
+        skConstruct(p, p + nr, val);
+        return p;
+    }
+
+
     PointerType array_reallocate(PointerType op, SKsize nr, SKsize os)
     {
-        PointerType p = reinterpret_cast<PointerType>(skRealloc(op, sizeof(T) * nr));
-
+        PointerType p = reinterpret_cast<PointerType>(
+            skRealloc(op, sizeof(T) * nr)
+            );
         if (op)
             skConstructDefault(p + os, p + nr);
         else
             skConstructDefault(p, p + nr);
-
         return p;
     }
+
 
     void array_deallocate(PointerType p, SKsize nr)
     {
@@ -247,16 +253,6 @@ public:
     {
     }
 
-    SK_INLINE PointerType address(ReferenceType v)
-    {
-        return &v;
-    }
-
-    SK_INLINE ConstPointerType address(ConstReferenceType v) const
-    {
-        return &v;
-    }
-
     void construct(PointerType p, ConstReferenceType v)
     {
         new (p) T(v);
@@ -268,16 +264,15 @@ public:
         new (p) T(v);
     }
 
-    PointerType allocate(SKsize nr)
+    PointerType allocate(void)
     {
         return new T;
     }
 
-    void deallocate(PointerType& p)
+    void deallocate(PointerType p)
     {
         destroy(p);
         operator delete(p);
-        p = nullptr;
     }
 
     PointerType array_allocate(SKsize nr)
@@ -285,17 +280,17 @@ public:
         return new T[nr];
     }
 
-    PointerType array_reallocate(ConstPointerType op, SKsize nr, SKsize os)
+    PointerType array_reallocate(PointerType old, SKsize nr, SKsize old_nr)
     {
         PointerType p = new T[nr];
-        if (op)
+        if (old)
         {
-            SelfType::fill(p, op, os);
-            delete[] op;
+            SelfType::fill(p, old, old_nr);
+            delete[] old;
         }
-
         return p;
     }
+
 
     void array_deallocate(PointerType p, SKsize)
     {
