@@ -86,7 +86,7 @@ public:
 
     void clear(void)
     {
-        m_alloc.array_deallocate(m_data, m_size);
+        m_alloc.array_deallocate(m_data, m_capacity);
         m_data = 0;
         m_top = m_size = m_capacity = 0;
     }
