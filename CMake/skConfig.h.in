@@ -26,7 +26,7 @@
 #ifndef _skConfig_h_
 #define _skConfig_h_
 
-#cmakedefine Utils_USE_MEMORY_ALLOCATOR @Utils_USE_MEMORY_ALLOCATOR @
+#cmakedefine Utils_USE_MEMORY_ALLOCATOR @Utils_USE_MEMORY_ALLOCATOR@
 #cmakedefine Utils_USE_DEBUG_ASSERT 1
 #cmakedefine Utils_USE_ITERATOR_DEBUG 1
 #cmakedefine Utils_USE_STD_STRING_FUNCS 1

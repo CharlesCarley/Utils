@@ -202,9 +202,13 @@ public:
 
     void array_deallocate(PointerType p, SKsize nr)
     {
-        if (nr <= SelfType::limit)
-            skDestruct(p, p + nr);
+        nr = skMin<SizeType>(nr, SelfType::limit);
+        skDestruct(p, p + nr);
+        skFree(p);
+    }
 
+    void array_deallocate(PointerType p)
+    {
         skFree(p);
     }
 

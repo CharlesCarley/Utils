@@ -1288,6 +1288,7 @@ extern "C"
 #endif /* WIN32 */
 
 #include <stdio.h>       /* for printing in malloc_stats */
+#include <ctime>
 
 #ifndef LACKS_ERRNO_H
 #include <errno.h>       /* for MALLOC_FAILURE_ACTION */
