@@ -208,7 +208,6 @@ typedef SKuint32         SKuintPtr;
 typedef SKint32          SKintPtr;
 #endif
 
-
 typedef unsigned int    SKhash;
 typedef SKuintPtr		SKsize;
 

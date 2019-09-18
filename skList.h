@@ -232,7 +232,7 @@ public:
 
     private:
         friend class skSinglyLinkedList;
-        PointerType                           m_next;
+        PointerType m_next;
         typename SelfType::ValueType m_data;
     };
 
@@ -637,7 +637,7 @@ public:
     typedef const skListIterator<skList<T> >  ConstIterator;
     typedef const skListIterator<skList<T> >  ConstReverseIterator;
 
-    SK_IMPLEMENT_SORT(T, skList);
+    SK_IMPLEMENT_SORT(T, skList, SKsize);
 
     class Link : public skAllocObject
     {
@@ -878,7 +878,7 @@ public:
     typedef const skListIterator<skListClass<T> >        ConstIterator;
     typedef const skListReverseIterator<skListClass<T> > ConstReverseIterator;
 
-    SK_IMPLEMENT_SORT(T, skListClass);
+    SK_IMPLEMENT_SORT(T, skListClass, SKsize);
 
     class Link
     {

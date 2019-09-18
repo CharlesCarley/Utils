@@ -29,7 +29,7 @@
 #include "Config/skConfig.h"
 #include "skMinMax.h"
 
-template <typename T, typename C>
+template <typename T, typename C, typename SizeType = SKsize, SizeType npos = (SizeType)-1>
 struct skSort
 {
     typedef int (*Function)(T a, T b);
@@ -44,15 +44,15 @@ struct skSort
     Function m_sort;
     void     sort(C& container)
     {
-        SKsize size = container.size();
+        SizeType size = container.size();
         if (!m_sort || size < 2)
             return;
 
         bool   swapped = false;
-        SKsize i;
+        SizeType i;
         do
         {
-            if (size - 1 == -1)
+            if (size - 1 == npos)
                 break;
 
             Iterator it = container.iterator();
@@ -68,11 +68,11 @@ struct skSort
                 }
             }
             size -= 1;
-        } while (swapped && size != -1);
+        } while (swapped && size != npos);
     }
 };
 
-template <typename T, typename C>
+template <typename T, typename C, typename SizeType = SKsize, SizeType npos = (SizeType)-1>
 class skQSort
 {
 public:
@@ -90,7 +90,7 @@ public:
 
     void sort(C& container)
     {
-        SKsize size = container.size();
+        SizeType size = container.size();
         if (!m_sort || size < 2)
             return;
 
@@ -98,11 +98,11 @@ public:
     }
 
 private:
-    void _sort(C& container, SKsize first, SKsize last)
+    void _sort(C& container, SizeType first, SizeType last)
     {
-        SKsize pivot;
+        SizeType pivot;
 
-        if (first < last && last != -1)
+        if (first < last && last != npos)
         {
             pivot = _partition(container, first, last);
             _sort(container, first, pivot - 1);
@@ -110,15 +110,15 @@ private:
         }
     }
 
-    SKsize _partition(C& container, SKsize first, SKsize last)
+    SizeType _partition(C& container, SizeType first, SizeType last)
     {
-        SKsize lo;
+        SizeType lo;
 
         skSwap(container[first], container[(first + last) / 2]);
 
         ReferenceType pivot = container[first];
         lo                  = first;
-        for (SKsize i = first + 1; i <= last; ++i)
+        for (SizeType i = first + 1; i <= last; ++i)
         {
             if (m_sort(container[i], pivot) != 0)
             {

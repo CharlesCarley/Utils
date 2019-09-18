@@ -45,7 +45,7 @@ public:
     typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
     typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
 
-    SK_IMPLEMENT_QSORT(T, SelfType);
+    SK_IMPLEMENT_QSORT(T, SelfType, SKsize);
 
 private:
     PointerType m_data;

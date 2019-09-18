@@ -68,7 +68,7 @@ public:
     typedef skPointerDecrementIterator<skString, SKsize>       ReverseIterator;
     typedef const skPointerDecrementIterator<skString, SKsize> ConstReverseIterator;
 
-    SK_IMPLEMENT_SORT2(ValueType, skString);
+    SK_IMPLEMENT_SORT(ValueType, skString, SKsize);
 
 	const SKsize npos = -1;
 

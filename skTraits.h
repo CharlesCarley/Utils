@@ -60,32 +60,25 @@
     typedef const T* ConstPointer##N##Type; \
     typedef const T& ConstReference##N##Type;
 
-#define SK_IMPLEMENT_SORT(T, SELF)                                \
-public:                                                           \
-    typedef skSort<T, SELF> SortType;                             \
-    void                    sort(typename SortType::Function cmp) \
-    {                                                             \
-        SortType srt(cmp);                                        \
-        srt.sort((*this));                                        \
+#define SK_IMPLEMENT_SORT(T, SELF, Size)                                \
+public:                                                                 \
+    typedef skSort<T, SELF, Size> SortType;                             \
+    void                          sort(typename SortType::Function cmp) \
+    {                                                                   \
+        SortType srt(cmp);                                              \
+        srt.sort((*this));                                              \
     }
 
-#define SK_IMPLEMENT_QSORT(T, SELF)                                \
-public:                                                            \
-    typedef skQSort<T, SELF> SortType;                             \
-    void                     sort(typename SortType::Function cmp) \
-    {                                                              \
-        SortType srt(cmp);                                         \
-        srt.sort((*this));                                         \
+
+#define SK_IMPLEMENT_QSORT(T, SELF, Size)                                \
+public:                                                                  \
+    typedef skQSort<T, SELF, Size> SortType;                             \
+    void                           sort(typename SortType::Function cmp) \
+    {                                                                    \
+        SortType srt(cmp);                                               \
+        srt.sort((*this));                                               \
     }
 
-#define SK_IMPLEMENT_SORT2(T, SELF)                      \
-public:                                                  \
-    typedef skSort<T, SELF> SortType;                    \
-    void                    sort(SortType::Function cmp) \
-    {                                                    \
-        SortType srt(cmp);                               \
-        srt.sort((*this));                               \
-    }
 
 template <typename T>
 class skTypeTraits

@@ -217,14 +217,14 @@ public:
     SK_DECLARE_TYPE(T);
 
     typedef skArray<T, Allocator> SelfType;
-    typedef SKuint32              SizeType;
+    typedef typename Allocator::SizeType SizeType;
 
     typedef skPointerIncrementIterator<SelfType, SizeType>       Iterator;
     typedef const skPointerIncrementIterator<SelfType, SizeType> ConstIterator;
     typedef skPointerDecrementIterator<SelfType, SizeType>       ReverseIterator;
     typedef const skPointerDecrementIterator<SelfType, SizeType> ConstReverseIterator;
 
-    SK_IMPLEMENT_QSORT(T, skArray);
+    SK_IMPLEMENT_QSORT(T, skArray, SizeType);
 
 
 public:

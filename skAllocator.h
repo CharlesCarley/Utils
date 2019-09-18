@@ -83,7 +83,6 @@ public:
     static const SizeType npos;
     static const SizeType limit;
 
-
     void fill(PointerType dst, ConstPointerType src, const SizeType nr)
     {
         if (nr > 0 && nr <= limit && nr != npos)
@@ -164,7 +163,7 @@ public:
         p = nullptr;
     }
 
-    PointerType array_allocate(SKsize nr)
+    PointerType array_allocate(SizeType nr)
     {
         if (nr > SelfType::limit)
             throw(SizeType)(nr - SelfType::limit);
@@ -174,7 +173,7 @@ public:
         return ptr;
     }
 
-    PointerType array_allocate(SKsize nr, ConstReferenceType val)
+    PointerType array_allocate(SizeType nr, ConstReferenceType val)
     {
         if (nr > SelfType::limit)
             throw (SizeType)(nr - SelfType::limit);
@@ -182,13 +181,12 @@ public:
         PointerType ptr = reinterpret_cast<PointerType>(
             skMalloc(sizeof(T) * nr)
         );
-
         skConstruct(ptr, ptr + nr, val);
         return ptr;
     }
 
 
-    PointerType array_reallocate(PointerType oldPtr, SKsize nr, SKsize os)
+    PointerType array_reallocate(PointerType oldPtr, SizeType nr, SizeType os)
     {
         PointerType ptr = reinterpret_cast<PointerType>(
             skRealloc(oldPtr, sizeof(T) * nr)
@@ -200,7 +198,7 @@ public:
         return ptr;
     }
 
-    void array_deallocate(PointerType p, SKsize nr)
+    void array_deallocate(PointerType p, SizeType nr)
     {
         nr = skMin<SizeType>(nr, SelfType::limit);
         skDestruct(p, p + nr);
@@ -282,12 +280,12 @@ public:
         operator delete(p);
     }
 
-    PointerType array_allocate(SKsize nr)
+    PointerType array_allocate(SizeType nr)
     {
         return new T[nr];
     }
 
-    PointerType array_reallocate(PointerType old, SKsize nr, SKsize old_nr)
+    PointerType array_reallocate(PointerType old, SizeType nr, SizeType old_nr)
     {
         PointerType p = new T[nr];
         if (old)
@@ -299,7 +297,7 @@ public:
     }
 
 
-    void array_deallocate(PointerType p, SKsize)
+    void array_deallocate(PointerType p, SizeType)
     {
         delete[] p;
     }
