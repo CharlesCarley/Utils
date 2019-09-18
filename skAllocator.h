@@ -167,18 +167,17 @@ public:
     PointerType array_allocate(SKsize nr)
     {
         if (nr > SelfType::limit)
-            throw SelfType::limit;
+            throw(SizeType)(nr - SelfType::limit);
 
-
-        PointerType p = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * nr));
-        skConstructDefault(p, p + nr);
-        return p;
+        PointerType ptr = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * nr));
+        skConstructDefault(ptr, ptr + nr);
+        return ptr;
     }
 
     PointerType array_allocate(SKsize nr, ConstReferenceType val)
     {
         if (nr > SelfType::limit)
-            throw SelfType::limit;
+            throw (SizeType)(nr - SelfType::limit);
 
         PointerType ptr = reinterpret_cast<PointerType>(
             skMalloc(sizeof(T) * nr)
