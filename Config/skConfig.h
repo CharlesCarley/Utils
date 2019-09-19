@@ -26,7 +26,6 @@
 #ifndef _skConfig_h_
 #define _skConfig_h_
 
-/* #undef Utils_USE_MEMORY_ALLOCATOR */
 #define Utils_USE_DEBUG_ASSERT 1
 /* #undef Utils_USE_ITERATOR_DEBUG */
 #define Utils_USE_STD_STRING_FUNCS 1
@@ -44,9 +43,6 @@
 #ifdef Utils_NO_DEBUGGER
 #define SK_NO_DEBUGGER 1
 #endif
-
-
-#define SK_ALLOCATOR Utils_USE_MEMORY_ALLOCATOR
 
 #ifdef Utils_USE_ITERATOR_DEBUG
 #define SK_ITERATOR_DEBUG 1

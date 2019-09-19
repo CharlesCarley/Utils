@@ -59,7 +59,6 @@ namespace skStringUtils
 class skString
 {
 public:
-    SK_DECLARE_ALLOC;
     SK_DECLARE_TYPE(char);
 
 

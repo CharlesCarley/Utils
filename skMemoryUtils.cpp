@@ -27,70 +27,41 @@
 #include <string.h>
 #include "Config/skConfig.h"
 
-#if SK_ALLOCATOR == 1
 
-#define USE_DL_PREFIX
-#include "alloc/malloc.c"
-
-void* skMalloc(unsigned int size)
+void* skMalloc(SKsize size)
 {
-    return dlmalloc(size);
+    return ::malloc(size);
 }
 
-void* skRealloc(void* ptr, unsigned int size)
+void* skRealloc(void* ptr, SKsize size)
 {
-    return dlrealloc(ptr, size);
+    return ::realloc(ptr, size);
 }
 
-void* skCalloc(unsigned int size, unsigned int nr)
+void* skCalloc(SKsize size, SKsize nr)
 {
-    return dlcalloc(size, nr);
+    return ::calloc(size, nr);
 }
 
 void skFree(void* ptr)
 {
-    dlfree(ptr);
+    ::free(ptr);
 }
-
-#else
-
-void* skMalloc(unsigned int size)
-{
-    return malloc(size);
-}
-
-void* skRealloc(void* ptr, unsigned int size)
-{
-    return realloc(ptr, size);
-}
-
-void* skCalloc(unsigned int size, unsigned int nr)
-{
-    return calloc(size, nr);
-}
-
-void skFree(void* ptr)
-{
-    free(ptr);
-}
-
-#endif
-
 
 #if SK_NO_HEADERS != 1
 
 
-void* skMemset(void* ptr, int val, unsigned int nr)
+void* skMemset(void* ptr, int val, SKsize nr)
 {
     return ::memset(ptr, val, nr);
 }
 
-void* skMemcpy(void* dst, const void* src, unsigned int nr)
+void* skMemcpy(void* dst, const void* src, SKsize nr)
 {
     return ::memcpy(dst, src, nr);
 }
 
-int skMemcmp(const void* cmp0, const void* cmp1, unsigned int nr)
+int skMemcmp(const void* cmp0, const void* cmp1, SKsize nr)
 {
     return ::memcmp(cmp0, cmp1, nr);
 }

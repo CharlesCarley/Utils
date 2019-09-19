@@ -28,9 +28,9 @@
 
 #include "Config/skConfig.h"
 
-extern void* skMalloc(unsigned int size);
-extern void* skRealloc(void* ptr, unsigned int size);
-extern void* skCalloc(unsigned int size, unsigned int nr);
+extern void* skMalloc(SKsize size);
+extern void* skRealloc(void* ptr, SKsize size);
+extern void* skCalloc(SKsize size, SKsize nr);
 extern void  skFree(void* ptr);
 
 

@@ -50,11 +50,14 @@ public:
     skFixedArray() :
         m_size(0)
     {
+        m_data[0] = 0;
     }
 
     skFixedArray(const skFixedArray& rhs) :
         m_size(0)
     {
+        m_data[0] = 0;
+
         if (rhs.size())
         {
             SKuint16         i;
@@ -69,6 +72,8 @@ public:
     skFixedArray(const skFixedArray<T, R>& rhs) :
         m_size(0)
     {
+        m_data[0] = 0;
+
         if (rhs.size())
         {
             SKuint16         i;

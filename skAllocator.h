@@ -28,39 +28,9 @@
 
 #include "Config/skConfig.h"
 #include "skMemoryUtils.h"
-#include "skTraits.h"
 #include "skMinMax.h"
+#include "skTraits.h"
 
-#if SK_ALLOCATOR == 1
-#define SK_DECLARE_ALLOC                              \
-public:                                               \
-    inline void* operator new(size_t size)            \
-    {                                                 \
-        return skMalloc(size);                        \
-    }                                                 \
-    inline void operator delete(void* ptr)            \
-    {                                                 \
-        skFree(ptr);                                  \
-    }                                                 \
-    inline void* operator new[](size_t size)          \
-    {                                                 \
-        return skMalloc(size);                        \
-    }                                                 \
-    inline void operator delete[](void* ptr)          \
-    {                                                 \
-        skFree(ptr);                                  \
-    }                                                 \
-    inline void* operator new(size_t size, void* ptr) \
-    {                                                 \
-        return ptr;                                   \
-    }                                                 \
-    inline void operator delete(void* ptr, void*)     \
-    {                                                 \
-    }
-
-#else
-#define SK_DECLARE_ALLOC
-#endif
 
 class skAllocObject
 {
@@ -68,8 +38,6 @@ public:
     virtual ~skAllocObject()
     {
     }
-
-    SK_DECLARE_ALLOC;
 };
 
 
@@ -78,20 +46,64 @@ class skAllocBase
 {
 public:
     SK_DECLARE_TYPE(T);
+
     typedef UnsignedSizeType SizeType;
 
     static const SizeType npos;
     static const SizeType limit;
 
-    void fill(PointerType dst, ConstPointerType src, const SizeType nr)
+
+
+    void fill(PointerType dst, ConstPointerType src, const SizeType capacity)
     {
-        if (nr > 0 && nr <= limit && nr != npos)
+        if (capacity > 0 && capacity < limit && capacity != npos)
         {
             SKsize i = 0;
             do
                 dst[i] = src[i];
-            while (++i < nr);
+            while (++i < capacity);
         }
+    }
+
+
+    void construct(PointerType base, ConstReferenceType v)
+    {
+        new (base) T(v);
+    }
+
+    void construct(PointerType base)
+    {
+        new (base) T();
+    }
+
+    template <typename A0>
+    void construct_arg(PointerType base, const A0& v)
+    {
+        new (base) T(v);
+    }
+
+
+    void destroy(PointerType base)
+    {
+        if (base)
+            base->~T();
+    }
+
+    void destroy(PointerType beg, PointerType end)
+    {
+        while (beg && beg != end)
+        {
+            beg->~T();
+            ++beg;
+        }
+    }
+
+protected:
+
+    void enforce_limit(SizeType capacity)
+    {
+        if (capacity > limit)
+            throw(SizeType)(capacity - limit);
     }
 };
 
@@ -104,7 +116,7 @@ const SizeType skAllocBase<T, SizeType, alloc_limit>::npos = SK_MKNPOS(SizeType)
 
 
 template <typename T,
-          typename SizeType   = SKsize,
+          typename SizeType          = SKsize,
           const SizeType alloc_limit = SK_MKMX(SizeType)>
 class skMallocAllocator : public skAllocBase<T, SizeType, alloc_limit>
 {
@@ -114,18 +126,8 @@ public:
 public:
     typedef skMallocAllocator<T, SizeType, alloc_limit> SelfType;
 
-    template <typename U>
-    struct rebind
-    {
-        typedef skMallocAllocator<U, SizeType, alloc_limit> other;
-    };
-
 public:
     explicit skMallocAllocator()
-    {
-    }
-
-    ~skMallocAllocator()
     {
     }
 
@@ -133,97 +135,88 @@ public:
     {
     }
 
-    template <typename U>
-    explicit skMallocAllocator(const skMallocAllocator<U>&)
+
+    ~skMallocAllocator()
     {
     }
 
-    SK_INLINE void construct(PointerType p, ConstReferenceType v)
-    {
-        new (p) T(v);
-    }
-
-    template <typename A0>
-    void construct_arg(PointerType p, const A0& v)
-    {
-        new (p) T(v);
-    }
 
     PointerType allocate(void)
     {
-        PointerType p = reinterpret_cast<PointerType>(skMalloc(sizeof(T)));
-        skConstructDefault(p, p + 1);
-        return p;
-    }
-
-    void deallocate(PointerType& p)
-    {
-        destroy(p);
-        skFree(p);
-        p = nullptr;
-    }
-
-    PointerType array_allocate(SizeType nr)
-    {
-        if (nr > SelfType::limit)
-            throw(SizeType)(nr - SelfType::limit);
-
-        PointerType ptr = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * nr));
-        skConstructDefault(ptr, ptr + nr);
-        return ptr;
-    }
-
-    PointerType array_allocate(SizeType nr, ConstReferenceType val)
-    {
-        if (nr > SelfType::limit)
-            throw (SizeType)(nr - SelfType::limit);
-
-        PointerType ptr = reinterpret_cast<PointerType>(
-            skMalloc(sizeof(T) * nr)
-        );
-        skConstruct(ptr, ptr + nr, val);
-        return ptr;
+        PointerType base = reinterpret_cast<PointerType>(skMalloc(sizeof(T)));
+        this->construct(base);
+        return base;
     }
 
 
-    PointerType array_reallocate(PointerType oldPtr, SizeType nr, SizeType os)
+    void deallocate(PointerType base)
     {
-        PointerType ptr = reinterpret_cast<PointerType>(
-            skRealloc(oldPtr, sizeof(T) * nr)
-            );
+        this->destroy(base);
+        skFree(base);
+    }
+
+    PointerType allocate_base(void)
+    {
+        return reinterpret_cast<PointerType>(skMalloc(sizeof(T)));
+    }
+
+    void deallocate_base(PointerType& base)
+    {
+        skFree(base);
+    }
+
+    PointerType array_allocate(SizeType capacity)
+    {
+        this->enforce_limit(capacity);
+
+        PointerType base = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * capacity));
+        skConstructDefault(base, base + capacity);
+        return base;
+    }
+
+    PointerType array_allocate(SizeType capacity, ConstReferenceType val)
+    {
+        this->enforce_limit(capacity);
+
+        PointerType base = reinterpret_cast<PointerType>(
+            skMalloc(sizeof(T) * capacity));
+
+        skConstruct(base, base + capacity, val);
+        return base;
+    }
+
+
+    PointerType array_reallocate(PointerType oldPtr, SizeType capacity, SizeType os)
+    {
+        this->enforce_limit(capacity);
+
+        PointerType base = reinterpret_cast<PointerType>(
+            skRealloc(oldPtr, sizeof(T) * capacity));
         if (oldPtr)
-            skConstructDefault(ptr + os, ptr + nr);
+            skConstructDefault(base + os, base + capacity);
         else
-            skConstructDefault(ptr, ptr + nr);
-        return ptr;
+            skConstructDefault(base, base + capacity);
+        return base;
     }
 
-    void array_deallocate(PointerType p, SizeType nr)
+    void array_deallocate(PointerType base, SizeType capacity)
     {
-        nr = skMin<SizeType>(nr, SelfType::limit);
-        skDestruct(p, p + nr);
-        skFree(p);
+        // restrict it to what is already present
+        capacity = skMin<SizeType>(capacity, SelfType::limit);
+
+        this->destroy(base, base + capacity);
+
+        skFree(base);
     }
 
-    void array_deallocate(PointerType p)
+    void array_deallocate(PointerType base)
     {
-        skFree(p);
+        skFree(base);
     }
-
-    SK_INLINE void destroy(PointerType p)
-    {
-        if (p) p->~T();
-    }
-
-    void destroy_range(PointerType beg, PointerType end)
-    {
-        skDestruct(beg, end);
-    }
-
 };
 
 template <typename T,
-          typename SizeType   = SKsize,
+          typename SizeType          = SKsize,
           const SizeType alloc_limit = SK_MKMX(SizeType)>
 class skNewAllocator : public skAllocBase<T, SizeType, alloc_limit>
 {
@@ -233,19 +226,8 @@ public:
 public:
     typedef skNewAllocator<T, SizeType, alloc_limit> SelfType;
 
-    template <typename U>
-    struct rebind
-    {
-        typedef skNewAllocator<U, SizeType, alloc_limit> other;
-    };
-
 public:
- 
     explicit skNewAllocator()
-    {
-    }
-
-    ~skNewAllocator()
     {
     }
 
@@ -253,20 +235,8 @@ public:
     {
     }
 
-    template <typename U>
-    explicit skNewAllocator(const skNewAllocator<U, SizeType, alloc_limit>&)
+    ~skNewAllocator()
     {
-    }
-
-    void construct(PointerType p, ConstReferenceType v)
-    {
-        new (p) T(v);
-    }
-
-    template <typename A0>
-    void construct_arg(PointerType p, const A0& v)
-    {
-        new (p) T(v);
     }
 
     PointerType allocate(void)
@@ -274,42 +244,34 @@ public:
         return new T;
     }
 
-    void deallocate(PointerType p)
+    void deallocate(PointerType base)
     {
-        destroy(p);
-        operator delete(p);
+        this->destroy(base);
+        operator delete(base);
     }
 
-    PointerType array_allocate(SizeType nr)
+    PointerType array_allocate(SizeType capacity)
     {
-        return new T[nr];
+        this->enforce_limit(capacity);
+        return new T[capacity];
     }
 
-    PointerType array_reallocate(PointerType old, SizeType nr, SizeType old_nr)
+    PointerType array_reallocate(PointerType old, SizeType capacity, SizeType old_nr)
     {
-        PointerType p = new T[nr];
+        this->enforce_limit(capacity);
+
+        PointerType base = new T[capacity];
         if (old)
         {
-            SelfType::fill(p, old, old_nr);
+            this->fill(base, old, old_nr);
             delete[] old;
         }
-        return p;
+        return base;
     }
 
-
-    void array_deallocate(PointerType p, SizeType)
+    void array_deallocate(PointerType base, SizeType)
     {
-        delete[] p;
-    }
-
-    void destroy(PointerType p)
-    {
-        if (p) p->~T();
-    }
-
-    void destroy_range(PointerType beg, PointerType end)
-    {
-        skDestruct(beg, end);
+        delete[] base;
     }
 };
 
