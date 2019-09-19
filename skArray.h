@@ -27,20 +27,196 @@
 #define _skArray_h_
 
 #include "skAllocator.h"
-#include "skArrayBase.h"
 #include "skMinMax.h"
 #include "skSort.h"
 
+template <typename T, typename SizeType = SKuint32>
+class skPointerIncrementIterator
+{
+public:
+    SK_DECLARE_REF_TYPE(T);
+
+
+protected:
+    mutable PointerType m_beg;
+    mutable PointerType m_end;
+
+    void swap(skPointerIncrementIterator& rhs)
+    {
+        skSwap(m_beg, rhs.m_beg);
+        skSwap(m_end, rhs.m_end);
+    }
+
+public:
+    skPointerIncrementIterator() :
+        m_beg(0),
+        m_end(0)
+    {
+    }
+
+    skPointerIncrementIterator(PointerType begin, SizeType size) :
+        m_beg(begin),
+        m_end(begin + size)
+    {
+    }
+
+    explicit skPointerIncrementIterator(T& v) :
+        m_beg(v.ptr()),
+        m_end(v.ptr() + v.size())
+    {
+    }
+
+    skPointerIncrementIterator(const skPointerIncrementIterator& rhs) :
+        m_beg(rhs.m_beg),
+        m_end(rhs.m_end)
+    {
+    }
+
+    ~skPointerIncrementIterator()
+    {
+    }
+
+    skPointerIncrementIterator& operator=(const skPointerIncrementIterator& rhs)
+    {
+        if (this != &rhs)
+            skPointerIncrementIterator(rhs).swap(*this);
+        return *this;
+    }
+
+    SK_INLINE bool hasMoreElements(void) const
+    {
+        return m_beg < m_end;
+    }
+
+    SK_INLINE ReferenceType getNext(void)
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        return (*m_beg++);
+    }
+
+    SK_INLINE ConstReferenceType getNext(void) const
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        return (*m_beg++);
+    }
+
+    SK_INLINE void next(void) const
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        ++m_beg;
+    }
+
+    SK_INLINE ReferenceType peekNext(void)
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        return (*m_beg);
+    }
+
+    SK_INLINE ConstReferenceType peekNext(void) const
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        return (*m_beg);
+    }
+};
+
+template <typename T, typename SizeType = SKuint32>
+class skPointerDecrementIterator
+{
+public:
+    SK_DECLARE_REF_TYPE(T);
+
+
+protected:
+    mutable PointerType m_beg;
+    mutable PointerType m_end;
+
+    void swap(skPointerDecrementIterator& rhs)
+    {
+        skSwap(m_beg, rhs.m_beg);
+        skSwap(m_end, rhs.m_end);
+    }
+
+public:
+    skPointerDecrementIterator() :
+        m_beg(0),
+        m_end(0)
+    {
+    }
+
+    skPointerDecrementIterator(PointerType begin, SizeType size) :
+        m_beg(begin + (size - 1)),
+        m_end(begin)
+    {
+    }
+
+    explicit skPointerDecrementIterator(T& v) :
+        m_beg(v.ptr() + (v.size() - 1)),
+        m_end(v.ptr())
+    {
+    }
+
+    skPointerDecrementIterator(const skPointerDecrementIterator& rhs) :
+        m_beg(rhs.m_beg),
+        m_end(rhs.m_end)
+    {
+    }
+
+    ~skPointerDecrementIterator()
+    {
+    }
+
+    skPointerDecrementIterator& operator=(const skPointerDecrementIterator& rhs)
+    {
+        if (this != &rhs)
+            skPointerIterator(*this).swap(rhs);
+        return *this;
+    }
+
+    SK_INLINE bool hasMoreElements(void) const
+    {
+        return m_beg && m_beg >= m_end;
+    }
+
+    SK_INLINE ReferenceType getNext(void)
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        return (*m_beg--);
+    }
+
+    SK_INLINE ConstReferenceType getNext(void) const
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        return (*m_beg--);
+    }
+
+    SK_INLINE void next(void) const
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        --m_beg;
+    }
+
+    SK_INLINE ReferenceType peekNext(void)
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        return (*m_beg);
+    }
+
+    SK_INLINE ConstReferenceType peekNext(void) const
+    {
+        SK_ITER_DEBUG(hasMoreElements());
+        return (*m_beg);
+    }
+};
+
+
 
 template <typename T, typename Allocator = skAllocator<T, SKuint32> >
-class skArray : public skArrayBase<T, Allocator>
+class skArray
 {
 public:
     SK_DECLARE_TYPE(T);
 
-    typedef skArray<T, Allocator>     SelfType;
-    typedef skArrayBase<T, Allocator> BaseType;
-
+    typedef skArray<T, Allocator> SelfType;
     typedef typename Allocator::SizeType SizeType;
 
     typedef skPointerIncrementIterator<SelfType, SizeType>       Iterator;
@@ -50,14 +226,27 @@ public:
 
     SK_IMPLEMENT_QSORT(T, skArray, SizeType);
 
+
 public:
-    skArray()
+    skArray() :
+        m_data(0),
+        m_size(0),
+        m_capacity(0)
     {
     }
 
     skArray(const skArray& o) :
-        skArrayBase(o)
+        m_data(0),
+        m_size(o.size()),
+        m_capacity(0)
     {
+        if (o.m_data)
+        {
+            reserve(m_size);
+            m_alloc.fill(m_data, o.m_data, m_size);
+        }
+        else
+            m_size = 0;
     }
 
     ~skArray()
@@ -67,7 +256,11 @@ public:
 
     void clear(void)
     {
-        destroy();
+        if (m_data)
+            m_alloc.array_deallocate(m_data, m_capacity);
+        m_data     = 0;
+        m_capacity = 0;
+        m_size     = 0;
     }
 
     SizeType find(ConstReferenceType v) const
@@ -78,7 +271,7 @@ public:
             if (m_data[i] == v)
                 return i;
         }
-        return m_alloc.npos;
+        return SelfType::npos;
     }
 
     void push_back(ConstReferenceType v)
@@ -115,10 +308,63 @@ public:
     {
         if (m_size > 0)
         {
-            if (pos != m_alloc.npos)
+            if (pos != SelfType::npos)
             {
                 skSwap(m_data[pos], m_data[m_size - 1]);
                 m_alloc.destroy(&m_data[--m_size]);
+            }
+        }
+    }
+
+    void resize(SizeType nr)
+    {
+        if (nr < m_size)
+        {
+            for (SizeType i = nr; i < m_size; i++)
+                m_alloc.destroy(&m_data[i]);
+        }
+        else
+        {
+            if (nr > m_size)
+                reserve(nr);
+        }
+        m_size = nr;
+    }
+
+    void resize(SizeType nr, ConstReferenceType fill)
+    {
+        SizeType i;
+
+        if (nr < m_size)
+        {
+            for (i = nr; i < m_size; i++)
+                m_data[i].~T();
+        }
+        else
+        {
+            if (nr > m_size)
+                reserve(nr);
+
+            m_alloc.fill(m_data + m_size, fill, nr);
+        }
+        m_size = nr;
+    }
+
+    void reserve(SizeType nr)
+    {
+        if (m_capacity < nr)
+        {
+            nr = skMin<SKuint32>(nr, m_alloc.limit);
+
+            if (m_data)
+            {
+                m_data     = m_alloc.array_reallocate(m_data, nr, m_size);
+                m_capacity = nr;
+            }
+            else
+            {
+                m_data     = m_alloc.array_allocate(nr);
+                m_capacity = nr;
             }
         }
     }
@@ -186,6 +432,21 @@ public:
         return m_data != 0;
     }
 
+    SK_INLINE SizeType capacity(void) const
+    {
+        return m_capacity;
+    }
+
+    SK_INLINE SizeType size(void) const
+    {
+        return m_size;
+    }
+
+    SK_INLINE bool empty(void) const
+    {
+        return m_size == 0;
+    }
+
     SK_INLINE Iterator iterator(void)
     {
         return m_data && m_size > 0 ? Iterator(m_data, m_size) : Iterator();
@@ -208,10 +469,22 @@ public:
 
     skArray& operator=(const skArray& rhs)
     {
-        replicate(rhs);
+        if (this != &rhs)
+        {
+            if (rhs.m_size > 0 && rhs.m_data)
+            {
+                clear();
+                resize(rhs.m_size);
+                m_alloc.fill(m_data, rhs.m_data, rhs.m_size);
+            }
+        }
         return *this;
     }
 
+private:
+    PointerType m_data;
+    SizeType    m_size, m_capacity;
+    Allocator   m_alloc;
 };
 
 #endif  //_skArray_h_

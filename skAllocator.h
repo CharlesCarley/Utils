@@ -138,81 +138,82 @@ public:
     {
     }
 
-    SK_INLINE void construct(PointerType base, ConstReferenceType v)
+    SK_INLINE void construct(PointerType p, ConstReferenceType v)
     {
-        new (base) T(v);
+        new (p) T(v);
     }
 
     template <typename A0>
-    void construct_arg(PointerType base, const A0& v)
+    void construct_arg(PointerType p, const A0& v)
     {
-        new (base) T(v);
+        new (p) T(v);
     }
 
     PointerType allocate(void)
     {
-        PointerType base = reinterpret_cast<PointerType>(skMalloc(sizeof(T)));
-        skConstructDefault(base, base + 1);
-        return base;
+        PointerType p = reinterpret_cast<PointerType>(skMalloc(sizeof(T)));
+        skConstructDefault(p, p + 1);
+        return p;
     }
 
-    void deallocate(PointerType& base)
+    void deallocate(PointerType& p)
     {
-        destroy(base);
-        skFree(base);
-        base = nullptr;
+        destroy(p);
+        skFree(p);
+        p = nullptr;
     }
 
-    PointerType array_allocate(SizeType capacity)
+    PointerType array_allocate(SizeType nr)
     {
-        if (capacity > SelfType::limit)
-            throw(SizeType)(capacity - SelfType::limit);
+        if (nr > SelfType::limit)
+            throw(SizeType)(nr - SelfType::limit);
 
-        PointerType base = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * capacity));
-        skConstructDefault(base, base + capacity);
-        return base;
+        PointerType ptr = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * nr));
+        skConstructDefault(ptr, ptr + nr);
+        return ptr;
     }
 
-    PointerType array_allocate(SizeType capacity, ConstReferenceType val)
+    PointerType array_allocate(SizeType nr, ConstReferenceType val)
     {
-        if (capacity > SelfType::limit)
-            throw(SizeType)(capacity - SelfType::limit);
+        if (nr > SelfType::limit)
+            throw (SizeType)(nr - SelfType::limit);
 
-        PointerType base = reinterpret_cast<PointerType>(
-            skMalloc(sizeof(T) * capacity)
+        PointerType ptr = reinterpret_cast<PointerType>(
+            skMalloc(sizeof(T) * nr)
         );
-        skConstruct(base, base + capacity, val);
-        return base;
+        skConstruct(ptr, ptr + nr, val);
+        return ptr;
     }
 
 
-    PointerType array_reallocate(PointerType old_base, SizeType capacity, SizeType old_capacity)
+    PointerType array_reallocate(PointerType oldPtr, SizeType nr, SizeType os)
     {
-        PointerType base = reinterpret_cast<PointerType>(
-            skRealloc(old_base, sizeof(T) * old_capacity)
+        PointerType ptr = reinterpret_cast<PointerType>(
+            skRealloc(oldPtr, sizeof(T) * nr)
             );
-        skConstructDefault(base, base + capacity);
-        return base;
+        if (oldPtr)
+            skConstructDefault(ptr + os, ptr + nr);
+        else
+            skConstructDefault(ptr, ptr + nr);
+        return ptr;
     }
 
-    void array_deallocate(PointerType base, SizeType capacity)
+    void array_deallocate(PointerType p, SizeType nr)
     {
-        capacity = skMin<SizeType>(capacity, SelfType::limit);
-        skDestruct(base, base + capacity);
-        skFree(base);
+        nr = skMin<SizeType>(nr, SelfType::limit);
+        skDestruct(p, p + nr);
+        skFree(p);
     }
 
-    void array_deallocate(PointerType base)
+    void array_deallocate(PointerType p)
     {
-        skFree(base);
+        skFree(p);
     }
 
-    SK_INLINE void destroy(PointerType base)
+    SK_INLINE void destroy(PointerType p)
     {
-        if (base)
-            base->~T();
+        if (p) p->~T();
     }
-
 
     void destroy_range(PointerType beg, PointerType end)
     {
@@ -257,15 +258,15 @@ public:
     {
     }
 
-    void construct(PointerType base, ConstReferenceType v)
+    void construct(PointerType p, ConstReferenceType v)
     {
-        new (base) T(v);
+        new (p) T(v);
     }
 
     template <typename A0>
-    void construct_arg(PointerType base, const A0& v)
+    void construct_arg(PointerType p, const A0& v)
     {
-        new (base) T(v);
+        new (p) T(v);
     }
 
     PointerType allocate(void)
@@ -273,36 +274,37 @@ public:
         return new T;
     }
 
-    void deallocate(PointerType base)
+    void deallocate(PointerType p)
     {
-        delete base; 
+        destroy(p);
+        operator delete(p);
     }
 
-    PointerType array_allocate(SizeType capacity)
+    PointerType array_allocate(SizeType nr)
     {
-        return new T[capacity];
+        return new T[nr];
     }
 
-    PointerType array_reallocate(PointerType old, SizeType capacity, SizeType old_nr)
+    PointerType array_reallocate(PointerType old, SizeType nr, SizeType old_nr)
     {
-        PointerType base = new T[capacity];
+        PointerType p = new T[nr];
         if (old)
         {
-            SelfType::fill(base, old, old_nr);
+            SelfType::fill(p, old, old_nr);
             delete[] old;
         }
-        return base;
+        return p;
     }
 
-    void array_deallocate(PointerType base, SizeType)
+
+    void array_deallocate(PointerType p, SizeType)
     {
-        delete[] base;
+        delete[] p;
     }
 
-    void destroy(PointerType base)
+    void destroy(PointerType p)
     {
-        if (base)
-            base->~T();
+        if (p) p->~T();
     }
 
     void destroy_range(PointerType beg, PointerType end)
