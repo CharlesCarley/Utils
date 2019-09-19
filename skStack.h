@@ -27,55 +27,37 @@
 #define _skStack_h_
 
 #include "Config/skConfig.h"
-#include "skArray.h"
+#include "skArrayBase.h"
 #include "skTraits.h"
 
 template <typename T, typename Allocator = skAllocator<T, SKuint32> >
-class skStack
+class skStack : public skArrayBase<T, Allocator>
 {
 public:
     SK_DECLARE_TYPE(T);
 
 public:
-    typedef skStack<T, Allocator>                      SelfType;
+    typedef skStack<T, Allocator>     SelfType;
+    typedef skArrayBase<T, Allocator> BaseType;
+    
     typedef skPointerDecrementIterator<SelfType>       Iterator;
     typedef const skPointerDecrementIterator<SelfType> ConstIterator;
 
 public:
     skStack() :
-        m_top(0),
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
+        BaseType()
     {
     }
 
     skStack(SKuint32 initialCapacity) :
-        m_top(0),
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
+        BaseType()
     {
-        reserve(initialCapacity);
+        this->reserve(initialCapacity);
     }
 
-    skStack(const SelfType& o)
+    skStack(const SelfType& o) :
+        BaseType(o)
     {
-        if (o.m_capacity > 0 && o.m_capacity < m_alloc.limit)
-        {
-            m_capacity = 0;
-            m_data     = 0;
-            reserve(o.m_capacity);
-
-            ConstPointerType pt = o.ptr();
-            for (m_size = 0; m_size < o.m_size && m_data; ++m_size)
-                m_data[m_size] = pt[m_size];
-        }
-        else
-        {
-            m_data = 0;
-            m_top = m_size = m_capacity = 0;
-        }
     }
 
     ~skStack()
@@ -86,79 +68,56 @@ public:
 
     void clear(void)
     {
-        m_alloc.array_deallocate(m_data, m_capacity);
-        m_data = 0;
-        m_top = m_size = m_capacity = 0;
+        this->destroy();
     }
-
-
-    void reserve(SKuint32 nr)
-    {
-        if (m_capacity < nr && nr + 1 < m_alloc.limit)
-        {
-            nr = skMin<SKuint32>(nr, m_alloc.limit);
-            if (m_data)
-            {
-                m_data     = m_alloc.array_reallocate(m_data, nr, m_size);
-                m_capacity = nr;
-            }
-            else
-            {
-                m_data     = m_alloc.array_allocate(nr);
-                m_capacity = nr;
-            }
-        }
-    }
-
 
     void push(ConstReferenceType v)
     {
-        if (m_size + 1 > m_capacity)
-            reserve(m_capacity == 0 ? 16 : m_capacity * 2);
+        if (this->m_size + 1 > this->m_capacity)
+            this->reserve(this->m_capacity == 0 ? 16 : this->m_capacity * 2);
 
-        if (m_data)
+        if (this->m_data)
         {
-            m_data[m_size++] = v;
-            m_top = m_size;
+            this->m_data[this->m_size++] = v;
         }
     }
 
 
     void pop(void)
     {
-        if (m_size > 0)
+        // use, top(), and peek() to access elements
+
+        if (this->m_size > 0)
         {
-            m_alloc.destroy(&m_data[m_size]);
-            m_size--;
-            m_top = m_size;
+            this->m_alloc.destroy(&this->m_data[this->m_size]);
+            this->m_size--;
         }
     }
 
 
     void pop(SKuint32 nr)
     {
-        while (nr-- && !empty())
+        while (nr-- && !this->empty())
             pop();
-        m_top = m_size;
     }
 
 
     SK_INLINE ReferenceType top(void)
     {
-        SK_ASSERT(m_top != 0);
-        return m_data[itop()];
+        SK_ASSERT(this->m_size != 0);
+        return this->m_data[itop()];
     }
 
     SK_INLINE ConstReferenceType top(void) const
     {
-        SK_ASSERT(m_top != 0);
-        return m_data[itop()];
+        SK_ASSERT(this->m_size!= 0);
+        return this->m_data[itop()];
     }
 
     SK_INLINE ReferenceType peek(SKuint32 offs)
     {
-        SK_ASSERT(m_top != 0 && (m_top - 1 - offs) != SK_NPOS32);
-        return m_data[m_top - 1 - offs];
+        SK_ASSERT(this->m_size != 0 && (this->m_size - 1 - offs) != SK_NPOS32);
+        return this->m_data[this->m_size - 1 - offs];
     }
 
     SK_INLINE ConstReferenceType peek(SKuint32 offs) const
@@ -166,78 +125,27 @@ public:
         return peek(offs);
     }
 
-    SK_INLINE SKuint32 capacity(void) const
-    {
-        return m_capacity;
-    }
-
-
-    SK_INLINE SKuint32 size(void) const
-    {
-        return m_size;
-    }
-
     SK_INLINE SKuint32 itop(void) const
     {
-        return empty() ? 0 : m_top - 1;
-    }
-
-    SK_INLINE bool empty(void) const
-    {
-        return m_size == 0 || m_size >= m_alloc.limit;
-    }
-
-    SK_INLINE ConstPointerType ptr(void) const
-    {
-        return m_data;
-    }
-
-    SK_INLINE PointerType ptr(void)
-    {
-        return m_data;
+        return this->empty() ? 0 : this->m_size - 1;
     }
 
     SK_INLINE Iterator iterator(void)
     {
-        return Iterator(m_data, m_size);
+        return Iterator(this->m_data, this->m_size);
     }
 
     SK_INLINE ConstIterator iterator(void) const
     {
-        return ConstIterator(m_data, m_size);
+        return ConstIterator(this->m_data, this->m_size);
     }
 
 
     SelfType& operator=(const SelfType& rhs)
     {
-        if (this != &rhs)
-        {
-            // at this point it's assumed
-            // that if this array is being assigned
-            // and it has allocated memory from the free-list,
-            // the allocated data has already been returned
-
-            if (rhs.m_capacity > 0 && rhs.m_capacity < m_alloc.limit)
-            {
-                reserve(rhs.m_capacity);
-                ConstPointerType pt = rhs.ptr();
-                for (m_size = 0; m_size < rhs.m_size && m_data; ++m_size)
-                    m_data[m_size] = pt[m_size];
-            }
-            else
-            {
-                m_data = 0;
-                m_top = m_size = m_capacity = 0;
-            }
-        }
+        this->replicate(rhs);
         return *this;
     }
-
-private:
-    Allocator   m_alloc;
-    PointerType m_data;
-    SKuint32    m_top;
-    SKuint32    m_size, m_capacity;
 };
 
 #endif  //_skStack_h_
