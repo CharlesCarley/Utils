@@ -25,6 +25,7 @@ set(Utils_SRC
 set(Utils_HDR
     skAllocator.h
     skArray.h
+    skArrayBase.h
     skAssert.h
     skBinarySearchTree.h
     skDebugger.h
