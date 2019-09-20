@@ -219,6 +219,7 @@ public:
     typedef typename Allocator::SizeType SizeType;
 
 public:
+
     SizeType find(ConstReferenceType v) const
     {
         SizeType i;
@@ -227,7 +228,7 @@ public:
             if (m_data[i] == v)
                 return i;
         }
-        return SelfType::npos;
+        return m_alloc.npos;
     }
 
     void resize(SizeType nr)

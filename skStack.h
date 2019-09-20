@@ -36,10 +36,10 @@ class skStack : public skArrayBase<T, Allocator>
 public:
     SK_DECLARE_TYPE(T);
 
-public:
-    typedef skStack<T, Allocator>     SelfType;
-    typedef skArrayBase<T, Allocator> BaseType;
-    
+    typedef skStack<T, Allocator>       SelfType;
+    typedef skArrayBase<T, Allocator>   BaseType;
+    typedef typename BaseType::SizeType SizeType;
+
     typedef skPointerDecrementIterator<SelfType>       Iterator;
     typedef const skPointerDecrementIterator<SelfType> ConstIterator;
 
@@ -49,7 +49,7 @@ public:
     {
     }
 
-    skStack(SKuint32 initialCapacity) :
+    skStack(SizeType initialCapacity) :
         BaseType()
     {
         this->reserve(initialCapacity);
@@ -65,7 +65,6 @@ public:
         clear();
     }
 
-
     void clear(void)
     {
         this->destroy();
@@ -74,19 +73,14 @@ public:
     void push(ConstReferenceType v)
     {
         if (this->m_size + 1 > this->m_capacity)
-            this->reserve(this->m_capacity == 0 ? 16 : this->m_capacity * 2);
+            this->reserve(this->m_capacity == 0 ? SKInitalCap : this->m_capacity * 2);
 
         if (this->m_data)
-        {
             this->m_data[this->m_size++] = v;
-        }
     }
-
 
     void pop(void)
     {
-        // use, top(), and peek() to access elements
-
         if (this->m_size > 0)
         {
             this->m_alloc.destroy(&this->m_data[this->m_size]);
@@ -94,13 +88,11 @@ public:
         }
     }
 
-
-    void pop(SKuint32 nr)
+    void pop(SizeType nr)
     {
         while (nr-- && !this->empty())
             pop();
     }
-
 
     SK_INLINE ReferenceType top(void)
     {
@@ -110,22 +102,22 @@ public:
 
     SK_INLINE ConstReferenceType top(void) const
     {
-        SK_ASSERT(this->m_size!= 0);
+        SK_ASSERT(this->m_size != 0);
         return this->m_data[itop()];
     }
 
-    SK_INLINE ReferenceType peek(SKuint32 offs)
+    SK_INLINE ReferenceType peek(SizeType offs)
     {
-        SK_ASSERT(this->m_size != 0 && (this->m_size - 1 - offs) != SK_NPOS32);
+        SK_ASSERT(this->m_size != 0 && (this->m_size - 1 - offs) != this->m_alloc.npos);
         return this->m_data[this->m_size - 1 - offs];
     }
 
-    SK_INLINE ConstReferenceType peek(SKuint32 offs) const
+    SK_INLINE ConstReferenceType peek(SizeType offs) const
     {
         return peek(offs);
     }
 
-    SK_INLINE SKuint32 itop(void) const
+    SK_INLINE SizeType itop(void) const
     {
         return this->empty() ? 0 : this->m_size - 1;
     }
@@ -139,7 +131,6 @@ public:
     {
         return ConstIterator(this->m_data, this->m_size);
     }
-
 
     SelfType& operator=(const SelfType& rhs)
     {

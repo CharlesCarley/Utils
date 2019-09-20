@@ -82,7 +82,6 @@ public:
         new (base) T(v);
     }
 
-
     void destroy(PointerType base)
     {
         if (base)
@@ -99,6 +98,23 @@ public:
     }
 
 protected:
+    void construct(PointerType beg, ConstPointerType end, ConstReferenceType value)
+    {
+        while (beg != end)
+        {
+            new (beg) T(value);
+            ++beg;
+        }
+    }
+
+    void construct(PointerType beg, ConstPointerType end)
+    {
+        while (beg != end)
+        {
+            new (beg) T();
+            ++beg;
+        }
+    }
 
     void enforce_limit(SizeType capacity)
     {
@@ -170,7 +186,7 @@ public:
         this->enforce_limit(capacity);
 
         PointerType base = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * capacity));
-        skConstructDefault(base, base + capacity);
+        this->construct(base, base + capacity);
         return base;
     }
 
@@ -181,7 +197,7 @@ public:
         PointerType base = reinterpret_cast<PointerType>(
             skMalloc(sizeof(T) * capacity));
 
-        skConstruct(base, base + capacity, val);
+        this->construct(base, base + capacity, val);
         return base;
     }
 
@@ -192,10 +208,11 @@ public:
 
         PointerType base = reinterpret_cast<PointerType>(
             skRealloc(oldPtr, sizeof(T) * capacity));
+
         if (oldPtr)
-            skConstructDefault(base + os, base + capacity);
+            this->construct(base + os, base + capacity);
         else
-            skConstructDefault(base, base + capacity);
+            this->construct(base, base + capacity);
         return base;
     }
 

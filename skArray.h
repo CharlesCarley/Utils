@@ -77,7 +77,7 @@ public:
         {
             if (this->m_size + 1 > this->m_capacity)
             {
-                this->reserve(this->m_size == 0 ? 8 : this->m_size * 2);
+                this->reserve(this->m_size == 0 ? SKInitalCap : this->m_size * 2);
                 this->m_data[this->m_size++] = v;
             }
             else
@@ -105,7 +105,7 @@ public:
     {
         if (this->m_size > 0)
         {
-            if (pos != SelfType::npos)
+            if (pos != this->m_alloc.npos)
             {
                 skSwap(this->m_data[pos], this->m_data[this->m_size - 1]);
                 this->m_alloc.destroy(&this->m_data[--this->m_size]);

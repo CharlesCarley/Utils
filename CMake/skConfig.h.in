@@ -221,6 +221,9 @@ const SKuint32          SK_MAX32   = SK_MKMX(SKuint32);
 const SKuint32          SK_NPOS32H = SK_NPOS32 / 2;
 
 
+#define SKInitalCap 8
+
+
 #if SK_ITERATOR_DEBUG == 1
 #define SK_ITER_DEBUG(x) SK_ASSERT(x)
 #else

@@ -91,44 +91,4 @@ void skFill(T* dst, const T& src, const SKsize nr)
     }
 }
 
-template <typename T>
-void skConstruct(T* beg, const T* end, const T& x)
-{
-    while (beg != end)
-    {
-        new (beg) T(x);
-        ++beg;
-    }
-}
-
-template <typename T>
-void skConstructDefault(T* beg, const T* end)
-{
-    while (beg != end)
-    {
-        new (beg) T();
-        ++beg;
-    }
-}
-
-template <typename T>
-void skConstructCopy(T* beg, const T* end, const T* oth)
-{
-    while (beg != end)
-    {
-        new (beg) T(*oth++);
-        ++beg;
-    }
-}
-
-template <typename T>
-void skDestruct(T* beg, const T* end)
-{
-    while (beg != end)
-    {
-        beg->~T();
-        ++beg;
-    }
-}
-
 #endif  //_skMinMax_h_
