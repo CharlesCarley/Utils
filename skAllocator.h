@@ -218,11 +218,8 @@ public:
 
     void array_deallocate(PointerType base, SizeType capacity)
     {
-        // restrict it to what is already present
         capacity = skMin<SizeType>(capacity, SelfType::limit);
-
         this->destroy(base, base + capacity);
-
         skFree(base);
     }
 

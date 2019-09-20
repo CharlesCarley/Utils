@@ -80,29 +80,4 @@ public:                                                                  \
     }
 
 
-template <typename T>
-class skTypeTraits
-{
-public:
-    typedef T        ValueType;
-    typedef T&       ReferenceType;
-    typedef T*       PointerType;
-    typedef const T  ConstValueType;
-    typedef const T* ConstPointerType;
-    typedef const T& ConstReferenceType;
-};
-
-
-template <typename T>
-class skReferencedTypeTraits
-{
-public:
-    typedef typename T::ValueType          ValueType;
-    typedef typename T::ReferenceType      ReferenceType;
-    typedef typename T::PointerType        PointerType;
-    typedef typename T::ConstValueType     ConstValueType;
-    typedef typename T::ConstPointerType   ConstPointerType;
-    typedef typename T::ConstReferenceType ConstReferenceType;
-};
-
 #endif  //_skTraits_h_
