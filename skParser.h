@@ -33,7 +33,7 @@
 
 class skStream;
 
-class skParser : public skAllocObject
+class skParser 
 {
 public:
     typedef SKint16 Index;

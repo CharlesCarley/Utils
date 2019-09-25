@@ -28,7 +28,7 @@
 
 #include "skAllocator.h"
 
-class skTimer : public skAllocObject
+class skTimer 
 {
 public:
     skTimer();

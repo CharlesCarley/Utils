@@ -31,13 +31,13 @@
 
 #if SK_PLATFORM != SK_PLATFORM_ANDROID
 
-class skValue : public skAllocObject
+class skValue 
 {
 public:
     typedef std::type_info Info;
 
 protected:
-    class Value : public skAllocObject
+    class Value 
     {
     public:
         virtual ~Value()

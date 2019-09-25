@@ -28,7 +28,7 @@
 
 #include "skAllocator.h"
 
-class skStream : public skAllocObject
+class skStream 
 {
 public:
     enum Mode

@@ -201,7 +201,7 @@ public:
     typedef skListIterator<SelfType>       Iterator;
     typedef const skListIterator<SelfType> ConstIterator;
 
-    class Link : public skAllocObject
+    class Link 
     {
     public:
         SK_DECLARE_TYPE(Link);
@@ -639,7 +639,7 @@ public:
 
     SK_IMPLEMENT_SORT(T, skList, SKsize);
 
-    class Link : public skAllocObject
+    class Link 
     {
     public:
         Link() :
