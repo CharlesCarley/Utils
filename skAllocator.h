@@ -31,16 +31,6 @@
 #include "skMinMax.h"
 #include "skTraits.h"
 
-
-class skAllocObject
-{
-public:
-    virtual ~skAllocObject()
-    {
-    }
-};
-
-
 template <typename T, typename UnsignedSizeType, const UnsignedSizeType alloc_limit>
 class skAllocBase
 {
