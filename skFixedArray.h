@@ -43,7 +43,7 @@ public:
     SK_IMPLEMENT_QSORT(T, SelfType, SKuint16);
 
     const SKuint16 limit = L;
-    const SKuint16 npos = SK_NPOS16;
+    const SKuint16 npos  = SK_NPOS16;
 
 
 public:
@@ -61,7 +61,7 @@ public:
         if (rhs.size())
         {
             SKuint16         i;
-            const SKuint16 os = rhs.size();
+            const SKuint16   os = rhs.size();
             ConstPointerType cp = rhs.ptr();
             for (i = 0; i < L && i < os; ++i, ++m_size)
                 m_data[i] = cp[i];
@@ -77,7 +77,7 @@ public:
         if (rhs.size())
         {
             SKuint16         i;
-            const SKuint16 os = rhs.size();
+            const SKuint16   os = rhs.size();
             ConstPointerType cp = rhs.ptr();
             for (i = 0; i < L && i < os; ++i, ++m_size)
                 m_data[i] = cp[i];

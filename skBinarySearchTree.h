@@ -36,13 +36,19 @@ class skBinarySearchTree
 public:
     SK_DECLARE_TYPE(T);
 
-    class Node : public skAllocObject
+    class Node
     {
     public:
-        Node() : m_left(0), m_right(0)
+        Node() :
+            m_left(0),
+            m_right(0)
         {
         }
-        Node(ConstValueType v) : m_left(0), m_right(0), m_data(v)
+
+        Node(ConstValueType v) :
+            m_left(0),
+            m_right(0),
+            m_data(v)
         {
         }
 
@@ -90,11 +96,15 @@ private:
     Array           m_array;
 
 public:
-    skBinarySearchTree() : m_root(0), m_size(0)
+    skBinarySearchTree() :
+        m_root(0),
+        m_size(0)
     {
     }
 
-    skBinarySearchTree(const skBinarySearchTree& o) : m_root(0), m_size(0)
+    skBinarySearchTree(const skBinarySearchTree& o) :
+        m_root(0),
+        m_size(0)
     {
         SK_ASSERT(0 && "TODO");
     }
@@ -182,20 +192,24 @@ public:
     {
         return m_root;
     }
+
     SK_INLINE NodePointerType left(void)
     {
         return m_root ? m_root->m_left : 0;
     }
+
     SK_INLINE NodePointerType right(void)
     {
         return m_root ? m_root->m_right : 0;
     }
+
     SK_INLINE SKsize size(void)
     {
         return m_size;
     }
 
 private:
+
     NodePointerType minimum_recursive(NodePointerType node)
     {
         if (node && node->m_left)
@@ -278,8 +292,8 @@ private:
         else
         {
             NodePointerType cur = minimum_recursive(node->m_right);
-            node->m_data = cur->m_data;
-            node->m_right = erase_recursive(node->m_right, cur->m_data);
+            node->m_data        = cur->m_data;
+            node->m_right       = erase_recursive(node->m_right, cur->m_data);
         }
         return node;
     }

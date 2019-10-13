@@ -38,7 +38,8 @@ template <typename Key, typename Value>
 class skDictionary
 {
 public:
-    class Pair : public skAllocObject
+
+    class Pair
     {
     public:
         Key   first;

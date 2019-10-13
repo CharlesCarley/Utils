@@ -143,7 +143,8 @@ public:
     Value    second;
     SKuint32 hash;
 
-    skEntry(): hash(0)
+    skEntry() :
+        hash(0)
     {
     }
 
@@ -173,7 +174,7 @@ template <typename Key, typename Value, typename Allocator = skAllocator<skEntry
 class skHashTable
 {
 public:
-    typedef skAllocator<SKuint32>                IndexAllocator;
+    typedef skAllocator<SKuint32>              IndexAllocator;
     typedef skHashTable<Key, Value, Allocator> SelfType;
 
 public:
@@ -190,7 +191,7 @@ public:
     typedef skHashTableDecrementIterator<SelfType>       ReverseIterator;
     typedef const skHashTableDecrementIterator<SelfType> ConstReverseIterator;
 
-	const SKuint32 npos = SK_NPOS32;
+    const SKuint32 npos = SK_NPOS32;
 
 public:
     skHashTable() :
@@ -302,7 +303,7 @@ public:
             return npos;
 
         SKuint32 hk = skHash(key);
-        SKhash hr = (hk & (m_capacity - 1));
+        SKhash   hr = (hk & (m_capacity - 1));
         SKuint32 fh = m_iptr[hr];
 
         while (fh != npos && hk != m_bptr[fh].hash)
@@ -323,7 +324,7 @@ public:
             reserve(m_size == 0 ? 32 : m_size * 2);
 
         SKuint32 hk = skHash(key);
-        SKhash hr = hk & (m_capacity - 1);
+        SKhash   hr = hk & (m_capacity - 1);
 
         m_bptr[m_size] = Pair(key, val, hk);
         m_nptr[m_size] = m_iptr[hr];
@@ -338,7 +339,7 @@ public:
 
     void remove(const Key& key)
     {
-        SKhash hash, lhash;
+        SKhash   hash, lhash;
         SKuint32 index, pindex, findex;
 
         if (empty())
@@ -514,14 +515,13 @@ private:
         }
     }
 
-    SKuint32         m_size, m_capacity;
+    SKuint32       m_size, m_capacity;
     IndexArray     m_iptr;
     IndexArray     m_nptr;
     PointerType    m_bptr;
     Allocator      m_alloc;
     IndexAllocator m_ialloc;
 };
-
 
 
 

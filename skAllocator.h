@@ -32,14 +32,6 @@
 #include "skTraits.h"
 
 
-class skAllocObject
-{
-public:
-    virtual ~skAllocObject()
-    {
-    }
-};
-
 
 template <typename T, typename UnsignedSizeType, const UnsignedSizeType alloc_limit>
 class skAllocBase
@@ -125,10 +117,8 @@ protected:
 
 template <typename T, typename SizeType, const SizeType alloc_limit>
 const SizeType skAllocBase<T, SizeType, alloc_limit>::limit = alloc_limit;
-
 template <typename T, typename SizeType, const SizeType alloc_limit>
 const SizeType skAllocBase<T, SizeType, alloc_limit>::npos = SK_MKNPOS(SizeType);
-
 
 
 template <typename T,

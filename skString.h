@@ -166,30 +166,31 @@ public:
 
     skString& operator=(const skString& rhs);
 
-    SKsize find(char ch) const;
-    SKsize find(const char* ch, SKsize offs = 0) const;
-
+    SKsize    find(char ch) const;
+    SKsize    find(const char* ch, SKsize offs = 0) const;
     skString& erase(SKsize pos, SKsize nr = 0);
-
     skString& append(char ch);
     skString& append(const char* rhs, SKsize rhsLen = 0);
-    skString& append(const skString& rhs)
-    {
-        return append(rhs.c_str(), rhs.size());
-    }
-
-    skString substr(SKsize pos, SKsize nr) const;
-    void     substr(skString& dest, SKsize pos, SKsize nr = 0) const;
-
-    void   swap(skString& rhs);
-    SKsize copy(char* arr, SKsize nr, SKsize offs = 0);
-
-    void split(skArray<skString>& dst, const ValueType* op) const;
+    skString  substr(SKsize pos, SKsize nr) const;
+    void      substr(skString& dest, SKsize pos, SKsize nr = 0) const;
+    void      swap(skString& rhs);
+    SKsize    copy(char* arr, SKsize nr, SKsize offs = 0);
+    void      split(skArray<skString>& dst, const char* op) const;
+    void      toBinary(void);
+    void      fromBinary(void);
+    void      toHex(void);
+    void      fromHex(void);
+    void      encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2);
+    void      decrypt(SKbyte* LB, int b1, SKuint16* UB, int b2);
+    void      encrypt(const char* password);
+    void      decrypt(const char* password);
+    void      encrypt(void);
+    void      decrypt(void);
+    void      clear(void);
+    void      reserve(SKsize nr);
+    void      resize(SKsize nr);
 
     static skString format(const char* fmt, ...);
-
-    void toBinary(void);
-    void fromBinary(void);
 
     skString& asHex(void)
     {
@@ -197,21 +198,11 @@ public:
         return *this;
     }
 
-    void toHex(void);
-    void fromHex(void);
+    skString& append(const skString& rhs)
+    {
+        return append(rhs.c_str(), rhs.size());
+    }
 
-    void encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2);
-    void decrypt(SKbyte* LB, int b1, SKuint16* UB, int b2);
-
-    void encrypt(const char* password);
-    void decrypt(const char* password);
-
-    void encrypt(void);
-    void decrypt(void);
-
-    void clear(void);
-    void reserve(SKsize nr);
-    void resize(SKsize nr);
 
     SK_INLINE ConstPointerType c_str(void) const
     {
@@ -288,12 +279,14 @@ protected:
     PointerType m_data;
     SKsize      m_size, m_capacity;
 
-    void alloc(const ValueType* str, SKsize len);
-    void alloc(const ValueType p, SKsize len);
+    void alloc(const char* str, SKsize len);
+    void alloc(const char p, SKsize len);
     void alloc(SKsize len, const void* p);
 };
 
+
 typedef skArray<skString> skStringArray;
+
 
 SK_INLINE SKhash skHash(const skString& key)
 {
