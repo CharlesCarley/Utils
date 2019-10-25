@@ -63,7 +63,7 @@ void skTimer::reset(void)
     QueryPerformanceFrequency((LARGE_INTEGER *)&m_private->m_freq);
 
     DWORD proc, sys;
-    GetProcessAffinityMask(GetCurrentProcess(), &proc, &sys);
+    GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&proc, (PDWORD_PTR)&sys);
     proc              = skMax<SKuint32>(proc, 1);
     m_private->m_mask = 1;
 
