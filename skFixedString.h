@@ -107,6 +107,33 @@ public:
         }
     }
 
+
+    
+    void split(skArray<skFixedString<L> >& dest, char c, char e = '\0') const
+    {
+        SKuint16 i, p = 0, t;
+        for (i = 0; i < L && i < m_size; ++i)
+        {
+            if (m_buffer[i] == c || m_buffer[i] == e)
+            {
+                skFixedString<L> cpy;
+                for (t = p; t < i; ++t)
+                    cpy.push_back(m_buffer[t]);
+                dest.push_back(cpy);
+                p = i + 1;
+            }
+        }
+
+        if (p != i)
+        {
+            skFixedString<L> cpy;
+            for (t = p; t < i; ++t)
+                cpy.push_back(m_buffer[t]);
+            dest.push_back(cpy);
+        }
+    }
+
+
     skFixedString& operator=(const skFixedString& rhs)
     {
         if (this != &rhs && rhs.m_size > 0)
@@ -119,6 +146,33 @@ public:
             m_buffer[m_size] = 0;
         }
 
+        return *this;
+    }
+
+    
+    skFixedString operator+(const skFixedString& rhs)
+    {
+        skFixedString lhs = *this;
+        lhs.append(rhs);
+        return lhs;
+    }
+
+    skFixedString operator+=(const skFixedString& rhs)
+    {
+        append(rhs);
+        return *this;
+    }
+
+    skFixedString operator+(const char* str)
+    {
+        skFixedString lhs = *this;
+        lhs.append(str);
+        return lhs;
+    }
+
+    skFixedString operator+=(const char* str)
+    {
+        append(str);
         return *this;
     }
 
