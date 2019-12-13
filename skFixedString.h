@@ -23,11 +23,11 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-
 #ifndef _skFixedString_h_
 #define _skFixedString_h_
 
 #include "Config/skConfig.h"
+#include "Utils/skArray.h"
 
 template <const SKuint16 L>
 class skFixedString
@@ -134,6 +134,24 @@ public:
     }
 
 
+    void append(const char* str)
+    {
+        int len = strlen(str);
+        int a   = 0;
+        while (a < len)
+            push_back(str[a++]);
+    }
+
+
+    void append(const skFixedString& str)
+    {
+        int len = str.m_size;
+        int a   = 0;
+        while (a < len)
+            push_back(str.m_buffer[a++]);
+    }
+
+
     skFixedString& operator=(const skFixedString& rhs)
     {
         if (this != &rhs && rhs.m_size > 0)
@@ -149,6 +167,19 @@ public:
         return *this;
     }
 
+    template <const SKuint16 OL>
+    skFixedString<L>& operator=(const skFixedString<OL>& o)
+    {
+        if (o.size() > 0)
+        {
+            SKuint16 i;
+            m_size = 0;
+            for (i = 0; (i < L && i < OL) && i < o.size(); ++i, ++m_size)
+                m_buffer[i] = o.c_str()[i];
+            m_buffer[m_size] = 0;
+        }
+        return *this;
+    }
     
     skFixedString operator+(const skFixedString& rhs)
     {

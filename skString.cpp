@@ -288,8 +288,7 @@ void skString::split(skArray<skString>& dst, const char* op) const
 
 skString skString::format(const char* fmt, ...)
 {
-    static char buf[1025];
-
+    char buf[1025];
     va_list lst;
     va_start(lst, fmt);
     int size = skp_printf(buf, 1024, fmt, lst);

@@ -127,3 +127,23 @@ SKsize skFileStream::size(void) const
     }
     return size;
 }
+
+
+
+
+
+SKsize skStream::writef(const char* fmt, ...)
+{
+
+    char    buf[1025];
+    va_list lst;
+    va_start(lst, fmt);
+    int size = skp_printf(buf, 1024, fmt, lst);
+    va_end(lst);
+
+    if (size < 0)
+        size = 1024;
+
+    buf[size] = 0;
+    return write(buf, size);
+}
