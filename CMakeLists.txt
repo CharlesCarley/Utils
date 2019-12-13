@@ -19,7 +19,6 @@ set(Utils_SRC
     skStringConverter.cpp
     skRandom.cpp
     skTimer.cpp
-    skParser.cpp
 )
 
 set(Utils_HDR
@@ -41,11 +40,9 @@ set(Utils_HDR
     skMemoryStream.h
     skMemoryUtils.h
     skMinMax.h
-    skParser.h
     skPlatformHeaders.h
     skQueue.h
     skRandom.h
-    skSingleton.h
     skSort.h
     skStack.h
     skStackQueue.h

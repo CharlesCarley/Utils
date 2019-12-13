@@ -207,52 +207,38 @@ public:
     }
 };
 
-template <typename T, typename Allocator = skAllocator<T> >
-class skQueue
+
+
+template <typename T, typename Allocator = skAllocator<T, SKuint32> >
+class skQueue : public skArrayBase<T, Allocator>
 {
 public:
     SK_DECLARE_TYPE(T);
 
     typedef skQueue<T, Allocator>                    SelfType;
     typedef skQueueIncrementIterator<SelfType>       Iterator;
+    typedef skArrayBase<T, Allocator>                BaseType;
     typedef const skQueueIncrementIterator<SelfType> ConstIterator;
     typedef skQueueDecrementIterator<SelfType>       ReverseIterator;
     typedef const skQueueDecrementIterator<SelfType> ConstReverseIterator;
 
-    SK_IMPLEMENT_QSORT(T, SelfType);
-
 private:
-    Allocator m_alloc;
-
-    mutable PointerType m_data;
-    SKsize              m_front, m_back;
-    SKsize              m_size, m_capacity;
+    SizeType m_front, m_back;
 
 public:
     skQueue() :
-        m_data(0),
+        BaseType(),
         m_front(0),
-        m_back(0),
-        m_size(0),
-        m_capacity(0)
+        m_back(0)
     {
     }
 
-    skQueue(const skQueue& o) :
-        m_data(0),
-        m_front(0),
-        m_back(0),
-        m_size(0),
-        m_capacity(0)
-    {
-        if (o.m_data)
-        {
-            m_size = o.size();
-            m_back = m_size;
 
-            reserve(m_size);
-            skFill(m_data, o.m_data, m_size);
-        }
+    skQueue(const skQueue& q) :
+        BaseType(q),
+        m_front(0),
+        m_back(0)
+    {
     }
 
     ~skQueue()
@@ -262,63 +248,34 @@ public:
 
     void clear(void)
     {
-        if (m_data)
-            m_alloc.array_deallocate(m_data, m_capacity);
-        m_size     = 0;
-        m_front    = 0;
-        m_back     = 0;
-        m_capacity = 0;
+        this->destroy();
+        m_front = 0;
+        m_back  = 0;
     }
+
 
     void resize(SKsize nr)
     {
-        if (nr < m_size)
-        {
-            for (SKsize i = m_size; i < nr; i++)
-                m_alloc.destroy(&m_data[i]);
-        }
-        else
-        {
-            if (nr > m_size)
-                reserve(nr);
-        }
-
+        this->resize(nr);
         m_front = 0;
         m_back  = nr;
-        m_size  = nr;
-    }
-
-    void reserve(SKsize nr)
-    {
-        if (m_capacity > nr || nr > m_alloc.max_size())
-            return;
-
-        if (m_data && m_size > 0)
-            m_data = m_alloc.array_reallocate(m_data, nr, m_size);
-        else
-            m_data = m_alloc.array_allocate(nr);
-        m_capacity = nr;
-    }
-
-    void push_back(ConstReferenceType value)
-    {
-        enqueue(value);
     }
 
     void enqueue(ConstReferenceType value)
     {
-        if (m_size > m_alloc.max_size())
+        if (this->m_size > this->m_alloc.limit)  // provide an upper limit
             return;
-        if (m_size == m_capacity)
+
+        if (this->m_size + 1 > this->m_capacity)
         {
-            reserve(m_size == 0 ? 8 : m_size * 2);
-            m_back = m_size;
+            this->reserve(this->m_size == 0 ? 8 : this->m_size * 2);
+            m_back = this->m_size;
         }
 
-        m_data[m_back] = value;
+        this->m_data[m_back] = value;
+        this->m_size++;
 
-        m_back = (m_back + 1) % m_capacity;
-        m_size++;
+        m_back = (m_back + 1) % (this->m_capacity);
     }
 
     ReferenceType pop_front(void)
@@ -328,49 +285,46 @@ public:
 
     ReferenceType dequeue(void)
     {
+        if (m_front >= m_capacity)
+            throw(m_front);
+
+
         ReferenceType returnValue = m_data[m_front];
 
-        m_front = (m_front + 1) % m_capacity;
+        m_front = (m_front + 1) % (m_capacity);
         m_size--;
         return returnValue;
     }
 
     SK_INLINE ReferenceType at(SKsize idx)
     {
-        return (*this)[idx];
+        return (*this)[(m_front + idx) % (m_capacity - 1)];
     }
 
     SK_INLINE ConstReferenceType at(SKsize idx) const
     {
-        return (*this)[idx];
+        return (*this)[(m_front + idx) % (m_capacity - 1)];
     }
 
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
         SK_ASSERT(m_data);
         SK_ASSERT(idx != npos && idx < m_capacity);
-        return m_data[(m_front + idx) % m_capacity];
+        return m_data[(m_front + idx) % (m_capacity - 1)];
     }
 
     SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
         SK_ASSERT(m_data);
         SK_ASSERT(idx != npos && idx < m_capacity);
-        return m_data[(m_front + idx) % m_capacity];
+        return m_data[(m_front + idx) % (m_capacity - 1)];
     }
 
-    SK_INLINE bool empty(void) const
-    {
-        return m_size == 0;
-    }
-    SK_INLINE SKsize size(void) const
-    {
-        return m_size;
-    }
     SK_INLINE SKsize front(void) const
     {
         return m_front;
     }
+
     SK_INLINE SKsize back(void) const
     {
         return m_back;
@@ -394,20 +348,6 @@ public:
     SK_INLINE ConstReverseIterator reverseIterator(void) const
     {
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size, m_front) : ConstReverseIterator();
-    }
-
-    skQueue& operator=(const skQueue& rhs)
-    {
-        if (this != &rhs)
-        {
-            if (rhs.m_size > 0 && rhs.m_data)
-            {
-                clear();
-                resize(rhs.m_size);
-                skFill(m_data, rhs.m_data, rhs.m_size);
-            }
-        }
-        return *this;
     }
 };
 
