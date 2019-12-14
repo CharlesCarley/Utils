@@ -218,6 +218,8 @@ public:
     typedef skArrayBase<T, Allocator>    SelfType;
     typedef typename Allocator::SizeType SizeType;
 
+    const SizeType npos = Allocator::npos;
+
 public:
 
     SizeType find(ConstReferenceType v) const

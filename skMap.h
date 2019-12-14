@@ -419,10 +419,12 @@ public:
     {
         return m_size;
     }
+
     SK_INLINE SKuint32 capacity(void) const
     {
         return m_capacity;
     }
+
     SK_INLINE bool empty(void) const
     {
         return m_size == 0;
