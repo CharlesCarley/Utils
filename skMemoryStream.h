@@ -45,7 +45,6 @@ public:
     void   close(void);
     SKsize read(void* dst, SKsize nr) const;
     SKsize write(const void* src, SKsize nr);
-    SKsize writef(const char* fmt, ...);
     void   clear(void);
     void   seek(SKint64 offset, SKsize dir);
     void   reserve(SKsize nr);
@@ -73,7 +72,11 @@ public:
 
 private:
     char*          m_buffer;
-    mutable SKsize m_pos;
+
+    // This needs to be accessible in (read () const)
+    // TODO: find code where const skMemoryStream& is calling read
+    mutable SKsize m_pos; 
+
     SKsize         m_size, m_capacity;
     int            m_mode;
 };

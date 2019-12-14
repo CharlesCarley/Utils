@@ -328,6 +328,7 @@ public:
     }
 
 protected:
+
     skArrayBase() :
         m_data(0),
         m_size(0),
