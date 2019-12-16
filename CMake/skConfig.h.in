@@ -200,12 +200,12 @@ typedef unsigned __int64 SKuint64;
 typedef SKuint64 SKuintPtr;
 typedef SKint64  SKintPtr;
 #else
-typedef SKuint32         SKuintPtr;
-typedef SKint32          SKintPtr;
+typedef SKuint32 SKuintPtr;
+typedef SKint32  SKintPtr;
 #endif
 
-typedef unsigned int    SKhash;
-typedef SKuintPtr		SKsize;
+typedef SKuintPtr SKhash;
+typedef SKuintPtr SKsize;
 
 #define SK_MKNPOS(x)        ((x)-1)
 #define SK_MKMX(x)          (SK_MKNPOS(x)-1)

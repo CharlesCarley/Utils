@@ -10,6 +10,7 @@ include(ConfigureUtils)
 
 set(Utils_SRC
     skAssert.cpp
+    skHexPrint.cpp
     skDebugger.cpp
     skFileStream.cpp
     skHash.cpp
@@ -23,6 +24,7 @@ set(Utils_SRC
 
 set(Utils_HDR
     skAllocator.h
+    skHexPrint.h
     skArrayBase.h
     skArray.h
     skAssert.h
