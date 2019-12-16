@@ -64,7 +64,7 @@ void skTimer::reset(void)
 
     ULONG_PTR proc, sys;
     GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&proc, (PDWORD_PTR)&sys);
-    proc              = skMax<SKuint32>(proc, 1);
+    proc              = skMax<ULONG_PTR>(proc, 1);
     m_private->m_mask = 1;
 
     while (m_private->m_mask & proc)
