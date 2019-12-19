@@ -70,15 +70,25 @@ public:
     }
 
 
+    SK_INLINE SKbyte* ptr()
+    {
+        return m_buffer;
+    }
+
+    SK_INLINE const SKbyte* ptr() const
+    {
+        return m_buffer;
+    }
+
 private:
-    char*          m_buffer;
+    SKbyte* m_buffer;
 
     // This needs to be accessible in (read () const)
     // TODO: find code where const skMemoryStream& is calling read
-    mutable SKsize m_pos; 
+    mutable SKsize m_pos;
 
-    SKsize         m_size, m_capacity;
-    int            m_mode;
+    SKsize m_size, m_capacity;
+    int    m_mode;
 };
 
 #endif  //_skMemoryStream_h_

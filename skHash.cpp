@@ -31,6 +31,7 @@
 #define _SK_INITIAL_FNV 0x9E3779B1
 #define _SK_INITIAL_FNV2 0x9E3779B9
 #define _SK_MULTIPLE_FNV 0x1000193
+
 #define _SK_TWHASH(key)  \
     key += ~(key << 15); \
     key ^= (key >> 10);  \
@@ -42,9 +43,8 @@
 
 SKhash skHash(const char* key)
 {
-    if (!key)
-        return (SKhash)-1;
 
+    if (!key) return SK_NPOS;
 	return skHash(key, skStringUtils::length(key));
 }
 
@@ -52,6 +52,10 @@ SKhash skHash(const char* key)
 // Fowler/Noll/Vo (FNV) Hash
 SKhash skHash(const char* key, SKsize len)
 {
+
+    if (!key || len == 0 || len == SK_NPOS)
+        return SK_NPOS;
+
     SKsize i;
     SKhash hash = (SKhash)_SK_INITIAL_FNV;
 
@@ -66,28 +70,24 @@ SKhash skHash(const char* key, SKsize len)
 
 SKhash skHash(const SKuint32& key)
 {
-    SKhash hash = static_cast<SKhash>(key) * _SK_INITIAL_FNV;
+    SKhash hash;
+
+    hash = ((SKhash)(key)) * _SK_INITIAL_FNV;
     _SK_TWHASH(hash);
     return hash;
 }
 
 SKhash skHash(const void* key)
 {
-    // using the lower 32 bits
     SKhash hash;
-    union Pair {
-        SKuint32 b32[2];
-        SKuint64 b64;
-    } p;
 
-    p.b64 = reinterpret_cast<SKuint64>(key);
-    hash  = p.b32[0];
-
+    hash = (SKhash)((SKuintPtr)(key)) * _SK_INITIAL_FNV;
     _SK_TWHASH(hash);
     return hash;
 }
 
 SKhash skHash(const SKuint64& key)
 {
+
     return skHash((void*)key);
 }
