@@ -61,7 +61,7 @@ public:
     virtual SKsize write(const void* src, SKsize nr) = 0;
     virtual SKsize position(void) const              = 0;
     virtual SKsize size(void) const                  = 0;
-    virtual void   seek(SKint64 offset, SKsize dir)  = 0;
+    virtual bool   seek(SKint64 offset, SKsize dir)  = 0;
 
     SKsize writef(const char* fmt, ...);
 

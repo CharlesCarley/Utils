@@ -37,16 +37,16 @@ public:
     skMemoryStream();
     virtual ~skMemoryStream();
 
-    void   flush(void);
     void   open(Mode mode);
     void   open(const char* path, Mode mode);
     void   open(const skStream& path, Mode mode);
     void   open(const void* data, SKsize sizeInBytes, Mode mode);
+
     void   close(void);
     SKsize read(void* dst, SKsize nr) const;
     SKsize write(const void* src, SKsize nr);
     void   clear(void);
-    void   seek(SKint64 offset, SKsize dir);
+    bool   seek(SKint64 offset, SKsize dir);
     void   reserve(SKsize nr);
 
     SK_INLINE SKsize position(void) const

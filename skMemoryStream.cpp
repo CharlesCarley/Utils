@@ -53,16 +53,10 @@ skMemoryStream::~skMemoryStream()
     m_capacity     = 0;
 }
 
-void skMemoryStream::flush(void)
-{
-}
-
 void skMemoryStream::open(skStream::Mode mode)
 {
     m_mode = mode;
 }
-
-
 
 void skMemoryStream::open(const char* path, skStream::Mode mode)
 {
@@ -81,8 +75,6 @@ void skMemoryStream::open(const skStream& cpy, skStream::Mode mode)
         m_mode = mode;
     }
 }
-
-
 
 void skMemoryStream::open(const void* buffer, SKsize size, skStream::Mode mode)
 {
@@ -113,8 +105,11 @@ void skMemoryStream::close(void)
         m_buffer[0] = 0;
 }
 
-void skMemoryStream::seek(SKint64 offset, SKsize dir)
+bool skMemoryStream::seek(SKint64 offset, SKsize dir)
 {
+    if (!m_buffer || m_size == 0)
+        return false;
+ 
     if (dir == SEEK_SET)
         m_pos = skClamp<SKsize>((SKsize)offset, 0, m_size);
     else if (dir == SEEK_CUR)
@@ -123,9 +118,9 @@ void skMemoryStream::seek(SKint64 offset, SKsize dir)
         m_pos = m_size;
     else
         printf("Invalid direction: skMemoryStream::seek, position was not changed\n");
+    
+    return true;
 }
-
-
 
 SKsize skMemoryStream::read(void* dest, SKsize nr) const
 {
@@ -169,7 +164,6 @@ SKsize skMemoryStream::write(const void* src, SKsize nr)
     return nr;
 }
 
-
 void skMemoryStream::reserve(SKsize nr)
 {
     if (m_capacity < nr)
@@ -180,7 +174,6 @@ void skMemoryStream::reserve(SKsize nr)
             skMemcpy(buf, m_buffer, m_size);
             delete[] m_buffer;
         }
-
         m_buffer         = buf;
         m_buffer[m_size] = 0;
         m_capacity       = nr;

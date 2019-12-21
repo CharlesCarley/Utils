@@ -46,8 +46,7 @@ public:
     SKsize write(const void* src, SKsize nr);
     SKsize position(void) const;
     SKsize size(void) const;
-    void   seek(SKint64 offs, SKsize dir);
-
+    bool   seek(SKint64 offs, SKsize dir);
 
     SK_INLINE bool isOpen(void) const
     {
