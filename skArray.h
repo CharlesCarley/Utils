@@ -75,6 +75,11 @@ public:
     {
         if (this->m_size + 1 <= this->m_alloc.limit)
         {
+            // If the size of the array is known ahead of time
+            // and the data is reserved before pushing any elements. 
+            // The reserved size should be plus one. 
+            // This needs to know that the next element to 
+            // push will not overflow the array.
             if (this->m_size + 1 > this->m_capacity)
             {
                 this->reserve(this->m_size == 0 ? SKInitalCap : this->m_size * 2);

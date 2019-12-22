@@ -62,7 +62,6 @@ void skFileStream::open(const char* path, Mode mode)
 
 void skFileStream::close(void)
 {
-
     if (m_handle)
         fclose(static_cast<FILE*>(m_handle));
 
@@ -70,9 +69,9 @@ void skFileStream::close(void)
     m_mode   = NO_INPUT;
 }
 
+
 bool skFileStream::eof(void) const
 {
-
     if (!isOpen())
         return true;
     return feof(static_cast<FILE*>(m_handle));
@@ -80,7 +79,6 @@ bool skFileStream::eof(void) const
 
 SKsize skFileStream::read(void* dst, SKsize nr) const
 {
-    
     if (m_mode == WRITE || dst == 0 || !isOpen())
         return 0;
 
@@ -103,12 +101,13 @@ bool skFileStream::seek(SKint64 offs, SKsize dir)
 
     if (fseek(static_cast<FILE*>(m_handle), (long)offs, way) == 0)
         return true;
+
     return false;
 }
 
+
 SKsize skFileStream::write(const void* src, SKsize nr)
 {
-
     if (m_mode == READ || !isOpen() || !src || nr <= 0)
         return 0;
     return fwrite(src, 1, nr, static_cast<FILE*>(m_handle));

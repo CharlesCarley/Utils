@@ -37,10 +37,9 @@ public:
     skFileStream();
     virtual ~skFileStream();
 
-    void flush(void);
-    void open(const char* path, Mode mode);
-    void close(void);
-
+    void   flush(void);
+    void   open(const char* path, Mode mode);
+    void   close(void);
     bool   eof(void) const;
     SKsize read(void* dst, SKsize nr) const;
     SKsize write(const void* src, SKsize nr);
@@ -48,15 +47,15 @@ public:
     SKsize size(void) const;
     bool   seek(SKint64 offs, SKsize dir);
 
+
     SK_INLINE bool isOpen(void) const
     {
         return m_mode != NO_INPUT && m_handle != 0;
     }
 
-
 private:
-    Handle         m_handle;
-    SKint32        m_mode;
+    Handle  m_handle;
+    SKint32 m_mode;
 };
 
 #endif  //_skFileStream_h_

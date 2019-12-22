@@ -271,8 +271,10 @@ public:
     {
         if (m_capacity < capacity)
         {
-            capacity = skMin<SKuint32>(capacity, m_alloc.limit);
-
+            // This is using capacity plus one in order to reserve 
+            // and then push up to the max without expanding the 
+            // data. One more element after that will cause the expansion.
+            capacity = skMin<SKuint32>(capacity+1, m_alloc.limit);
             if (m_data)
             {
                 m_data     = m_alloc.array_reallocate(m_data, capacity, m_size);
