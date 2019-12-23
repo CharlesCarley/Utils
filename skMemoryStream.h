@@ -97,8 +97,8 @@ public:
     void     readInt16(SKuint16& out) const;
     void     readInt32(SKuint32& out) const;
     void     readInt64(SKuint64& out) const;
-    void     readVaryingInt(SKintPtr& out) const;
-    SKintPtr getVaryingInt() const;
+    void     readVaryingInt(SKsize& out) const;
+    SKsize   getVaryingInt() const;
 
 
     // Reads up to the size of the destination buffer (destLen)

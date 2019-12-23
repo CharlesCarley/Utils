@@ -237,69 +237,50 @@ void skMemoryStream::readInt8(SKuint8& out) const
 {
     if (m_mode != skStream::WRITE && isValidStream(2))
         out = m_data[m_pos++];
-    else
-        out = 0;
 }
 
 void skMemoryStream::readInt16(SKuint16& out) const
 {
     if (m_mode != skStream::WRITE && isValidStream(2))
     {
-        SKuint16* sp = (SKuint16*)&m_data[m_pos];
-
-        out = (*sp);
+        out = (*((SKuint16*)addressAtPosition()));
         m_pos += 2;
     }
-    else
-        out = 0;
 }
 
 void skMemoryStream::readInt32(SKuint32& out) const
 {
     if (m_mode != skStream::WRITE && isValidStream(4))
     {
-        SKuint32* sp = (SKuint32*)&m_data[m_pos];
-
-        out = (*sp);
+        out = (*((SKuint32*)addressAtPosition()));
         m_pos += 4;
     }
-    else
-        out = 0;
 }
 
 void skMemoryStream::readInt64(SKuint64& out) const
 {
     if (m_mode != skStream::WRITE && isValidStream(8))
     {
-        SKuint64* sp = (SKuint64*)&m_data[m_pos];
-
-        out = (*sp);
+        out = (*((SKuint64*)addressAtPosition()));
         m_pos += 8;
     }
-    else
-        out = 0;
 }
 
-void skMemoryStream::readVaryingInt(SKintPtr& out) const
+void skMemoryStream::readVaryingInt(SKsize& out) const
 {
     if (m_mode != skStream::WRITE && isValidStream(sizeof(SKsize)))
     {
-        SKintPtr* sp = (SKintPtr*)&m_data[m_pos];
-
-        out = (*sp);
+        out = (*((SKsize*)addressAtPosition()));
+        m_pos += sizeof(SKsize);
     }
-    else
-        out = 0;
 }
 
-SKintPtr skMemoryStream::getVaryingInt() const
+
+SKsize skMemoryStream::getVaryingInt() const
 {
     SKsize out = SK_NPOS;
     if (m_mode != skStream::WRITE && isValidStream(sizeof(SKsize)))
-    {
-        SKintPtr* sp = (SKintPtr*)&m_data[m_pos];
-        out          = (*sp);
-    }
+        out = ((SKsize)addressAtPosition());
     return out;
 }
 
@@ -312,8 +293,8 @@ SKsize skMemoryStream::seekString() const
         SKsize os = m_pos;
         while (m_pos < m_size && m_data[m_pos])
             m_pos++;
-
-        ++m_pos;
+        if (!m_data[m_pos])
+            ++m_pos;
         bs = m_pos - os;
     }
     return bs;
@@ -324,17 +305,13 @@ void skMemoryStream::readString(SKbyte* dest, SKuint32 destLen) const
 {
     if (m_mode != skStream::WRITE && m_data && destLen > 0)
     {
-        SKsize initial = m_pos;
+        SKsize oldLoc = m_pos;
+        SKsize i = oldLoc, j = 0;
 
-        SKsize i = initial, j = 0;
-        while (i < m_size &&
-               j < destLen && m_data[i] != '\0')
+        while (i < m_size && j < destLen && m_data[i])
             dest[j++] = m_data[i++];
-
-        if (m_data[i] == '\0')
-            ++i;
-
+        ++i;
         dest[j < destLen ? j : destLen - 1] = 0;
-        m_pos += i - initial;
+        m_pos += (i - oldLoc);
     }
 }
