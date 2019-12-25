@@ -31,14 +31,10 @@
 class skFileStream : public skStream
 {
 public:
-    typedef void* Handle;
-
-public:
     skFileStream();
     virtual ~skFileStream();
 
-    void   flush(void);
-    void   open(const char* path, Mode mode);
+    void   open(const char* path, int mode);
     void   close(void);
     bool   eof(void) const;
     SKsize read(void* dst, SKsize nr) const;
@@ -48,14 +44,14 @@ public:
     bool   seek(SKint64 offs, SKsize dir);
 
 
-    SK_INLINE bool isOpen(void) const
+    inline bool isOpen(void) const
     {
-        return m_mode != NO_INPUT && m_handle != 0;
+        return m_handle != 0;
     }
 
 private:
-    Handle  m_handle;
-    SKint32 m_mode;
+
+    void*   m_handle;
 };
 
 #endif  //_skFileStream_h_

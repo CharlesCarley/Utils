@@ -30,8 +30,7 @@
 
 
 skFileStream::skFileStream() :
-    m_handle(0),
-    m_mode(NO_INPUT)
+    m_handle(0)
 {
 }
 
@@ -40,100 +39,108 @@ skFileStream::~skFileStream()
     skFileStream::close();
 }
 
-void skFileStream::flush(void)
+void skFileStream::open(const char* path, int mode)
 {
-    if (m_mode == WRITE && m_handle)
-        fflush(static_cast<FILE*>(m_handle));
-}
+    if (path)
+    {
+        if (isOpen())
+            close();
 
-void skFileStream::open(const char* path, Mode mode)
-{
-
-    if (mode == NO_INPUT || !path)
-        return;
-
-    if (m_mode != NO_INPUT) 
-        close();
-
-    m_handle = fopen(path, mode == READ ? "rb" : mode == WRITE_TEXT ? "w" : "wb");
-    m_mode   = m_handle != 0 ? mode : NO_INPUT;
+        m_mode = mode;
+        if (m_mode == READ)
+            m_handle = fopen(path, "rb");
+        else if (mode == WRITE)
+            m_handle = fopen(path, "wb");
+        else if (m_mode == READ_TEXT)
+            m_handle = fopen(path, "r");
+        else if (mode == WRITE_TEXT)
+            m_handle = fopen(path, "w");
+        else
+            m_mode = SK_NPOS32;
+    }
+    else
+        printf("Invalid path name.\n");
 }
 
 
 void skFileStream::close(void)
 {
     if (m_handle)
+    {
         fclose(static_cast<FILE*>(m_handle));
-
-    m_handle = 0;
-    m_mode   = NO_INPUT;
+        m_handle = 0;
+    }
+    m_mode = SK_NPOS32;
 }
+
 
 
 bool skFileStream::eof(void) const
 {
     if (!isOpen())
         return true;
+
     return feof(static_cast<FILE*>(m_handle));
 }
 
 SKsize skFileStream::read(void* dst, SKsize nr) const
 {
-    if (m_mode == WRITE || dst == 0 || !isOpen())
-        return 0;
+    if (!dst  || !canRead() || !isOpen())
+        return SK_NPOS;
 
-	return fread(dst, 1, nr, static_cast<FILE*>(m_handle));
+    return fread(dst, 1, nr, static_cast<FILE*>(m_handle));
 }
 
 
 bool skFileStream::seek(SKint64 offs, SKsize dir)
 {
-    if (!isOpen() || offs == npos)
-        return false;
+    bool result = isOpen();
+    if (result && offs < SK_NPOS)
+    {
+        long way;
+        if (dir == SEEK_END)
+            way = SEEK_END;
+        else if (dir == SEEK_CUR)
+            way = SEEK_CUR;
+        else
+            way = SEEK_SET;
 
-    long way;
-    if (dir == SEEK_END)
-        way = SEEK_END;
-    else if (dir == SEEK_CUR)
-        way = SEEK_CUR;
-    else
-        way = SEEK_SET;
-
-    if (fseek(static_cast<FILE*>(m_handle), (long)offs, way) == 0)
-        return true;
-
-    return false;
+        result = fseek(static_cast<FILE*>(m_handle), (long)offs, way) == 0;
+    }
+    return result;
 }
 
 
 SKsize skFileStream::write(const void* src, SKsize nr)
 {
-    if (m_mode == READ || !isOpen() || !src || nr <= 0)
-        return 0;
+    if (!src || nr <=0 || !isOpen() || !canWrite())
+        return SK_NPOS;
+
     return fwrite(src, 1, nr, static_cast<FILE*>(m_handle));
 }
 
+
 SKsize skFileStream::position(void) const
 {
-    return isOpen() ? (SKsize) ftell(static_cast<FILE*>(m_handle)) : npos;
+    return isOpen() ? (SKsize)ftell(static_cast<FILE*>(m_handle)) : SK_NPOS;
 }
+
 
 SKsize skFileStream::size(void) const
 {
-    SKsize size = npos;
+    SKsize size = SK_NPOS;
+
     if (isOpen())
     {
-        FILE* fp = static_cast<FILE*>(m_handle);
-
-        long loc = ftell(fp);
+        FILE* fp  = static_cast<FILE*>(m_handle);
+        long  loc = ftell(fp);
         fseek(fp, 0L, SEEK_END);
-
         size = (SKsize)ftell(fp);
-
         fseek(fp, loc, SEEK_SET);
     }
     return size;
 }
+
 
 SKsize skStream::writef(const char* fmt, ...)
 {

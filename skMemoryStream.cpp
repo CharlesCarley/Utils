@@ -36,41 +36,28 @@ skMemoryStream::skMemoryStream() :
     m_size(0),
     m_capacity(0),
     m_initialOffset(0),
-    m_mode(0),
     m_isExternal(false)
 {
 }
-
-
 
 skMemoryStream::~skMemoryStream()
 {
     clear();
 }
 
-void skMemoryStream::open(skStream::Mode mode)
-{
-    m_initialOffset = 0;
-    m_isExternal    = false;
-    m_size          = 0;
-    m_capacity      = 0;
-    m_pos           = 0;
-    m_mode          = mode;
-}
 
-
-void skMemoryStream::open(const char* path, skStream::Mode mode)
+void skMemoryStream::open(const char* path, int mode)
 {
     skFileStream fs;
-    fs.open(path, skStream::READ);
+    fs.open(path, READ);
 
     if (fs.isOpen())
         open(fs, mode);
 }
 
-void skMemoryStream::open(const skStream& cpy, skStream::Mode mode)
+void skMemoryStream::open(const skStream& other, int mode)
 {
-    if (cpy.isOpen())
+    if (other.isOpen())
     {
         m_initialOffset = 0;
         m_isExternal    = false;
@@ -81,14 +68,14 @@ void skMemoryStream::open(const skStream& cpy, skStream::Mode mode)
 
         // FIXME: this should dump the contents
         // of one stream to another.
-
-        // cpy.write( *this );
+        // other.write( *this );
     }
 }
 
-void skMemoryStream::open(const void* data, SKsize sizeInBytes, skStream::Mode mode)
+
+void skMemoryStream::open(const void* data, SKsize sizeInBytes, int mode)
 {
-    if (data && sizeInBytes > 0 && sizeInBytes != npos)
+    if (data && sizeInBytes > 0 && sizeInBytes != SK_NPOS)
     {
         m_pos           = 0;
         m_capacity      = 0;
@@ -106,17 +93,17 @@ void skMemoryStream::open(const void* data, SKsize sizeInBytes, skStream::Mode m
 
 void skMemoryStream::open(const void* data, SKsize sizeInBytes, SKsize posInData, bool externalData)
 {
-    if (data && sizeInBytes > 0 && sizeInBytes != npos)
+    if (data && sizeInBytes > 0 && sizeInBytes != SK_NPOS)
     {
         if (m_data)
             clear();
+
         m_mode = skStream::READ;
         m_size = sizeInBytes;
         m_pos  = skMin(posInData, m_size);
+        m_data = (SKbyte*)data;
 
-        m_data     = (SKbyte*)data;
-        m_capacity = sizeInBytes;
-
+        m_capacity      = sizeInBytes;
         m_isExternal    = true;
         m_initialOffset = posInData;
     }
@@ -161,50 +148,54 @@ bool skMemoryStream::seek(SKint64 offset, SKsize dir)
         m_pos = skClamp<SKsize>(m_pos + (SKsize)offset, 0, m_size);
     else if (dir == SEEK_END)
         m_pos = m_size;
-    else
-        printf("Invalid direction: skMemoryStream::seek, position was not changed\n");
+
     return true;
 }
 
 SKsize skMemoryStream::read(void* dest, SKsize nr) const
 {
-    if (m_mode == skStream::WRITE)
-        return npos;
+    if (!canRead() || !dest || !isOpen())
+        return SK_NPOS;
 
-    if (m_pos > m_size)
-        return 0;
+    if (m_pos < m_size)
+    {
+        // trim off the excess.
+        if (m_size - m_pos < nr)
+            nr = m_size - m_pos;
 
-    if (!dest || !m_data)
-        return 0;
+        char* cp = (char*)dest;
+        char* op = (char*)&m_data[m_pos];
+        skMemcpy(cp, op, nr);
 
-    if ((m_size - m_pos) < nr)
-        nr = m_size - m_pos;
-
-    char* cp = (char*)dest;
-    char* op = (char*)&m_data[m_pos];
-    skMemcpy(cp, op, nr);
-    m_pos += nr;
-    return nr;
+        m_pos += nr;
+        return nr;
+    }
+    return 0;
 }
 
 SKsize skMemoryStream::write(const void* src, SKsize nr)
 {
-    if (m_mode == skStream::READ || !src)
-        return npos;
+    if (!canWrite() || !src)
+        return SK_NPOS;
 
-    if (m_pos > m_size)
-        return 0;
+    if (m_pos < m_size)
+    {
+        if (m_data == nullptr)
+        {
+            m_pos = 0;
+            reserve(m_pos + nr);
+        }
+        else if (m_pos + nr > m_capacity)
+            reserve(m_pos + (nr > 1024 ? nr : nr + 1024));
 
-    if (m_data == 0)
-        reserve(m_pos + (nr));
-    else if (m_pos + nr > m_capacity)
-        reserve(m_pos + (nr > 1024 ? nr : nr + 1024));
-
-    char* cp = &m_data[m_pos];
-    skMemcpy(cp, (char*)src, nr);
-
-    m_pos += nr;
-    m_size += nr;
+        if (m_data != nullptr)
+        {
+            char* cp = &m_data[m_pos];
+            skMemcpy(cp, (char*)src, nr);
+            m_pos += nr;
+            m_size += nr;
+        }
+    }
     return nr;
 }
 

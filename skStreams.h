@@ -33,19 +33,15 @@ class skStream
 public:
     enum Mode
     {
-        NO_INPUT = 0,
         READ,       //!< Opens for reading binary data
         READ_TEXT,  //!< Opens for reading in text mode
         WRITE,      //!< Opens for writing binary data
         WRITE_TEXT  //!< Open in text mode
     };
 
-
-    const SKsize npos = -1;
-
 public:
-   
-    skStream()
+    skStream() :
+        m_mode(-1)
     {
     }
 
@@ -53,15 +49,27 @@ public:
     {
     }
 
-    virtual void   open(const char* path, Mode mode) = 0;
-    virtual void   close(void)                       = 0;
-    virtual bool   isOpen(void) const                = 0;
-    virtual bool   eof(void) const                   = 0;
-    virtual SKsize read(void* dst, SKsize nr) const  = 0;
+    virtual void open(const char* path, int mode) = 0;
+    virtual void close(void)                      = 0;
+    virtual bool isOpen(void) const               = 0;
+    virtual bool eof(void) const                  = 0;
+
+    // return SK_NPOS on error or the number of bytes read
+    virtual SKsize read(void* dst, SKsize nr) const = 0;
+
+    // return SK_NPOS on error or the number of bytes written
     virtual SKsize write(const void* src, SKsize nr) = 0;
-    virtual SKsize position(void) const              = 0;
-    virtual SKsize size(void) const                  = 0;
-    virtual bool   seek(SKint64 offset, SKsize dir)  = 0;
+
+    virtual bool seek(SKint64 offset, SKsize dir) = 0;
+
+
+    // returns the current position indicator
+    virtual SKsize position(void) const = 0;
+
+    // returns the size of the file. 
+    // Note that, some streams may not know the total size up front.
+    virtual SKsize size(void) const = 0;
+
 
     SKsize writef(const char* fmt, ...);
 
@@ -70,6 +78,21 @@ public:
     {
         // not all streams need to preallocate memory
     }
+
+
+    inline bool canRead() const
+    {
+        return m_mode == READ || m_mode == READ_TEXT;
+    }
+
+    inline bool canWrite() const
+    {
+        return m_mode == WRITE || m_mode == WRITE_TEXT;
+    }
+
+
+protected:
+    SKint32 m_mode;
 };
 
 #endif  //_skStreams_h_

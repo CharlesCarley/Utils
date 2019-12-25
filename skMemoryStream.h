@@ -34,11 +34,9 @@ public:
     skMemoryStream();
     virtual ~skMemoryStream();
 
-    void   open(Mode mode);
-    void   open(const char* path, Mode mode);
-    void   open(const skStream& path, Mode mode);
-    void   open(const void* data, SKsize sizeInBytes, Mode mode);
-
+    void open(const char* path, int mode);
+    void open(const skStream& other, int mode);
+    void open(const void* data, SKsize sizeInBytes, int mode);
 
     // Open the stream from an external data source.
     // The default behavior of this class is to clone the data
@@ -47,7 +45,6 @@ public:
     // but provide the same functionality.
     void open(const void* data, SKsize sizeInBytes, SKsize posInData, bool externalData);
 
-
     void   close(void);
     SKsize read(void* dst, SKsize nr) const;
     SKsize write(const void* src, SKsize nr);
@@ -55,51 +52,49 @@ public:
     bool   seek(SKint64 offset, SKsize dir);
     void   reserve(SKsize nr);
 
-    SK_INLINE SKsize position(void) const
+    inline SKsize position(void) const
     {
         return m_pos;
     }
 
-    SK_INLINE SKsize size(void) const
+    inline SKsize size(void) const
     {
         return m_size;
     }
 
-    SK_INLINE bool isOpen(void) const
+    inline bool isOpen(void) const
     {
         return m_data != 0;
     }
 
-    SK_INLINE bool eof(void) const
+    inline bool eof(void) const
     {
-        return m_pos != npos;
+        return m_pos != SK_NPOS;
     }
 
-    SK_INLINE SKbyte* ptr()
+    inline SKbyte* ptr()
     {
         return m_data;
     }
 
-    SK_INLINE const SKbyte* ptr() const
+    inline const SKbyte* ptr() const
     {
         return m_data;
     }
 
     SKbyte* addressAtPosition() const
     {
-        if (m_pos < m_size)
+        if (m_pos < m_size && m_data && m_size > 0)
             return &m_data[m_pos];
         return nullptr;
     }
 
-
-    void     readInt8(SKuint8& out) const;
-    void     readInt16(SKuint16& out) const;
-    void     readInt32(SKuint32& out) const;
-    void     readInt64(SKuint64& out) const;
-    void     readVaryingInt(SKsize& out) const;
-    SKsize   getVaryingInt() const;
-
+    void   readInt8(SKuint8& out) const;
+    void   readInt16(SKuint16& out) const;
+    void   readInt32(SKuint32& out) const;
+    void   readInt64(SKuint64& out) const;
+    void   readVaryingInt(SKsize& out) const;
+    SKsize getVaryingInt() const;
 
     // Reads up to the size of the destination buffer (destLen)
     // or a null terminating character.
@@ -109,7 +104,7 @@ public:
     // Seeks the current position to the next location
     // after the null terminator, or to the end of the stream,
     // which ever comes first.
-    // returns 0 if an error occurs, and the total number
+    // returns zero if an error occurs, and the total number
     // of bytes scanned on success.
     // Access to the current string can be obtained by 
     // calling: 
@@ -120,15 +115,10 @@ public:
     SKsize seekString() const;
 
 private:
-    SKbyte* m_data;
-
-    // This needs to be accessible in (read () const)
-    // TODO: find code where const skMemoryStream& is calling read
+    SKbyte*        m_data;
     mutable SKsize m_pos;
-
-    SKsize m_size, m_capacity, m_initialOffset;
-    int    m_mode;
-    bool   m_isExternal;
+    SKsize         m_size, m_capacity, m_initialOffset;
+    bool           m_isExternal;
 
     bool isValidStream(int offs) const;
 };
