@@ -31,7 +31,7 @@
 class skMemoryStream : public skStream
 {
 public:
-    skMemoryStream();
+    skMemoryStream(int mode = -1);
     virtual ~skMemoryStream();
 
     void open(const char* path, int mode);

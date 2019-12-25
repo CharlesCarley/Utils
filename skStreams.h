@@ -33,6 +33,7 @@ class skStream
 public:
     enum Mode
     {
+        UNDEFINED = -1,
         READ,       //!< Opens for reading binary data
         READ_TEXT,  //!< Opens for reading in text mode
         WRITE,      //!< Opens for writing binary data
@@ -41,7 +42,7 @@ public:
 
 public:
     skStream() :
-        m_mode(-1)
+        m_mode(UNDEFINED)
     {
     }
 

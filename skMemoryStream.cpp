@@ -30,7 +30,7 @@
 
 
 
-skMemoryStream::skMemoryStream() :
+skMemoryStream::skMemoryStream(int mode) :
     m_data(0),
     m_pos(0),
     m_size(0),
@@ -38,7 +38,9 @@ skMemoryStream::skMemoryStream() :
     m_initialOffset(0),
     m_isExternal(false)
 {
+    m_mode = mode;
 }
+
 
 skMemoryStream::~skMemoryStream()
 {
@@ -178,23 +180,20 @@ SKsize skMemoryStream::write(const void* src, SKsize nr)
     if (!canWrite() || !src)
         return SK_NPOS;
 
-    if (m_pos < m_size)
+    if (m_data == nullptr)
     {
-        if (m_data == nullptr)
-        {
-            m_pos = 0;
-            reserve(m_pos + nr);
-        }
-        else if (m_pos + nr > m_capacity)
-            reserve(m_pos + (nr > 1024 ? nr : nr + 1024));
+        m_pos = 0;
+        reserve(m_pos + nr);
+    }
+    else if (m_pos + nr > m_capacity)
+        reserve(m_pos + (nr > 1024 ? nr : nr + 1024));
 
-        if (m_data != nullptr)
-        {
-            char* cp = &m_data[m_pos];
-            skMemcpy(cp, (char*)src, nr);
-            m_pos += nr;
-            m_size += nr;
-        }
+    if (m_data != nullptr)
+    {
+        char* cp = &m_data[m_pos];
+        skMemcpy(cp, (char*)src, nr);
+        m_pos += nr;
+        m_size += nr;
     }
     return nr;
 }
