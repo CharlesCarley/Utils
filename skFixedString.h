@@ -28,6 +28,8 @@
 
 #include "Config/skConfig.h"
 #include "Utils/skArray.h"
+#include <string.h>
+
 
 template <const SKuint16 L>
 class skFixedString

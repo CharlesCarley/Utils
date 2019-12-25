@@ -318,17 +318,6 @@ public:
         return m_size == 0;
     }
 
-    
-    bool equals(SelfType& rhs) const
-    {
-        if (rhs.size() != size())
-            return false;
-        if (empty() && rhs.empty())
-            return true;
-
-        return ::memcmp(m_data, rhs.m_data, sizeof(T) * m_size) == 0;
-    }
-
 protected:
 
     skArrayBase() :
