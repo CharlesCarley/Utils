@@ -9,6 +9,6 @@ jobs:
     steps:
      - uses: actions/checkout@v2
      - name: Configure
-       run: cmake
+       run: cmake .
      - name: Make
        run: make
