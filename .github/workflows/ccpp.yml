@@ -9,6 +9,6 @@ jobs:
     steps:
      - uses: actions/checkout@v2
      - name: Configure
-       run: cmake .
+       run: cmake . -DUtils_BUILD_TESTS=ON
      - name: Make
        run: make
