@@ -200,7 +200,7 @@ SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const lo
     if (!tval)
     {
         ::memset(buffer, 0, bufSize);
-        return 0;
+        return 0; 
     }
 
 

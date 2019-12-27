@@ -47,7 +47,11 @@ extern SKulong skGetMicroseconds(void);
 extern SKulong skGetTickCount(void);
 extern void    skSleep(SKuint32 ms);
 
+
+// Fills the destination buffer up to bufSize.
+// It internally passes fmt to strftime(http://www.cplusplus.com/reference/ctime/strftime/)
 extern SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt);
 extern SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const long long &timestamp);
+
 
 #endif  //_skTimer_h_
