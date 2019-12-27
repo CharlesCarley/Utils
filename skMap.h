@@ -33,10 +33,9 @@ template <typename T, typename SizeType=SKsize>
 class skHashTableIncrementIterator : public skPointerIncrementIterator<T, SizeType>
 {
 public:
-    typedef typename T::PairValueType PairValueType;
-    typedef typename T::PairKeyType   PairKeyType;
-    typedef typename T::PointerType   PointerType;
-
+    typedef typename T::PairValueType               PairValueType;
+    typedef typename T::PairKeyType                 PairKeyType;
+    typedef typename T::PointerType                 PointerType;
     typedef skPointerIncrementIterator<T, SizeType> BaseType;
 
     
@@ -84,10 +83,9 @@ template <typename T, typename SizeType = SKsize>
 class skHashTableDecrementIterator : public skPointerDecrementIterator<T, SizeType>
 {
 public:
-    typedef typename T::PairValueType PairValueType;
-    typedef typename T::PairKeyType   PairKeyType;
-    typedef typename T::PointerType   PointerType;
-    typedef typename T::SizeType      SizeType;
+    typedef typename T::PairValueType               PairValueType;
+    typedef typename T::PairKeyType                 PairKeyType;
+    typedef typename T::PointerType                 PointerType;
     typedef skPointerDecrementIterator<T, SizeType> BaseType;
 
 public:
