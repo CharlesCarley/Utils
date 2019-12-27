@@ -29,99 +29,104 @@
 #include "skArray.h"
 #include "skHash.h"
 
-template <typename T>
-class skHashTableIncrementIterator : public skPointerIncrementIterator<T>
+template <typename T, typename SizeType=SKsize>
+class skHashTableIncrementIterator : public skPointerIncrementIterator<T, SizeType>
 {
 public:
     typedef typename T::PairValueType PairValueType;
     typedef typename T::PairKeyType   PairKeyType;
     typedef typename T::PointerType   PointerType;
 
+    typedef skPointerIncrementIterator<T, SizeType> BaseType;
+
+    
 public:
     skHashTableIncrementIterator()
     {
     }
 
-    skHashTableIncrementIterator(PointerType begin, SKsize size) :
-        skPointerIncrementIterator<T>(begin, size)
+    skHashTableIncrementIterator(PointerType begin, SizeType size) :
+        BaseType(begin, size)
     {
     }
 
     explicit skHashTableIncrementIterator(T& v) :
-        skPointerIncrementIterator<T>(v)
+        BaseType(v)
     {
     }
 
     SK_INLINE PairKeyType& peekNextKey(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*skPointerIncrementIterator<T>::m_beg).first;
+        return (*BaseType::m_beg).first;
     }
 
     SK_INLINE PairValueType& peekNextValue(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*skPointerIncrementIterator<T>::m_beg).second;
+        return (*BaseType::m_beg).second;
     }
 
     SK_INLINE const PairKeyType& peekNextKey(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*skPointerIncrementIterator<T>::m_beg).first;
+        return (*BaseType::m_beg).first;
     }
 
     SK_INLINE const PairValueType& peekNextValue(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*skPointerIncrementIterator<T>::m_beg).second;
+        return (*BaseType::m_beg).second;
     }
 };
 
-template <typename T>
-class skHashTableDecrementIterator : public skPointerDecrementIterator<T>
+template <typename T, typename SizeType = SKsize>
+class skHashTableDecrementIterator : public skPointerDecrementIterator<T, SizeType>
 {
 public:
     typedef typename T::PairValueType PairValueType;
     typedef typename T::PairKeyType   PairKeyType;
     typedef typename T::PointerType   PointerType;
+    typedef typename T::SizeType      SizeType;
+    typedef skPointerDecrementIterator<T, SizeType> BaseType;
 
 public:
     skHashTableDecrementIterator()
     {
     }
 
-    skHashTableDecrementIterator(PointerType begin, SKsize size) :
-        skPointerDecrementIterator<T>(begin, size)
+    skHashTableDecrementIterator(PointerType begin, SizeType size) :
+        BaseType(begin, size)
     {
     }
 
     explicit skHashTableDecrementIterator(T& v) :
-        skPointerDecrementIterator<T>(v)
+        BaseType(v)
     {
     }
 
     SK_INLINE PairKeyType& peekNextKey(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*skPointerDecrementIterator<T>::m_beg).first;
+        return (*BaseType::m_beg).first;
     }
 
     SK_INLINE PairValueType& peekNextValue(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*skPointerDecrementIterator<T>::m_beg).second;
+        return (*BaseType::m_beg).second;
     }
 
     SK_INLINE const PairKeyType& peekNextKey(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*skPointerDecrementIterator<T>::m_beg).first;
+        return (*BaseType::m_beg).first;
     }
 
     SK_INLINE const PairValueType& peekNextValue(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*skPointerDecrementIterator<T>::m_beg).second;
+        return (*BaseType::m_beg).second;
     }
 };
 
@@ -139,9 +144,9 @@ template <typename Key, typename Value>
 class skEntry
 {
 public:
-    Key      first;
-    Value    second;
-    SKhash   hash;
+    Key    first;
+    Value  second;
+    SKhash hash;
 
     skEntry() :
         hash(0)
@@ -183,9 +188,10 @@ public:
     typedef skEntry<Key, Value> Pair;
     SK_DECLARE_TYPE(Pair);
 
-    typedef SKsize*   IndexArray;
-    typedef Key       PairKeyType;
-    typedef Value     PairValueType;
+    typedef SKsize*                  IndexArray;
+    typedef Key                      PairKeyType;
+    typedef Value                    PairValueType;
+    typedef IndexAllocator::SizeType SizeType;
 
     typedef skHashTableIncrementIterator<SelfType>       Iterator;
     typedef const skHashTableIncrementIterator<SelfType> ConstIterator;
@@ -231,7 +237,6 @@ public:
 
     SelfType& operator=(const SelfType& rhs)
     {
-
         if (this != &rhs)
             copy(rhs);
         return *this;
@@ -239,7 +244,6 @@ public:
 
     void clear(void)
     {
-
         m_alloc.array_deallocate(m_bptr, m_capacity);
         m_ialloc.array_deallocate(m_iptr, m_capacity);
         m_ialloc.array_deallocate(m_nptr, m_capacity);
@@ -267,7 +271,7 @@ public:
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
         return m_bptr[i].second;
     }
-    
+
     SK_INLINE const Value& operator[](SKsize i) const
     {
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
@@ -289,7 +293,6 @@ public:
 
     Value* get(const Key& key)
     {
-
         SKsize i = find(key);
         if (i == npos)
             return 0;
@@ -308,7 +311,6 @@ public:
 
     SKsize find(const Key& key) const
     {
-
         if (empty())
             return npos;
 
@@ -324,7 +326,6 @@ public:
 
     bool insert(const Key& key, const Value& val)
     {
-
         if (!empty())
         {
             if (find(key) != npos)
@@ -384,8 +385,8 @@ public:
             return;
         }
 
-        lhash  = m_bptr[lindex].hash & (m_capacity - 1);
-        index  = m_iptr[lhash];
+        lhash = m_bptr[lindex].hash & (m_capacity - 1);
+        index = m_iptr[lhash];
 
         pindex = npos;
         while (index != lindex)
@@ -467,7 +468,6 @@ public:
     }
 
 private:
-
     void _zeroIndices(SKsize from, SKsize to)
     {
         if (to <= 0 || from >= to)
