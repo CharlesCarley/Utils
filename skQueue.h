@@ -221,6 +221,7 @@ public:
     typedef const skQueueIncrementIterator<SelfType> ConstIterator;
     typedef skQueueDecrementIterator<SelfType>       ReverseIterator;
     typedef const skQueueDecrementIterator<SelfType> ConstReverseIterator;
+    typedef typename SelfType::SizeType              SizeType;
 
 private:
     SizeType m_front, m_back;
@@ -285,39 +286,39 @@ public:
 
     ReferenceType dequeue(void)
     {
-        if (m_front >= m_capacity)
+        if (m_front >= this->m_capacity)
             throw(m_front);
 
 
-        ReferenceType returnValue = m_data[m_front];
+        ReferenceType returnValue = this->m_data[m_front];
 
-        m_front = (m_front + 1) % (m_capacity);
-        m_size--;
+        m_front = (m_front + 1) % (this->m_capacity);
+        this->m_size--;
         return returnValue;
     }
 
     SK_INLINE ReferenceType at(SKsize idx)
     {
-        return (*this)[(m_front + idx) % (m_capacity - 1)];
+        return (*this)[(m_front + idx) % (this->m_capacity - 1)];
     }
 
     SK_INLINE ConstReferenceType at(SKsize idx) const
     {
-        return (*this)[(m_front + idx) % (m_capacity - 1)];
+        return (*this)[(m_front + idx) % (this->m_capacity - 1)];
     }
 
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
         SK_ASSERT(m_data);
-        SK_ASSERT(idx != npos && idx < m_capacity);
-        return m_data[(m_front + idx) % (m_capacity - 1)];
+        SK_ASSERT(idx != npos && idx < this->m_capacity);
+        return this->m_data[(m_front + idx) % (this->m_capacity - 1)];
     }
 
     SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
         SK_ASSERT(m_data);
-        SK_ASSERT(idx != npos && idx < m_capacity);
-        return m_data[(m_front + idx) % (m_capacity - 1)];
+        SK_ASSERT(idx != npos && idx < this->m_capacity);
+        return this->m_data[(m_front + idx) % (this->m_capacity - 1)];
     }
 
     SK_INLINE SKsize front(void) const
@@ -332,22 +333,26 @@ public:
 
     SK_INLINE Iterator iterator(void)
     {
-        return m_data && m_size > 0 ? Iterator(m_data, m_size, m_front) : Iterator();
+        return this->m_data && this->m_size > 0 ? 
+            Iterator(this->m_data, this->m_size, m_front) : Iterator();
     }
 
     SK_INLINE ConstIterator iterator(void) const
     {
-        return m_data && m_size > 0 ? ConstIterator(m_data, m_size, m_front) : ConstIterator();
+        return this->m_data && this->m_size > 0 ? 
+            ConstIterator(this->m_data, this->m_size, m_front) : ConstIterator();
     }
 
     SK_INLINE ReverseIterator reverseIterator(void)
     {
-        return m_data && m_size > 0 ? ReverseIterator(m_data, m_size, m_front) : ReverseIterator();
+        return this->m_data && this->m_size > 0 ? 
+            ReverseIterator(this->m_data, this->m_size, m_front) : ReverseIterator();
     }
 
     SK_INLINE ConstReverseIterator reverseIterator(void) const
     {
-        return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size, m_front) : ConstReverseIterator();
+        return this->m_data && this->m_size > 0 ? 
+            ConstReverseIterator(this->m_data, this->m_size, m_front) : ConstReverseIterator();
     }
 };
 

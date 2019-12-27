@@ -65,6 +65,12 @@ set(Utils_HDR
 include_directories(../ .)
 add_library(Utils ${Utils_SRC} ${Utils_HDR})
 
+
+if (Utils_BUILD_TESTS)
+    subdirs(Tests)
+endif()
+
+
 if (USE_FOLDERS)
     set_target_properties(Utils PROPERTIES FOLDER "${FOLDER_NAME}")
 endif()
