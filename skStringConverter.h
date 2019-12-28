@@ -31,7 +31,7 @@
 class skStringConverter
 {
 public:
-    static skString BLANK;
+    static const skString BLANK;
 
 public:
     static void   toString(skString& dest, int v);

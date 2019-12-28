@@ -25,6 +25,8 @@
 */
 #include "Macro.h"
 #include "Utils/skString.h"
+#include "Utils/skStringConverter.h"
+#include "Utils/skHexPrint.h"
 #include "catch/catch.hpp"
 
 #define TEST_CASE_NAME "StringTest"
@@ -39,6 +41,7 @@ TEST_CASE("StringTest_BasicString")
     EXPECT_EQ(b, a);
     EXPECT_EQ(c, a);
 }
+
 
 
 TEST_CASE("StringTest_FindString")
@@ -114,7 +117,8 @@ TEST_CASE("StringTest_SortString")
         int sa = p[i];
         int sb = p[i + 1];
 
-        //printf("STR %c GE %c | (%i, %i)\n", sa, sb, sa, sb);
+        if (DEBUG)
+            printf("STR %c GE %c | (%i, %i)\n", sa, sb, sa, sb);
 
         REQUIRE(sa > sb);
         i += 2;
@@ -128,8 +132,8 @@ TEST_CASE("StringTest_SortString")
     {
         int sa = p[i];
         int sb = p[i + 1];
-        //printf("STR %c LE %c | (%i, %i)\n", sa, sb, sa, sb);
-
+        if (DEBUG)
+            printf("STR %c LE %c | (%i, %i)\n", sa, sb, sa, sb);
         REQUIRE(sa < sb);
         i += 2;
     }
@@ -296,11 +300,13 @@ TEST_CASE("StringTest_EncriptDecript")
         upperBits[i] = (SKuint16)rand() % 65536;
 
     a.encrypt(lowerBits, 4, upperBits, 4);
-    //printf("%s\n", a.c_str());
+    skHexPrint::dumpHex((void*)a.c_str(), 0, a.size());
+
 
 
     a.decrypt(lowerBits, 4, upperBits, 4);
-    //printf("%s\n", a.c_str());
+    skHexPrint::dumpHex((void*)a.c_str(), 0, a.size());
+
     REQUIRE(a == "Caesar cipher variation.");
 }
 
@@ -329,3 +335,29 @@ TEST_CASE("StringTest_HexStringRepr")
     b.fromHex();
     REQUIRE(b == "Hex string representation");
 }
+
+
+TEST_CASE("String_Utils bool")
+{
+    bool test;
+    
+    test = skStringConverter::toBool("Hello World");
+    EXPECT_EQ(false, test);
+
+
+    test = skStringConverter::toBool("true");
+    EXPECT_EQ(true, test);
+
+    test = skStringConverter::toBool("false");
+    EXPECT_EQ(false, test);
+
+    test = skStringConverter::toBool("yes");
+    EXPECT_EQ(true, test);
+
+    test = skStringConverter::toBool("no");
+    EXPECT_EQ(false, test);
+
+    test = skStringConverter::toBool("1");
+    EXPECT_EQ(true, test);
+}
+

@@ -28,13 +28,8 @@
 
 #define Utils_USE_DEBUG_ASSERT 1
 /* #undef Utils_USE_ITERATOR_DEBUG */
-#define Utils_USE_STD_STRING_FUNCS 1
 /* #undef Utils_USE_COMPILER_CHECKS */
 #define Utils_NO_DEBUGGER 1
-
-#ifdef Utils_USE_DEBUG_ASSERT
-#define SID_DEBUG_ASSERT 1
-#endif
 
 #ifdef Utils_USE_STD_STRING_FUNCS
 #define SK_USE_STD_STRING_FUNCS 1
@@ -48,12 +43,8 @@
 #define SK_ITERATOR_DEBUG 1
 #endif
 
-#ifdef Utils_USE_STD_STRING_FUNCTIONS
-#define SK_STD_STRING_FUNC 1
-#endif
 
-
-#if defined(SK_DEBUG_ASSERT) && (defined(DEBUG) || defined(_DEBUG))
+#if defined(Utils_USE_DEBUG_ASSERT) && (defined(DEBUG) || defined(_DEBUG))
 #include "Utils/skAssert.h"
 #define SK_DEBUG 1
 #define SK_ASSERT(x)                                            \

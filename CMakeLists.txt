@@ -47,7 +47,6 @@ set(Utils_HDR
     skRandom.h
     skSort.h
     skStack.h
-    skStackQueue.h
     skStreams.h
     skString.h
     skStringConverter.h

@@ -1,4 +1,3 @@
-option(Utils_USE_STD_STRING_FUNCS  "Use system strlen, strcpy ..." ON)
 option(Utils_USE_DEBUG_ASSERT      "Enable debug asserts" ON)
 option(Utils_USE_ITERATOR_DEBUG    "Enable state checks for iterators" OFF)
 option(Utils_USE_COMPILER_CHECKS   "Enable compile time asserts." OFF)

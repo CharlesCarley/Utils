@@ -52,8 +52,7 @@ void skDebugger::breakProcess(void)
     if (!isDebugger())
         return;
 #if SK_COMPILER == SK_COMPILER_MSVC
-    // asm( "int $3" );
-    _asm int 3;
+    ::DebugBreak();
 #else
     asm("int $3");
 #endif

@@ -193,22 +193,19 @@ SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const lo
     if (!buffer || bufSize == 0 || bufSize > 64 || !fmt)
         return SK_NPOS32;
 
-    SKuint64 bw;
+    SKuint64 bw = 0;
     tm* tval;
     tval = ::localtime((time_t *)&timestamp);
 
-    if (!tval)
+    if (tval)
     {
+        bw = ::strftime(buffer, bufSize, fmt, tval);
+        if (bw != 0 && bw < bufSize)
+            buffer[bw] = 0;
+        else
+            bw = SK_NPOS32;
+    }
+    else
         ::memset(buffer, 0, bufSize);
-        return 0; 
-    }
-
-
-    bw = ::strftime(buffer, bufSize, fmt, tval);
-    if (bw != 0 && bw < bufSize)
-    {
-        buffer[bw] = 0;
-        return (SKuint32)bw;
-    }
-    return SK_NPOS32;
+    return bw;
 }

@@ -62,25 +62,18 @@ public:
 
     static void setPrintFlag(SKuint32 flag);
 
-
-
     // Halts the console and waits for the enter key
     static void pause(void);
 
     // Clears the console
     static void clear(void);
 
-
-
     // Sets the foreground and background color of the console
     static void writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg = CS_BLACK);
-
 
     static bool isDebugger(void);
     static void report(const char* msg, ...);
     static void breakProcess(void);
-
-
 
 private:
     static skConsoleColorSpace m_cacheFore, m_cacheBack;

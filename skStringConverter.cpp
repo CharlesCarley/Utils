@@ -25,7 +25,12 @@
 */
 #include "skStringConverter.h"
 
-skString skStringConverter::BLANK = "";
+
+using namespace skStringUtils;
+
+
+const skString skStringConverter::BLANK = "";
+
 
 void skStringConverter::toString(skString& dest, int v)
 {
@@ -74,6 +79,7 @@ double skStringConverter::toDouble(const skString& src)
 
 bool skStringConverter::toBool(const skString& src)
 {
-    return (skStringUtils::equals(src.c_str(), "true") == 0 || skStringUtils::equals(src.c_str(), "yes") == 0 ||
-            skStringUtils::equals(src.c_str(), "1"));
+    return equalsn(src.c_str(), "true", 4) == 0 ||
+           equalsn(src.c_str(), "yes",  3) == 0 ||
+           equalsn(src.c_str(), "1",    1) == 0;
 }
