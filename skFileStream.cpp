@@ -54,6 +54,7 @@ void skFileStream::open(const char* path, int mode)
     {
         if (isOpen())
             close();
+ 
         m_mode = mode;
         if (m_mode == READ)
             m_handle = fopen(path, "rb");
@@ -69,7 +70,6 @@ void skFileStream::open(const char* path, int mode)
     else
         printf("Invalid path name.\n");
 }
-
 
 void skFileStream::close(void)
 {
@@ -171,16 +171,13 @@ SKsize skStream::writef(const char* fmt, ...)
                 va_start(l2, fmt);
                 s2 = std::vsnprintf(buf, s1+1, fmt, l2);
                 va_end(l2);
-
                 if (s2 > 0)
                 {
                     buf[s2] = 0;
-
                     bw = write(buf, s2);
                 }
                 else
                     printf("vsnprintf returned an error\n");
-
                 free(buf);
             }
             else

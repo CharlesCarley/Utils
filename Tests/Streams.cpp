@@ -26,6 +26,7 @@
 #include "Macro.h"
 #include "catch/catch.hpp"
 #include "Utils/skFileStream.h"
+#include "Utils/skString.h"
 
 
 TEST_CASE("FileStream OpenRead")
@@ -56,4 +57,57 @@ TEST_CASE("FileStream OpenWrite")
     EXPECT_EQ(bw2, fs.size() - bw);
     EXPECT_EQ(bw2, 11);
     EXPECT_EQ(bw*2, fs.position());
+}
+
+
+
+
+TEST_CASE("FileStream WriteF")
+{
+    skFileStream fs("Tests/TestFiles/Test3.txt", skStream::WRITE);
+
+    EXPECT_EQ(true, fs.isOpen());
+    EXPECT_EQ(false, fs.canRead());
+    EXPECT_EQ(true, fs.canWrite());
+    EXPECT_EQ(0, fs.size());
+
+    SKsize bw = fs.writef("Hello %s", "World");
+    EXPECT_EQ(bw, fs.size());
+    EXPECT_EQ(bw, 11);
+    EXPECT_EQ(bw, fs.position());
+    SKsize bw2 = fs.writef("Hello %s", "World");
+    EXPECT_EQ(bw2, fs.size() - bw);
+    EXPECT_EQ(bw2, 11);
+    EXPECT_EQ(bw * 2, fs.position());
+}
+
+
+
+TEST_CASE("FileStream Test3 - Read")
+{
+    skFileStream fs("Tests/TestFiles/Test3.txt", skStream::READ);
+
+    EXPECT_EQ(true, fs.isOpen());
+    EXPECT_EQ(true, fs.canRead());
+    EXPECT_EQ(false, fs.canWrite());
+    EXPECT_EQ(22, fs.size());
+
+    SKsize bw, br;
+    
+    bw = fs.writef("Hello %s", "World");
+    EXPECT_EQ(bw, SK_NPOS);
+
+    bw = fs.write(nullptr, -1);
+    EXPECT_EQ(bw, SK_NPOS);
+    EXPECT_EQ(0, fs.position());
+
+    char block[23];
+    br = fs.read(block, 5);
+    EXPECT_EQ(br, 5);
+    block[br] = 0;
+
+    EXPECT_EQ(skString(block), "Hello");
+
+    br = fs.read(block, SK_NPOS);
+    EXPECT_EQ(22-br, 5);
 }
