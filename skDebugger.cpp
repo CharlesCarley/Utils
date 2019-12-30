@@ -23,17 +23,10 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "Config/skConfig.h"
-
-#if SK_PLATFORM == SK_PLATFORM_WIN32
-#include <conio.h>
-#elif SK_PLATFORM == SK_PLATFORM_LINUX
-#include <sys/select.h>
-#else
-#endif
-
-
 #include "skDebugger.h"
+#include <cstdarg>
+#include <cstdio>
+#include "Config/skConfig.h"
 #include "skPlatformHeaders.h"
 
 
@@ -85,31 +78,37 @@ void skDebugger::setPrintFlag(SKuint32 flag)
 }
 
 
-void skDebugger::report(const char* fmt, ...)
+void skDebugger::report(const char* format, ...)
 {
-    if (!fmt)
-        return;
-
-    va_list lst;
-
-
-    va_start(lst, fmt);
-    int size = skp_printf(Buffer, SK_SBUF_SIZE, fmt, lst);
-    va_end(lst);
-
-    if (size < 0)
-        size = 0;
-
-    if (size > 0 && size < SK_SBUF_SIZE)
+    if (format != nullptr)
     {
-        Buffer[size] = 0;
+        va_list l1;
+        int     s1, s2;
+
+        char* buffer = nullptr;
+
+        va_start(l1, format);
+        s1 = std::vsnprintf(buffer, 0, format, l1);
+        va_end(l1);
+
+        if (s1 > 0)
+        {
+            buffer = (char*)::malloc(s1 + 1);
+            if (buffer)
+            {
+                va_start(l1, format);
+                s2 = std::vsnprintf(buffer, s1+1, format, l1);
+                va_end(l1);
 
 #if SK_COMPILER == SK_COMPILER_MSVC
-        if (skPrintFlags & skDebugger::PF_DEBUG_WINDOW_OUT && IsDebuggerPresent())
-            OutputDebugString(Buffer);
-        else
+                if (skPrintFlags & skDebugger::VS_DBG_OUTPUT_PANEL && IsDebuggerPresent())
+                    OutputDebugString(buffer);
+                else
 #endif
-            puts(Buffer);
+                    fprintf(stdout, buffer);
+                ::free(buffer);
+            }
+        }
     }
 }
 
@@ -198,7 +197,7 @@ unsigned char* skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpac
         break;
     case CS_COLOR_MAX:
     default:
-            break;
+        break;
     }
 
     // leaving out the background color for now...
@@ -211,7 +210,7 @@ unsigned char* skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpac
 
 void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
 {
-    if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) != 0)
+    if ((skPrintFlags & skDebugger::DISABLE_COLOR) != 0)
         return;
 
     if (fg < 0 || fg > CS_COLOR_MAX || bg < 0 || bg > CS_COLOR_MAX ||
@@ -239,7 +238,7 @@ void skDebugger::clear(void)
 {
 #if SK_PLATFORM == SK_PLATFORM_WIN32
     system("cls");
-#elif  SK_PLATFORM == SK_PLATFORM_APPLE
+#elif SK_PLATFORM == SK_PLATFORM_APPLE
     system("clear");
 #elif SK_PLATFORM == SK_PLATFORM_LINUX
     printf("\33c");
@@ -249,7 +248,7 @@ void skDebugger::clear(void)
 
 void skDebugger::pause(void)
 {
-    if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
+    if ((skPrintFlags & skDebugger::DISABLE_COLOR) == 0)
         writeColor(CS_WHITE);
 
     puts("\nPress enter to continue . . .");
@@ -266,7 +265,7 @@ void skDebugger::pause(void)
 
 void skConsolePrint(skConsoleColorSpace fg, const char* fmt, ...)
 {
-    if ((skPrintFlags & skDebugger::PF_DISABLE_COLOR) == 0)
+    if ((skPrintFlags & skDebugger::DISABLE_COLOR) == 0)
         skDebugger::writeColor(fg);
 
     if (!fmt)

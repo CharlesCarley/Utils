@@ -78,7 +78,6 @@ TEST_CASE("StringTest_FormatString")
 {
     skString a = skString::format("%s %s", "Hello", "World");
 
-
     skStringArray spl;
     a.split(spl, " ");
 
@@ -91,11 +90,11 @@ TEST_CASE("StringTest_FormatString")
     REQUIRE(s1eq == true);
 }
 
-
 int STR_Greater(char a, char b)
 {
     return a > b;
 }
+
 int STR_Less(char a, char b)
 {
     return a < b;

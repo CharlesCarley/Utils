@@ -72,7 +72,7 @@ public:
     virtual SKsize size(void) const = 0;
 
 
-    SKsize writef(const char* fmt, ...);
+    SKsize writef(const char* format, ...);
 
 
     virtual void reserve(SKsize nr)

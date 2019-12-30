@@ -194,7 +194,7 @@ SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const lo
         return SK_NPOS32;
 
     SKuint64 bw = 0;
-    tm* tval;
+    tm *     tval;
     tval = ::localtime((time_t *)&timestamp);
 
     if (tval)

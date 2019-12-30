@@ -150,17 +150,17 @@ SKsize skFileStream::size(void) const
 }
 
 
-SKsize skStream::writef(const char* fmt, ...)
+SKsize skStream::writef(const char* format, ...)
 {
     char*   buf = 0;
-    std::va_list l1, l2;
+    std::va_list l1;
     int     s1, s2;
     SKsize  bw = 0;
 
-    if (fmt != nullptr)
+    if (format != nullptr)
     {
-        va_start(l1, fmt);
-        s1 = std::vsnprintf(buf, 0, fmt, l1);
+        va_start(l1, format);
+        s1 = std::vsnprintf(buf, 0, format, l1);
         va_end(l1);
 
         if (s1 > 0)
@@ -168,9 +168,9 @@ SKsize skStream::writef(const char* fmt, ...)
             buf = (char*)::malloc(s1 + 1);
             if (buf)
             {
-                va_start(l2, fmt);
-                s2 = std::vsnprintf(buf, s1+1, fmt, l2);
-                va_end(l2);
+                va_start(l1, format);
+                s2 = std::vsnprintf(buf, s1 + 1, format, l1);
+                va_end(l1);
                 if (s2 > 0)
                 {
                     buf[s2] = 0;
