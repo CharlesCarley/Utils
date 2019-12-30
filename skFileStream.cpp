@@ -23,6 +23,8 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#include <cstdio>
+#include <cstdarg>
 #include "skFileStream.h"
 #include "skMinMax.h"
 #include "skPlatformHeaders.h"
@@ -33,6 +35,13 @@ skFileStream::skFileStream() :
     m_handle(0)
 {
 }
+
+skFileStream::skFileStream(const char* path, int mode) :
+    m_handle(0)
+{
+    open(path, mode);
+}
+
 
 skFileStream::~skFileStream()
 {
@@ -45,7 +54,6 @@ void skFileStream::open(const char* path, int mode)
     {
         if (isOpen())
             close();
-
         m_mode = mode;
         if (m_mode == READ)
             m_handle = fopen(path, "rb");
@@ -85,7 +93,7 @@ bool skFileStream::eof(void) const
 
 SKsize skFileStream::read(void* dst, SKsize nr) const
 {
-    if (!dst  || !canRead() || !isOpen())
+    if (!dst || !canRead() || !isOpen())
         return SK_NPOS;
 
     return fread(dst, 1, nr, static_cast<FILE*>(m_handle));
@@ -113,7 +121,7 @@ bool skFileStream::seek(SKint64 offs, SKsize dir)
 
 SKsize skFileStream::write(const void* src, SKsize nr)
 {
-    if (!src || nr <=0 || !isOpen() || !canWrite())
+    if (!src || nr <= 0 || !isOpen() || !canWrite())
         return SK_NPOS;
 
     return fwrite(src, 1, nr, static_cast<FILE*>(m_handle));
@@ -144,15 +152,40 @@ SKsize skFileStream::size(void) const
 
 SKsize skStream::writef(const char* fmt, ...)
 {
-    char    buf[1025];
-    va_list lst;
-    va_start(lst, fmt);
-    int size = skp_printf(buf, 1024, fmt, lst);
-    va_end(lst);
+    char*   buf = 0;
+    std::va_list l1, l2;
+    int     s1, s2;
+    SKsize  bw = 0;
 
-    if (size < 0)
-        size = 1024;
+    if (fmt != nullptr)
+    {
+        va_start(l1, fmt);
+        s1 = std::vsnprintf(buf, 0, fmt, l1);
+        va_end(l1);
 
-    buf[size] = 0;
-    return write(buf, size);
+        if (s1 > 0)
+        {
+            buf = (char*)::malloc(s1 + 1);
+            if (buf)
+            {
+                va_start(l2, fmt);
+                s2 = std::vsnprintf(buf, s1+1, fmt, l2);
+                va_end(l2);
+
+                if (s2 > 0)
+                {
+                    buf[s2] = 0;
+
+                    bw = write(buf, s2);
+                }
+                else
+                    printf("vsnprintf returned an error\n");
+
+                free(buf);
+            }
+            else
+                printf("Alloc failed: skStream::writef\n");
+        }
+    }
+    return bw;
 }

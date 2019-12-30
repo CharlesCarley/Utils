@@ -22,11 +22,22 @@
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
 set(TargetName UtilsTests)
-file(GLOB SRC *.cpp)
-file(GLOB HDR *.h)
+file(GLOB SRC  *.cpp)
+file(GLOB TST  TestFiles/*.txt)
+file(GLOB HDR  *.h)
 
 
 include_directories(.)
 
-add_executable(${TargetName} catch/catch.hpp ${SRC} ${HDR})
+add_executable(${TargetName} catch/catch.hpp ${SRC} ${HDR} ${TST})
 target_link_libraries(${TargetName} Utils)
+
+if (MSVC)
+    # Relative to the root directory where make is called
+    set_target_properties(
+        ${TargetName} 
+        PROPERTIES 
+        VS_DEBUGGER_WORKING_DIRECTORY 
+        ${Utils_SOURCE_DIR}
+    )
+endif()

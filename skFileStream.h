@@ -32,6 +32,7 @@ class skFileStream : public skStream
 {
 public:
     skFileStream();
+    skFileStream(const char* path, int mode);
     virtual ~skFileStream();
 
     void   open(const char* path, int mode);

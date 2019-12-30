@@ -23,3 +23,37 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#include "Macro.h"
+#include "catch/catch.hpp"
+#include "Utils/skFileStream.h"
+
+
+TEST_CASE("FileStream OpenRead")
+{
+    skFileStream fs("Tests/TestFiles/Test1.txt", skStream::READ);
+
+    EXPECT_EQ(true, fs.isOpen());
+    EXPECT_EQ(true, fs.canRead());
+    EXPECT_EQ(false, fs.canWrite());
+    EXPECT_EQ(11, fs.size());
+}
+
+
+TEST_CASE("FileStream OpenWrite")
+{
+    skFileStream fs("Tests/TestFiles/Test2.txt", skStream::WRITE);
+
+    EXPECT_EQ(true, fs.isOpen());
+    EXPECT_EQ(false, fs.canRead());
+    EXPECT_EQ(true, fs.canWrite());
+    EXPECT_EQ(0, fs.size());
+
+    SKsize bw = fs.writef("Hello World");
+    EXPECT_EQ(bw, fs.size());
+    EXPECT_EQ(bw, 11);
+    EXPECT_EQ(bw, fs.position());
+    SKsize bw2 = fs.writef("Hello World");
+    EXPECT_EQ(bw2, fs.size() - bw);
+    EXPECT_EQ(bw2, 11);
+    EXPECT_EQ(bw*2, fs.position());
+}
