@@ -27,8 +27,9 @@
 #define _skFixedString_h_
 
 #include <string.h>
-#include "Config/skConfig.h"
+#include "Utils/Config/skConfig.h"
 #include "Utils/skArray.h"
+#include "Utils/skHash.h"
 
 
 template <const SKuint16 L>

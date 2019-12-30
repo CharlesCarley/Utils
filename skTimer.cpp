@@ -207,5 +207,5 @@ SKuint32 skGetTimeString(char *buffer, SKsize bufSize, const char *fmt, const lo
     }
     else
         ::memset(buffer, 0, bufSize);
-    return bw;
+    return (SKuint32)bw;
 }
