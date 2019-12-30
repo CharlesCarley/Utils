@@ -21,12 +21,12 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
+set(TargetName UtilsTests)
 file(GLOB SRC *.cpp)
 file(GLOB HDR *.h)
 
 
 include_directories(.)
 
-add_executable(Unit catch/catch.hpp ${SRC} ${HDR})
-target_link_libraries(Unit Utils)
-add_custom_command(TARGET Unit POST_BUILD COMMAND Unit)
+add_executable(${TargetName} catch/catch.hpp ${SRC} ${HDR})
+target_link_libraries(${TargetName} Utils)

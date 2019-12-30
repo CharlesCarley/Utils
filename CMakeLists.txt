@@ -9,6 +9,7 @@ include(ConfigureUtils)
 
 
 set(Utils_SRC
+    .github/workflows/ccpp.yml
     skAssert.cpp
     skHexPrint.cpp
     skDebugger.cpp

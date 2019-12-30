@@ -12,3 +12,5 @@ jobs:
        run: cmake . -DUtils_BUILD_TESTS=ON
      - name: Make
        run: make
+     - name: RunTests
+       run: run: ./Tests/UtilsTests
