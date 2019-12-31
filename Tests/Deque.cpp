@@ -95,7 +95,7 @@ TEST_CASE("DequeTest_DequePushPopFront")
         for (i = 0; i < ARR_SIZE; ++i)
         {
             lst.push_front(i);
-            REQUIRE(i== lst[0]);
+            REQUIRE(i== lst.front());
             lst.pop_front();
         }
         REQUIRE(0 == lst.size());
