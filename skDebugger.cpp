@@ -93,11 +93,11 @@ void skDebugger::report(const char* format, ...)
 
         if (s1 > 0)
         {
-            buffer = (char*)::malloc(s1 + 1);
+            buffer = (char*)::malloc((SKsize)s1 + 1);
             if (buffer)
             {
                 va_start(l1, format);
-                s2 = std::vsnprintf(buffer, s1+1, format, l1);
+                s2 = std::vsnprintf(buffer, (SKsize)s1+1, format, l1);
                 va_end(l1);
 
 #if SK_COMPILER == SK_COMPILER_MSVC
@@ -105,7 +105,7 @@ void skDebugger::report(const char* format, ...)
                     OutputDebugString(buffer);
                 else
 #endif
-                    fprintf(stdout, buffer);
+                    fprintf(stdout, "%s", buffer);
                 ::free(buffer);
             }
         }
