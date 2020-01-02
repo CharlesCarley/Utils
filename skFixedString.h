@@ -99,27 +99,27 @@ public:
 
 
 
-    void split(skArray<skFixedString<L> >& dest, char c, char e = '\0') const
+    void split(skArray<skFixedString<L> >& destination, char condition1, char condition2 = '\0') const
     {
         SKuint16 i, p = 0, t;
         for (i = 0; i < L && i < m_size; ++i)
         {
-            if (m_buffer[i] == c || m_buffer[i] == e)
+            if (m_buffer[i] == condition1 || m_buffer[i] == condition2 )
             {
-                skFixedString<L> cpy;
+                skFixedString<L> copy;
                 for (t = p; t < i; ++t)
-                    cpy.push_back(m_buffer[t]);
-                dest.push_back(cpy);
+                    copy.push_back(m_buffer[t]);
+                destination.push_back(copy);
                 p = i + 1;
             }
         }
 
         if (p != i)
         {
-            skFixedString<L> cpy;
+            skFixedString<L> copy;
             for (t = p; t < i; ++t)
-                cpy.push_back(m_buffer[t]);
-            dest.push_back(cpy);
+                copy.push_back(m_buffer[t]);
+            destination.push_back(copy);
         }
     }
 

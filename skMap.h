@@ -147,7 +147,9 @@ public:
     SKhash hash;
 
     skEntry() :
-        hash(0)
+        first(),
+        second(),
+        hash(SK_NPOS)
     {
     }
 
@@ -197,9 +199,12 @@ public:
     typedef skHashTableDecrementIterator<SelfType>       ReverseIterator;
     typedef const skHashTableDecrementIterator<SelfType> ConstReverseIterator;
 
+    // TODO: this needs to use the type defined via template parameters. 
     const SKsize npos = SK_NPOS;
 
+
 public:
+
     skHashTable() :
         m_size(0),
         m_capacity(0),
