@@ -41,14 +41,8 @@ public:
     };
 
 public:
-    skStream() :
-        m_mode(UNDEFINED)
-    {
-    }
-
-    virtual ~skStream()
-    {
-    }
+    skStream();
+    virtual ~skStream();
 
     virtual void open(const char* path, int mode) = 0;
     virtual void close(void)                      = 0;

@@ -19,6 +19,7 @@ set(Utils_SRC
     skMemoryUtils.cpp
     skString.cpp
     skStringConverter.cpp
+    skStreams.cpp
     skRandom.cpp
     skTimer.cpp
 )
