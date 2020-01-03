@@ -233,6 +233,50 @@ public:
         return m_alloc.npos;
     }
 
+    // This assumes that the array was previously sorted by the 'Param' type.
+    // Param should be some common member of the type T.
+    // Returns NPOS if not found or the index of the found array element.
+    template <typename Param>
+    SizeType findBinary(int (*ConstCmpFunc)(ValueType a, Param b), Param param) const
+    {
+        if (!ConstCmpFunc)
+            return m_alloc.npos;
+
+        SizeType f = 0, l = m_size, m, cmp;
+        while (f <= l)
+        {
+            m = (f + l) / 2;
+            cmp = ConstCmpFunc(m_data[m], param);
+            if (cmp == 0)
+                return m;
+            else if (cmp > 0)
+                l = m - 1;
+            else
+                f = m + 1;
+        }
+        return m_alloc.npos;
+    }
+
+
+    SizeType findBinary(ConstReferenceType key) const
+    {
+        if (!key)
+            return m_alloc.npos;
+
+        SizeType f = 0, l = m_size, m;
+        while (f <= l)
+        {
+            m = (f + l) / 2;
+            if (m_data[m] == key)
+                return m;
+            else if (m_data > key)
+                l = m - 1;
+            else
+                f = m + 1;
+        }
+        return m_alloc.npos;
+    }
+
     void resize(SizeType nr)
     {
         if (nr < m_size)
