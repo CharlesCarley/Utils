@@ -237,16 +237,16 @@ public:
     // Param should be some common member of the type T.
     // Returns NPOS if not found or the index of the found array element.
     template <typename Param>
-    SizeType findBinary(int (*ConstCmpFunc)(ValueType a, Param b), Param param) const
+    SizeType findBinary(int (*CmpFunc)(ValueType a, Param b), Param param) const
     {
-        if (!ConstCmpFunc)
+        if (!CmpFunc)
             return m_alloc.npos;
 
         SizeType f = 0, l = m_size, m, cmp;
         while (f <= l)
         {
             m = (f + l) / 2;
-            cmp = ConstCmpFunc(m_data[m], param);
+            cmp = CmpFunc(m_data[m], param);
             if (cmp == 0)
                 return m;
             else if (cmp > 0)
