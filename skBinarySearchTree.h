@@ -156,6 +156,29 @@ public:
         return false;
     }
 
+    bool findNonRecursive(ReferenceType out, ConstReferenceType val) const
+    {
+        if (m_root == 0)
+            return false;
+
+        NodePointerType node = m_root;
+        while (node != 0)
+        {
+            if (node->m_data == val)
+            {
+                out = node->m_data;
+                return true;
+            }
+            else if (node->m_data < val)
+                node = node->m_right;
+            else
+                node = node->m_left;
+        }
+        return false;
+    }
+
+
+
     void erase(ConstReferenceType val)
     {
         if (m_root == 0)
