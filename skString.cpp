@@ -24,6 +24,8 @@
 -------------------------------------------------------------------------------
 */
 #include "skString.h"
+#include <cstdarg>
+#include <cstdio>
 #include "skFixedString.h"
 #include "skPlatformHeaders.h"
 
@@ -118,7 +120,7 @@ namespace skStringUtils
     };
 
     const SKuint16 BinaryTable[9] = {256, 128, 64, 32, 16, 8, 4, 2, 1};
-}
+}  // namespace skStringUtils
 
 
 
@@ -288,7 +290,7 @@ void skString::split(skArray<skString>& dst, const char* op) const
 
 skString skString::format(const char* fmt, ...)
 {
-    char buf[1025];
+    char    buf[1025];
     va_list lst;
     va_start(lst, fmt);
     int size = skp_printf(buf, 1024, fmt, lst);
@@ -300,6 +302,30 @@ skString skString::format(const char* fmt, ...)
     buf[size] = 0;
     return skString(buf, size);
 }
+
+
+void skString::format(skString& dst, const char* fmt, ...)
+{
+    va_list lst;
+
+    int size = dst.capacity();
+    if (size <= 0)
+    {
+        va_start(lst, fmt);
+        size = std::vsnprintf(0, 0, fmt, lst);
+        va_end(lst);
+
+        dst.reserve((SKsize)size + 1);
+    }
+
+    if (size > 0)
+    {
+        va_start(lst, fmt);
+        std::vsnprintf(dst.ptr(), dst.capacity(), fmt, lst);
+        va_end(lst);
+    }
+}
+
 
 SKsize skString::find(char ch) const
 {
@@ -316,6 +342,7 @@ SKsize skString::find(char ch) const
     }
     return npos;
 }
+
 
 SKsize skString::find(const char* ch, SKsize pos) const
 {
@@ -539,7 +566,7 @@ void skString::fromBinary(void)
     while (it.hasMoreElements())
     {
         const skString& cs = it.getNext();
-        c = 0;
+        c                  = 0;
         for (j = 8; j > 0; j--)
         {
             if (j < cs.size() && cs[j] == 0x31)

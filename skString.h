@@ -191,6 +191,7 @@ public:
     void      resize(SKsize nr);
 
     static skString format(const char* fmt, ...);
+    static void     format(skString &dst, const char* fmt, ...);
 
     skString& asHex(void)
     {
