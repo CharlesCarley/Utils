@@ -308,7 +308,7 @@ void skString::format(skString& dst, const char* fmt, ...)
 {
     va_list lst;
 
-    int size = dst.capacity();
+    int size = (int)dst.capacity();
     if (size <= 0)
     {
         va_start(lst, fmt);
