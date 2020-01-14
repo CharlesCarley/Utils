@@ -221,7 +221,6 @@ public:
     const SizeType npos = Allocator::npos;
 
 public:
-
     SizeType find(ConstReferenceType v) const
     {
         SizeType i;
@@ -245,7 +244,7 @@ public:
         SizeType f = 0, l = m_size, m, cmp;
         while (f <= l)
         {
-            m = (f + l) / 2;
+            m   = (f + l) / 2;
             cmp = CmpFunc(m_data[m], param);
             if (cmp == 0)
                 return m;
@@ -315,10 +314,10 @@ public:
     {
         if (m_capacity < capacity)
         {
-            // This is using capacity plus one in order to reserve 
-            // and then push up to the max without expanding the 
+            // This is using capacity plus one in order to reserve
+            // and then push up to the max without expanding the
             // data. One more element after that will cause the expansion.
-            capacity = skMin<SKuint32>(capacity+1, m_alloc.limit);
+            capacity = skMin<SKuint32>(capacity + 1, m_alloc.limit);
             if (m_data)
             {
                 m_data     = m_alloc.array_reallocate(m_data, capacity, m_size);
@@ -331,6 +330,17 @@ public:
             }
         }
     }
+
+
+    void write(PointerType writeData, SizeType writeDataCount)
+    {
+        if (m_capacity < writeDataCount)
+            reserve(writeDataCount);
+
+        skFill(m_data, writeData, writeDataCount);
+        m_size = writeDataCount;
+    }
+
 
     SK_INLINE ConstPointerType ptr(void) const
     {
@@ -363,7 +373,6 @@ public:
     }
 
 protected:
-
     skArrayBase() :
         m_data(0),
         m_size(0),
