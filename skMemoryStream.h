@@ -69,7 +69,7 @@ public:
 
     inline bool eof(void) const
     {
-        return m_pos != SK_NPOS;
+        return m_pos == SK_NPOS || m_pos >= m_size;
     }
 
     inline SKbyte* ptr()
