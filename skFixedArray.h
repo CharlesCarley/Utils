@@ -50,13 +50,13 @@ public:
     skFixedArray() :
         m_size(0)
     {
-        m_data[0] = 0;
+        //m_data[0] = 0;
     }
 
     skFixedArray(const skFixedArray& rhs) :
         m_size(0)
     {
-        m_data[0] = 0;
+        //m_data[0] = 0;
 
         if (rhs.size())
         {
