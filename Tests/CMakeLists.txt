@@ -30,7 +30,7 @@ file(GLOB HDR  *.h)
 include_directories(.)
 
 add_executable(${TargetName} catch/catch.hpp ${SRC} ${HDR} ${TST})
-target_link_libraries(${TargetName} Utils)
+target_link_libraries(${TargetName} ${LocalUtils_TargetName})
 
 if (MSVC)
     # Relative to the root directory where make is called

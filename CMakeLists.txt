@@ -1,15 +1,66 @@
+# -----------------------------------------------------------------------------
+#   Copyright (c) 2019 Charles Carley.
+#
+#   This software is provided 'as-is', without any express or implied
+# warranty. In no event will the authors be held liable for any damages
+# arising from the use of this software.
+#
+#   Permission is granted to anyone to use this software for any purpose,
+# including commercial applications, and to alter it and redistribute it
+# freely, subject to the following restrictions:
+#
+# 1. The origin of this software must not be misrepresented; you must not
+#    claim that you wrote the original software. If you use this software
+#    in a product, an acknowledgment in the product documentation would be
+#    appreciated but is not required.
+# 2. Altered source versions must be plainly marked as such, and must not be
+#    misrepresented as being the original software.
+# 3. This notice may not be removed or altered from any source distribution.
+# ------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.0)
 project(Utils)
 
-list(APPEND CMAKE_MODULE_PATH 
-    ${Utils_SOURCE_DIR}/CMake
-    )
+option(Utils_USE_DEBUG_ASSERT      "Enable debug asserts" ON)
+option(Utils_USE_ITERATOR_DEBUG    "Enable state checks for iterators" OFF)
+option(Utils_USE_COMPILER_CHECKS   "Enable compile time asserts." OFF)
+option(Utils_NO_DEBUGGER           "Send calls to skPrintf to printf vs skDebugger::report" ON)
+option(Utils_BUILD_TESTS           "Build basic tests" OFF)
 
-include(ConfigureUtils)
+configure_file(${Utils_SOURCE_DIR}/CMake/skConfig.h.in  ${Utils_SOURCE_DIR}/Config/skConfig.h)
 
+
+# Build configuration, for example:
+# set(Utils_ExternalTarget TRUE)
+# set(Utils_TargetFolders  TRUE)
+# set(Utils_TargetName     SpecificTargetName)
+# set(Utils_TargetGroup    SpecificTargetGroup)
+# subdirs(Utils)
+
+if (Utils_ExternalTarget)
+    set(TargetFolders ${Utils_TargetFolders})
+    set(TargetName    ${Utils_TargetName})
+    set(TargetGroup   ${Utils_TargetGroup})
+else()
+    set(TargetFolders FALSE)
+    set(TargetName Utils)
+    unset(TargetGroup )
+endif()
+
+
+
+if (MSVC)
+    source_group("Config\\Workflows"  FILES .github/workflows/ccpp.yml)
+    source_group("Config\\CMake"      FILES  CMake/skConfig.h.in)
+    source_group("Config\\Markdown"   FILES  README.md)
+endif()
+
+set(Utils_EXT
+    .github/workflows/ccpp.yml
+    CMake/skConfig.h.in
+    README.md
+)
 
 set(Utils_SRC
-    .github/workflows/ccpp.yml
     skAssert.cpp
     skHexPrint.cpp
     skDebugger.cpp
@@ -57,22 +108,19 @@ set(Utils_HDR
     skTraits.h
     skUserObject.h
     skValue.h
-
     Config/skConfig.h
-    CMake/skConfig.h.in
-    CMake/ConfigureUtils.cmake
 )
 
 
 include_directories(../ .)
-add_library(Utils ${Utils_SRC} ${Utils_HDR})
-
+add_library(${TargetName} ${Utils_SRC} ${Utils_HDR} ${Utils_EXT})
 
 if (Utils_BUILD_TESTS)
+
+    set(LocalUtils_TargetName ${TargetName})
     subdirs(Tests)
 endif()
 
-
-if (USE_FOLDERS)
-    set_target_properties(Utils PROPERTIES FOLDER "${FOLDER_NAME}")
+if (TargetFolders)
+    set_target_properties(${TargetName} PROPERTIES FOLDER "${TargetGroup}")
 endif()
