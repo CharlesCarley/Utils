@@ -66,6 +66,7 @@ set(Utils_SRC
     skDebugger.cpp
     skFileStream.cpp
     skHash.cpp
+    skLogger.cpp
     skMemoryStream.cpp
     skMemoryUtils.cpp
     skString.cpp
@@ -91,6 +92,7 @@ set(Utils_HDR
     skFixedString.h
     skHash.h
     skList.h
+    skLogger.h
     skMap.h
     skMemoryStream.h
     skMemoryUtils.h
