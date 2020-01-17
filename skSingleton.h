@@ -52,14 +52,14 @@ public:
         SK_ASSERT(m_singleton);
         return *m_singleton;
     }
-    SK_INLINE T& getSingletonPtr(void)
+
+    SK_INLINE T* getSingletonPtr(void)
     {
         return m_singleton;
     }
 };
 
 #define SK_DECLARE_SINGLETON(cls)   \
-public:                             \
     static cls& getSingleton(void); \
     static cls* getSingletonPtr(void);
 

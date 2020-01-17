@@ -23,9 +23,9 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#include "Utils/skLogger.h"
 #include <cstdarg>
 #include <cstdio>
-#include "Utils/skLogger.h"
 #include "Utils/skFileStream.h"
 #include "Utils/skPlatformHeaders.h"
 #include "Utils/skTimer.h"
@@ -57,38 +57,38 @@ void skLogger::open(const char* logname)
 
 void skLogger::writeDetail(SKint32 detail) const
 {
-    char ts[7];
+    char ts[6];
     switch (detail)
     {
     case LD_ASSERT:
-        strcpy(ts, "| 00: ");
+        strcpy(ts, "00: ");
         break;
     case LD_ERROR:
-        strcpy(ts, "| 01: ");
+        strcpy(ts, "01: ");
         break;
     case LD_WARN:
-        strcpy(ts, "| 02: ");
+        strcpy(ts, "02: ");
         break;
     case LD_INFO:
-        strcpy(ts, "| 03: ");
+        strcpy(ts, "03: ");
         break;
     case LD_DEBUG:
-        strcpy(ts, "| 04: ");
+        strcpy(ts, "04: ");
         break;
     case LD_VERBOSE:
     default:
-        strcpy(ts, "| 05: ");
+        strcpy(ts, "05: ");
         break;
     }
-    ts[6] = 0;
-    writeMessage(ts, 6);
+    ts[5] = 0;
+    writeMessage(ts, 5);
 }
 
 
 void skLogger::writeTimeStamp() const
 {
     char     ts[33];
-    SKuint32 br = skMin<SKuint32>(skGetTimeString(ts, 32, "%m:%d:%C:%H:%M:%S"), 32);
+    SKuint32 br = skMin<SKuint32>(skGetTimeString(ts, 32, "%m:%d:%C:%H:%M:%S:"), 32);
     ts[br]      = 0;
     writeMessage(ts, br);
 }
@@ -100,7 +100,7 @@ void skLogger::writeMessage(const char* msg, SKint32 len) const
         fprintf(stdout, "%s", msg);
 
     if (len <= 0)
-        len = strlen(msg);
+        len = (SKint32)strlen(msg);
 
     if (m_stream && m_flags & LF_FILE)
     {
@@ -138,36 +138,39 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
 
 void skLogf(SKint32 detail, const char* format, ...)
 {
-    const skLogger& log = skLogger::getSingleton();
-    if (format && log.getDetail() >= detail)
+    const skLogger* log = skLogger::getSingletonPtr();
+    if (log)
     {
-        va_list l1;
-        int     size;
-
-        char* buffer = nullptr;
-        va_start(l1, format);
-        size = std::vsnprintf(buffer, 0, format, l1);
-        va_end(l1);
-
-        if (size > 0)
+        if (format && log->getDetail() >= detail)
         {
-            size   = skMin(size, 4095);
-            buffer = (char*)::malloc((SKsize)size + 1);
+            va_list l1;
+            int     size;
 
-            if (buffer)
+            char* buffer = nullptr;
+            va_start(l1, format);
+            size = std::vsnprintf(buffer, 0, format, l1);
+            va_end(l1);
+
+            if (size > 0)
             {
-                va_start(l1, format);
-                size = std::vsnprintf(buffer, (SKsize)size + 1, format, l1);
-                va_end(l1);
+                size   = skMin(size, 4095);
+                buffer = (char*)::malloc((SKsize)size + 1);
 
-                log.logMessage(detail, buffer, size);
-                ::free(buffer);
+                if (buffer)
+                {
+                    va_start(l1, format);
+                    size = std::vsnprintf(buffer, (SKsize)size + 1, format, l1);
+                    va_end(l1);
+
+                    log->logMessage(detail, buffer, size);
+                    ::free(buffer);
+                }
+                else
+                    printf("Failed to allocate buffer\n");
             }
             else
-                printf("Failed to allocate buffer\n");
+                printf("Error: Log string length is < 0\n");
         }
-        else
-            printf("Error: Log string length is < 0\n");
     }
 }
 
