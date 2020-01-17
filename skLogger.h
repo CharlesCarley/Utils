@@ -89,6 +89,11 @@ public:
     }
 
 
+    inline void clearFlag(int flag)
+    {
+        m_flags &= ~flag;
+    }
+
     void open(const char* logName);
     void logMessage(SKint32 detail, const char* msg, SKint32 len = 0) const;
 
