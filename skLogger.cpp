@@ -51,7 +51,7 @@ void skLogger::open(const char* logname)
     m_flags |= LF_FILE;
     if (m_stream)
         delete m_stream;
-    m_stream = new skFileStream(logname, skStream::WRITE_TEXT);
+    m_stream = new skFileStream(logname, skStream::WRITE);
 }
 
 
@@ -80,8 +80,8 @@ void skLogger::writeDetail(SKint32 detail) const
         strcpy(ts, "05: ");
         break;
     }
-    ts[5] = 0;
-    writeMessage(ts, 5);
+    ts[4] = 0;
+    writeMessage(ts, 4);
 }
 
 
