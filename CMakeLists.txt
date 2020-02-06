@@ -19,6 +19,8 @@
 # ------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.0)
 project(Utils)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(Utils_USE_DEBUG_ASSERT      "Enable debug asserts" ON)
 option(Utils_USE_ITERATOR_DEBUG    "Enable state checks for iterators" OFF)
