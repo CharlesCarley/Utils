@@ -103,7 +103,7 @@
 #elif defined(__APPLE__)
 #define SK_PLATFORM SK_PLATFORM_APPLE
 #define SK_SUB_PLATFORM SK_PLATFORM_APPLE
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__unix__)
 #define SK_PLATFORM SK_PLATFORM_LINUX
 #define SK_SUB_PLATFORM SK_PLATFORM_LINUX
 #else
@@ -191,25 +191,25 @@ typedef unsigned __int64 SKuint64;
 typedef SKuint64 SKuintPtr;
 typedef SKint64  SKintPtr;
 #else
-typedef SKuint32 SKuintPtr;
-typedef SKint32  SKintPtr;
+typedef SKuint32         SKuintPtr;
+typedef SKint32          SKintPtr;
 #endif
 
 typedef SKuintPtr SKhash;
 typedef SKuintPtr SKsize;
 
-#define SK_MKNPOS(x)        ((x)-1)
-#define SK_MKMX(x)          (SK_MKNPOS(x)-1)
+#define SK_MKNPOS(x) ((x)-1)
+#define SK_MKMX(x) (SK_MKNPOS(x) - 1)
 
-const SKsize            SK_NPOS    = SK_MKNPOS(SKsize);
-const SKsize            SK_NPOSH   = SK_NPOS / 2;
-const SKsize            SK_MAX     = SK_MKMX(SKsize);
-const SKuint16          SK_NPOS16  = SK_MKNPOS(SKuint16);
-const SKuint16          SK_MAX16   = SK_MKMX(SKuint16);
-const SKuint16          SK_NPOS16H = SK_NPOS16 / 2;
-const SKuint32          SK_NPOS32  = SK_MKNPOS(SKuint32);
-const SKuint32          SK_MAX32   = SK_MKMX(SKuint32);
-const SKuint32          SK_NPOS32H = SK_NPOS32 / 2;
+const SKsize   SK_NPOS    = SK_MKNPOS(SKsize);
+const SKsize   SK_NPOSH   = SK_NPOS / 2;
+const SKsize   SK_MAX     = SK_MKMX(SKsize);
+const SKuint16 SK_NPOS16  = SK_MKNPOS(SKuint16);
+const SKuint16 SK_MAX16   = SK_MKMX(SKuint16);
+const SKuint16 SK_NPOS16H = SK_NPOS16 / 2;
+const SKuint32 SK_NPOS32  = SK_MKNPOS(SKuint32);
+const SKuint32 SK_MAX32   = SK_MKMX(SKuint32);
+const SKuint32 SK_NPOS32H = SK_NPOS32 / 2;
 
 
 #define SKInitalCap 8
@@ -225,7 +225,7 @@ const SKuint32          SK_NPOS32H = SK_NPOS32 / 2;
     typedef struct name##_t  \
     {                        \
         int unused;          \
-    }*name
+    } * name
 
 #ifdef __cplusplus
 #define SK_API extern "C"
