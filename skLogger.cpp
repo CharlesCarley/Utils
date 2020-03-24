@@ -24,6 +24,7 @@
 -------------------------------------------------------------------------------
 */
 #include "Utils/skLogger.h"
+#include "Utils/skDebugger.h"
 #include <cstdarg>
 #include <cstdio>
 #include "Utils/skFileStream.h"
@@ -131,7 +132,16 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
         if (m_flags & LF_DETAIL)
             writeDetail(detail);
 
+        if (detail == LD_WARN)
+            skDebugger::writeColor(CS_YELLOW);
+
+        if (detail <= LD_ERROR)
+            skDebugger::writeColor(CS_RED);
+
         writeMessage(msg, len);
+        
+        if (detail <= LD_WARN)
+            skDebugger::writeColor(CS_WHITE);
     }
 }
 
