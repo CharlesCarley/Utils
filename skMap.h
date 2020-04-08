@@ -287,7 +287,7 @@ public:
         return m_bptr[i].first;
     }
 
-    SK_INLINE const Key& keyAt(SKuint32 i) const
+    SK_INLINE const Key& keyAt(SKsize i) const
     {
         SK_ASSERT(m_bptr && i >= 0 && i < m_size);
         return m_bptr[i].first;
@@ -547,11 +547,11 @@ public:
     typedef skHashTable<T, bool, Allocator> TableType;
     SK_DECLARE_REF_TYPE(TableType);
 
-    typedef skHashSet<T, Allocator>                    SelfType;
-    typedef skPointerIncrementIterator<SelfType>       Iterator;
-    typedef const skPointerIncrementIterator<SelfType> ConstIterator;
-    typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
-    typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
+    typedef skHashSet<T, Allocator>                            SelfType;
+    typedef skPointerIncrementIterator<SelfType, SKsize>       Iterator;
+    typedef const skPointerIncrementIterator<SelfType, SKsize> ConstIterator;
+    typedef skPointerDecrementIterator<SelfType, SKsize>       ReverseIterator;
+    typedef const skPointerDecrementIterator<SelfType, SKsize> ConstReverseIterator;
 
     const SKsize npos = SK_NPOS;
 
