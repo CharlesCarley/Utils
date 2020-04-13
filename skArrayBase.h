@@ -276,6 +276,16 @@ public:
         return m_alloc.npos;
     }
 
+    void resizeFast(SizeType nr)
+    {
+		// Do not call this with a type T that has 
+        // cleanup code in ~T(). This is intended 
+        // for atomic and simple class types. 
+        if (nr > m_size)
+			reserve(nr);
+        m_size = nr;
+    }
+
     void resize(SizeType nr)
     {
         if (nr < m_size)

@@ -35,7 +35,8 @@
 skLogger::skLogger() :
     m_stream(0),
     m_flags(LF_ALL),
-    m_detail(LD_VERBOSE)
+    m_detail(LD_VERBOSE),
+    m_listener(0)
 {
 }
 
@@ -109,6 +110,11 @@ void skLogger::writeMessage(const char* msg, SKint32 len) const
             m_stream->write(msg, (SKsize)len);
     }
 
+    if (m_listener)
+    {
+        if (len > 0)
+            m_listener->messageLogged(m_detail, m_flags, msg, len);
+    }
 
 #if SK_COMPILER == SK_COMPILER_MSVC
     if (m_flags & LF_VS_DEBUG)
@@ -129,14 +135,14 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
         if (m_flags & LF_TIMESTAMP)
             writeTimeStamp();
 
-        if (m_flags & LF_DETAIL)
-            writeDetail(detail);
-
         if (detail == LD_WARN)
             skDebugger::writeColor(CS_YELLOW);
 
         if (detail <= LD_ERROR)
             skDebugger::writeColor(CS_RED);
+
+        if (m_flags & LF_DETAIL)
+            writeDetail(detail);
 
         writeMessage(msg, len);
         
