@@ -212,7 +212,7 @@ public:
 
         Link(typename SelfType::ConstReferenceType v) :
             m_next(nullptr),
-            m_data(nullptr)
+            m_data(v)
         {
         }
 
