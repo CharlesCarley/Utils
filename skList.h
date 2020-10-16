@@ -42,7 +42,7 @@ private:
 
 public:
     skListIterator() :
-        m_cur(0)
+        m_cur(nullptr)
     {
     }
 
@@ -71,7 +71,7 @@ public:
 
     SK_INLINE bool hasMoreElements(void) const
     {
-        return m_cur != 0;
+        return m_cur != nullptr;
     }
 
     SK_INLINE void next(void) const
@@ -189,13 +189,11 @@ public:
     }
 };
 
-
-
 template <typename T>
 class skSinglyLinkedList
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
     typedef skSinglyLinkedList<T>          SelfType;
     typedef skListIterator<SelfType>       Iterator;
@@ -204,18 +202,20 @@ public:
     class Link
     {
     public:
-        SK_DECLARE_TYPE(Link);
+        SK_DECLARE_TYPE(Link)
 
     public:
         Link() :
-            m_next(0)
+            m_next(nullptr)
         {
         }
+
         Link(typename SelfType::ConstReferenceType v) :
-            m_next(0),
-            m_data(v)
+            m_next(nullptr),
+            m_data(nullptr)
         {
         }
+
         ~Link()
         {
         }
@@ -236,17 +236,13 @@ public:
         typename SelfType::ValueType m_data;
     };
 
-
-
     typedef Link*              LinkPointerType;
     typedef ReferenceType      LinkValueReferenceType;
     typedef ConstReferenceType LinkValueConstReferenceType;
 
-
 private:
     Link * m_head, *m_tail;
     SKsize m_size;
-
 
 public:
     skSinglyLinkedList() :
@@ -260,7 +256,6 @@ public:
     {
         clear();
     }
-
 
     void clear(void)
     {
@@ -345,7 +340,6 @@ public:
         }
         m_size++;
     }
-
 
     ValueType pop_back(void)
     {
@@ -452,15 +446,15 @@ public:
         return m_tail;
     }
 
-    SK_INLINE SKsize size(void)
+    SK_INLINE SKsize size(void) const
     {
         return m_size;
     }
-    SK_INLINE bool empty(void)
+
+    SK_INLINE bool empty(void) const
     {
         return m_size == 0;
     }
-
 
     Iterator iterator(void)
     {
@@ -471,7 +465,6 @@ public:
     {
         return ConstIterator(m_head);
     }
-
 
 private:
     void find(ConstValueType v, Link** prev, Link** pos)
@@ -485,29 +478,28 @@ private:
         {
             if (node->m_data == v)
             {
-                (*prev) = last;
-                (*pos)  = node;
+                *prev = last;
+                *pos  = node;
                 return;
             }
             last = node;
             node = node->m_next;
         }
-        (*prev) = 0;
-        (*pos)  = 0;
+        *prev = 0;
+        *pos  = 0;
     }
 };
-
 
 template <typename T, typename LinkPointerType, class SubType>
 class skListBase
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
 public:
     skListBase() :
-        m_first(0),
-        m_last(0),
+        m_first(nullptr),
+        m_last(nullptr),
         m_size(0)
     {
     }
@@ -519,8 +511,8 @@ public:
 
     void clear(void)
     {
-        m_first = 0;
-        m_last  = 0;
+        m_first = nullptr;
+        m_last  = nullptr;
         m_size  = 0;
     }
 
@@ -542,7 +534,6 @@ public:
         }
         return result;
     }
-
 
     bool push_front(LinkPointerType link)
     {
@@ -572,14 +563,12 @@ public:
         if (inFront != nullptr && elem != nullptr)
         {
 
-
-            elem->m_next = inFront;
-            elem->m_prev = inFront->m_prev;
+            elem->m_next    = inFront;
+            elem->m_prev    = inFront->m_prev;
             inFront->m_prev = elem;
-          
+
             if (elem->m_prev)
                 elem->m_prev->m_next = elem;
-           
 
             if (m_first == inFront)
                 m_first = elem;
@@ -590,7 +579,6 @@ public:
         }
         return result;
     }
-
 
     LinkPointerType find_link(ConstReferenceType v)
     {
@@ -621,7 +609,7 @@ public:
             ++i;
         }
 
-        return 0;
+        return nullptr;
     }
 
     bool erase_link(LinkPointerType link)
@@ -649,11 +637,13 @@ public:
     {
         return m_first;
     }
+
     SK_INLINE LinkPointerType last(void)
     {
         return m_last;
     }
-    SK_INLINE SKsize size(void)
+
+    SK_INLINE SKsize size(void) const
     {
         return m_size;
     }
@@ -670,7 +660,7 @@ template <typename T>
 class skList
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
 public:
     typedef skList<T>                       SelfType;
@@ -679,21 +669,21 @@ public:
     typedef const skListIterator<SelfType>  ConstIterator;
     typedef const skListIterator<SelfType>  ConstReverseIterator;
 
-    SK_IMPLEMENT_SORT(T, skList, SKsize);
+    SK_IMPLEMENT_SORT(T, skList, SKsize)
 
     class Link
     {
     public:
         Link() :
-            m_next(0),
-            m_prev(0),
+            m_next(nullptr),
+            m_prev(nullptr),
             m_data(ValueType())
         {
         }
 
         explicit Link(ConstReferenceType v) :
-            m_next(0),
-            m_prev(0),
+            m_next(nullptr),
+            m_prev(nullptr),
             m_data(v)
         {
         }
@@ -778,7 +768,6 @@ public:
         m_list.insert_front(link, new Link(v));
     }
 
-
     LinkPointerType find(ConstReferenceType v)
     {
         return m_list.find_link(v);
@@ -854,21 +843,18 @@ public:
         return m_list.m_last;
     }
 
-    SK_INLINE const LinkPointerType begin(void) const
+    SK_INLINE ConstPointerType begin(void) const
     {
         return m_list.m_first;
     }
 
-    SK_INLINE const LinkPointerType end(void) const
+    SK_INLINE ConstPointerType end(void) const
     {
         return m_list.m_last;
     }
 
     SK_INLINE ReferenceType front(void)
     {
-        // This is dangerous, but it's the callers fault
-        // by not checking before hand whether or not the
-        // list is valid.
         SK_ASSERT(m_list.m_first);
         return m_list.m_first->m_data;
     }
@@ -926,7 +912,7 @@ template <typename T>
 class skListClass
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
 public:
     typedef T*       LinkPointerType;
@@ -940,7 +926,7 @@ public:
     typedef const skListIterator<skListClass<T> >                  ConstIterator;
     typedef const skListReverseIterator<skListClass<T> >           ConstReverseIterator;
 
-    SK_IMPLEMENT_SORT(T, skListClass, SKsize);
+    SK_IMPLEMENT_SORT(T, skListClass, SKsize)
 
     class Link
     {
@@ -952,7 +938,7 @@ public:
         {
         }
 
-        ~Link()
+        virtual ~Link()
         {
         }
 
@@ -996,7 +982,7 @@ public:
         m_list.clear();
     }
 
-    SK_INLINE void push_back(LinkPointerType v)
+    void push_back(LinkPointerType v)
     {
         if (v)
         {
@@ -1005,7 +991,7 @@ public:
         }
     }
 
-    SK_INLINE void push_front(LinkPointerType v)
+    void push_front(LinkPointerType v)
     {
         if (v)
         {
@@ -1041,17 +1027,17 @@ public:
         return m_list.erase_link(v);
     }
 
-    SK_INLINE void pop_back(void)
+    void pop_back(void)
     {
         m_list.erase_link(m_list.last());
     }
 
-    SK_INLINE void pop_front(void)
+    void pop_front(void)
     {
         m_list.erase_link(m_list.first());
     }
 
-    SK_INLINE bool empty(void) const
+    bool empty(void) const
     {
         return m_list.size() == 0;
     }
@@ -1071,12 +1057,12 @@ public:
         return static_cast<LinkPointerType>(m_list.last());
     }
 
-    SK_INLINE const LinkPointerType begin(void) const
+    SK_INLINE LinkValueConstReferenceType begin(void) const
     {
         return static_cast<const LinkPointerType>(m_list.first());
     }
 
-    SK_INLINE const LinkPointerType end(void) const
+    SK_INLINE LinkValueConstReferenceType end(void) const
     {
         return static_cast<const LinkPointerType>(m_list.last());
     }
@@ -1114,17 +1100,18 @@ public:
     }
 
 private:
-    skListClass& operator=(const skListClass& rhs)
+
+
+    skListClass& operator=(const skListClass&)
     {
         // no assignment
         return *this;
     }
 
-    skListClass(const skListClass& rhs)
+    skListClass(const skListClass&)
     {
         // no copy
     }
-
 
     mutable BaseType m_list;
 };
