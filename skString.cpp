@@ -35,7 +35,7 @@ namespace skStringUtils
 {
     bool toBool(const char* in)
     {
-        return (equals(in, "true") == 0 || equals(in, "yes") == 0 || equals(in, "1") == 0);
+        return equals(in, "true") == 0 || equals(in, "yes") == 0 || equals(in, "1") == 0;
     }
 
     long toLong(const char* in)
@@ -129,7 +129,7 @@ void skString::clear(void)
     if (m_data)
     {
         delete[] m_data;
-        m_data = 0;
+        m_data = nullptr;
     }
     m_size     = 0;
     m_capacity = 0;
@@ -139,7 +139,7 @@ void skString::reserve(SKsize nr)
 {
     if (m_capacity < nr)
     {
-        ValueType* ptr = new ValueType[nr + 1];
+        auto* ptr = new ValueType[nr + 1];
 
         if (m_data)
         {
@@ -200,7 +200,7 @@ void skString::alloc(const char p, SKsize len)
 
 void skString::alloc(SKsize len, const void* p)
 {
-    if (len != npos && p != 0)
+    if (len != npos && p != nullptr)
     {
         resize(len);
         skMemcpy(m_data, p, m_size);
@@ -312,7 +312,7 @@ void skString::format(skString& dst, const char* fmt, ...)
     if (size <= 0)
     {
         va_start(lst, fmt);
-        size = std::vsnprintf(0, 0, fmt, lst);
+        size = std::vsnprintf(nullptr, 0, fmt, lst);
         va_end(lst);
 
         dst.reserve((SKsize)size + 1);
@@ -329,13 +329,13 @@ void skString::format(skString& dst, const char* fmt, ...)
 
 SKsize skString::find(char ch) const
 {
-    if (m_data != 0)
+    if (m_data != nullptr)
     {
         char* ptr = strchr(m_data, (int)ch);
 
         if (ptr)
         {
-            SKsize diff = ptr - m_data;
+            const SKsize diff = ptr - m_data;
             if (diff > 0)
                 return (SKsize)diff;
         }
@@ -346,7 +346,7 @@ SKsize skString::find(char ch) const
 
 SKsize skString::find(const char* ch, SKsize pos) const
 {
-    if (m_data != 0)
+    if (m_data != nullptr)
     {
         if (pos >= m_size)
             return npos;
@@ -356,9 +356,9 @@ SKsize skString::find(const char* ch, SKsize pos) const
 
         if (ptr)
         {
-            SKsize diff = ptr - sp;
+            const SKsize diff = ptr - sp;
 
-            if (diff >= 0)
+            if (diff != SK_NPOS)
                 return (SKsize)diff;
         }
     }
@@ -395,7 +395,7 @@ skString& skString::append(const char* rhs, SKsize rhsLen)
     return *this;
 }
 
-SKsize skString::copy(char* arr, SKsize nr, SKsize pos)
+SKsize skString::copy(char* arr, SKsize nr, SKsize pos) const
 {
     if (!arr || !m_data || nr + pos > m_size)
         return 0;
@@ -461,21 +461,21 @@ void skString::toHex(void)
     const char* cp = m_data;
     char*       dp = m_data;
 
-    if (cp == 0)
+    if (cp == nullptr)
         return;
 
     int ival, dv, rv;
 
     SKsize i, j = m_size;
-    for (i = (old_size - 1); i != npos; --i)
+    for (i = old_size - 1; i != npos; --i)
     {
         ival = (int)(unsigned char)cp[i];
         dv   = ival / 16;
         rv   = ival % 16;
         if (ival < 256)
         {
-            (dp[--j]) = skStringUtils::HexTable[rv];
-            (dp[--j]) = skStringUtils::HexTable[dv];
+            dp[--j] = skStringUtils::HexTable[rv];
+            dp[--j] = skStringUtils::HexTable[dv];
         }
     }
 
@@ -493,18 +493,18 @@ void skString::fromHex(void)
     SKsize i, j = 0;
     for (i = 0; i < m_size; i += 2)
     {
-        char c0 = cp[i + 0];
-        char c1 = cp[i + 1];
+        const char c0 = cp[i + 0];
+        const char c1 = cp[i + 1];
 
         dv = rv = 0;
         if (c0 >= '0' && c0 <= '9')
-            dv = ((int)c0) - '0';
+            dv = (int)c0 - '0';
         else if (c0 >= 'A' && c0 <= 'Z')
-            dv = 10 + ((int)c0) - 'A';
+            dv = 10 + (int)c0 - 'A';
         if (c1 >= '0' && c1 <= '9')
-            rv = ((int)c1) - '0';
+            rv = (int)c1 - '0';
         else if (c1 >= 'A' && c1 <= 'Z')
-            rv = 10 + ((int)c1) - 'A';
+            rv = 10 + (int)c1 - 'A';
         dv      = 16 * dv + rv;
         dp[j++] = (char)dv;
         dp[j]   = 0;
@@ -515,10 +515,9 @@ void skString::fromHex(void)
 
 void skString::toBinary(void)
 {
-    SKsize   i;
-    skString s;
-    SKuint16 c, j, counter;
-    bool     splitHiLo = false;
+    SKsize     i;
+    skString   s;
+    SKuint16   c, j, counter;
     s.reserve(9 * m_size + 2);
 
     for (i = 0; i < m_size; ++i)
@@ -542,9 +541,6 @@ void skString::toBinary(void)
                 }
                 else
                     tempBuf[counter++] = 0x30;
-
-                if (splitHiLo && j == 3)
-                    tempBuf[counter++] = 0x20;
             }
 
             tempBuf[counter] = 0x00;
@@ -577,14 +573,14 @@ void skString::fromBinary(void)
     this->operator=(s);
 }
 
-void skString::encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
+void skString::encrypt(const SKbyte* lb, int b1, SKuint16* ub, int b2)
 {
     SKsize i, j = 0, r;
     double a, b;
 
     SKuint16* sh;
     for (i = 0; i < m_size; ++i)
-        m_data[i] = (m_data[i] + ((i % 3 ? -1 : 1) * LB[i % b1])) % 256;
+        m_data[i] = (SKbyte)(SKubyte)((m_data[i] + (i % 3 ? -1 : 1) * lb[i % b1]) % 256);
 
     r  = m_size % 2;
     sh = new SKuint16[m_size + r + 1];
@@ -600,15 +596,15 @@ void skString::encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
     }
 
     for (i = 0; i < j; i++)
-        sh[i] = ((SKuint16)sh[i]) + UB[i % b2] % 65536;
+        sh[i] = (SKuint16)sh[i] + ub[i % b2] % 65536;
 
-    alloc((j * 2) + r, sh);
+    alloc(j * 2 + r, sh);
     delete[] sh;
 }
 
 
 
-void skString::decrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
+void skString::decrypt(const SKbyte* lb, int b1, SKuint16* ub, int b2)
 {
     SKsize i, j = 0, r;
     double a, b;
@@ -618,13 +614,13 @@ void skString::decrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
     skString dest;
     dest.resize(m_size);
 
-    SKuint16* sp = (SKuint16*)m_data;
-    SKbyte*   dp = (SKbyte*)dest.ptr();
+    auto* sp = (SKuint16*)m_data;
+    auto* dp = (SKbyte*)dest.ptr();
 
     r = m_size % 2;
     for (i = 0; i < m_size / 2; ++i)
     {
-        s  = sp[i] - UB[i % b2] % 65536;
+        s  = sp[i] - ub[i % b2] % 65536;
         a  = (double)s / 256.0;
         b  = (a - (int)a) * 256.0;
         a  = (int)a;
@@ -636,7 +632,7 @@ void skString::decrypt(SKbyte* LB, int b1, SKuint16* UB, int b2)
     }
 
     for (i = 0; i < j; ++i)
-        dp[i] = (dp[i] + ((i % 3 ? 1 : -1) * LB[i % b1])) % 256;
+        dp[i] = (dp[i] + (i % 3 ? 1 : -1) * lb[i % b1]) % 256;
 
     alloc(j - r, dp);
 }
@@ -646,7 +642,7 @@ void skString::encrypt(void)
     static SKuint16 UB[] = {13673, 32696, 27676, 5443, 22638};
     static SKbyte   LB[] = {98, 83, 49, 81, 126};
 
-    encrypt(LB, sizeof(LB) / sizeof(LB[0]), UB, sizeof(UB) / sizeof(UB[0]));
+    encrypt(LB, sizeof LB / sizeof LB[0], UB, sizeof UB / sizeof UB[0]);
 }
 
 void skString::decrypt(void)
@@ -654,14 +650,14 @@ void skString::decrypt(void)
     static SKuint16 UB[] = {13673, 32696, 27676, 5443, 22638};
     static SKbyte   LB[] = {98, 83, 49, 81, 126};
 
-    decrypt(LB, sizeof(LB) / sizeof(LB[0]), UB, sizeof(UB) / sizeof(UB[0]));
+    decrypt(LB, sizeof LB / sizeof LB[0], UB, sizeof UB / sizeof UB[0]);
 }
 
 void skString::encrypt(const char* password)
 {
     static SKuint16 UB[] = {13673, 32696, 27676, 5443, 22638};
 
-    encrypt((SKbyte*)password, (int)skStringUtils::length(password), UB, sizeof(UB) / sizeof(UB[0]));
+    encrypt((const SKbyte*)password, (int)skStringUtils::length(password), UB, sizeof UB / sizeof UB[0]);
 }
 
 
@@ -670,7 +666,7 @@ void skString::decrypt(const char* password)
 {
     static SKuint16 UB[] = {13673, 32696, 27676, 5443, 22638};
 
-    decrypt((SKbyte*)password, (int)skStringUtils::length(password), UB, sizeof(UB) / sizeof(UB[0]));
+    decrypt((const SKbyte*)password, (int)skStringUtils::length(password), UB, sizeof UB / sizeof UB[0]);
 }
 
 

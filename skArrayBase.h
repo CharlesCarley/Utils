@@ -34,7 +34,7 @@ template <typename T, typename SizeType = SKuint32>
 class skPointerIncrementIterator
 {
 public:
-    SK_DECLARE_REF_TYPE(T);
+    SK_DECLARE_REF_TYPE(T)
 
 
 protected:
@@ -49,8 +49,8 @@ protected:
 
 public:
     skPointerIncrementIterator() :
-        m_beg(0),
-        m_end(0)
+        m_beg(nullptr),
+        m_end(nullptr)
     {
     }
 
@@ -91,13 +91,13 @@ public:
     SK_INLINE ReferenceType getNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg++);
+        return *m_beg++;
     }
 
     SK_INLINE ConstReferenceType getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg++);
+        return *m_beg++;
     }
 
     SK_INLINE void next(void) const
@@ -109,13 +109,13 @@ public:
     SK_INLINE ReferenceType peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg);
+        return *m_beg;
     }
 
     SK_INLINE ConstReferenceType peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg);
+        return *m_beg;
     }
 };
 
@@ -123,7 +123,7 @@ template <typename T, typename SizeType = SKuint32>
 class skPointerDecrementIterator
 {
 public:
-    SK_DECLARE_REF_TYPE(T);
+    SK_DECLARE_REF_TYPE(T)
 
 
 protected:
@@ -180,13 +180,13 @@ public:
     SK_INLINE ReferenceType getNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg--);
+        return *m_beg--;
     }
 
     SK_INLINE ConstReferenceType getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg--);
+        return *m_beg--;
     }
 
     SK_INLINE void next(void) const
@@ -198,13 +198,13 @@ public:
     SK_INLINE ReferenceType peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg);
+        return *m_beg;
     }
 
     SK_INLINE ConstReferenceType peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg);
+        return *m_beg;
     }
 };
 
@@ -214,7 +214,7 @@ template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skArrayBase
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
     typedef skArrayBase<T, Allocator>    SelfType;
     typedef typename Allocator::SizeType SizeType;
 
@@ -224,7 +224,7 @@ public:
     SizeType find(ConstReferenceType v) const
     {
         SizeType i;
-        for (i = 0; i < m_size; i++)
+        for (i = 0; i < m_size; ++i)
         {
             if (m_data[i] == v)
                 return i;
@@ -248,7 +248,7 @@ public:
             cmp = CmpFunc(m_data[m], param);
             if (cmp == 0)
                 return m;
-            else if (cmp > 0)
+            if (cmp > 0)
                 l = m - 1;
             else
                 f = m + 1;
@@ -268,7 +268,7 @@ public:
             m = (f + l) / 2;
             if (m_data[m] == key)
                 return m;
-            else if (m_data > key)
+            if (m_data > key)
                 l = m - 1;
             else
                 f = m + 1;
@@ -290,7 +290,7 @@ public:
     {
         if (nr < m_size)
         {
-            for (SizeType i = nr; i < m_size; i++)
+            for (SizeType i = nr; i < m_size; ++i)
                 m_alloc.destroy(&m_data[i]);
         }
         else
@@ -307,7 +307,7 @@ public:
 
         if (nr < m_size)
         {
-            for (i = nr; i < m_size; i++)
+            for (i = nr; i < m_size; ++i)
                 m_data[i].~T();
         }
         else
@@ -384,14 +384,14 @@ public:
 
 protected:
     skArrayBase() :
-        m_data(0),
+        m_data(nullptr),
         m_size(0),
         m_capacity(0)
     {
     }
 
     skArrayBase(const skArrayBase& o) :
-        m_data(0),
+        m_data(nullptr),
         m_size(0),
         m_capacity(0)
     {
@@ -428,7 +428,7 @@ protected:
     {
         if (m_data)
             m_alloc.array_deallocate(m_data, m_capacity);
-        m_data     = 0;
+        m_data     = nullptr;
         m_capacity = 0;
         m_size     = 0;
     }

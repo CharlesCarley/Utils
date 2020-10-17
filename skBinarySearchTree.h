@@ -34,7 +34,7 @@ template <typename T>
 class skBinarySearchTree
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
     class Node
     {
@@ -76,7 +76,7 @@ public:
         Node *    m_left, *m_right;
         ValueType m_data;
 
-        void destruct(void)
+        void destruct(void) const
         {
             if (m_left)
                 delete m_left;
@@ -85,7 +85,7 @@ public:
         }
     };
 
-    SK_DECLARE_TYPE_NAME(Node, Node);
+    SK_DECLARE_TYPE_NAME(Node, Node)
 
     typedef skArray<T>               Array;
     typedef typename Array::Iterator Iterator;
@@ -148,7 +148,7 @@ public:
         {
             if (node->m_data == val)
                 return true;
-            else if (node->m_data < val)
+            if (node->m_data < val)
                 node = node->m_right;
             else
                 node = node->m_left;
@@ -226,7 +226,7 @@ public:
         return m_root ? m_root->m_right : 0;
     }
 
-    SK_INLINE SKsize size(void)
+    SK_INLINE SKsize size(void) const
     {
         return m_size;
     }

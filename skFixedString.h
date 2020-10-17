@@ -31,14 +31,11 @@
 #include "Utils/skArray.h"
 #include "Utils/skHash.h"
 
-
 template <const SKuint16 L>
 class skFixedString
 {
 public:
     typedef char Pointer[L + 1];
-
-
 
 public:
     skFixedString() :
@@ -68,7 +65,6 @@ public:
             m_buffer[m_size] = 0;
     }
 
-
     skFixedString(const char* rhs, SKuint16 size) :
         m_size(0),
         m_hash(-1)
@@ -97,14 +93,12 @@ public:
         }
     }
 
-
-
     void split(skArray<skFixedString<L> >& destination, char condition1, char condition2 = '\0') const
     {
         SKuint16 i, p = 0, t;
         for (i = 0; i < L && i < m_size; ++i)
         {
-            if (m_buffer[i] == condition1 || m_buffer[i] == condition2 )
+            if (m_buffer[i] == condition1 || m_buffer[i] == condition2)
             {
                 skFixedString<L> copy;
                 for (t = p; t < i; ++t)
@@ -123,7 +117,6 @@ public:
         }
     }
 
-
     void append(const char* str)
     {
         int len = (int)strlen(str);
@@ -132,15 +125,13 @@ public:
             push_back(str[a++]);
     }
 
-
     void append(const skFixedString& str)
     {
-        int len = str.m_size;
-        int a   = 0;
+        const int len = str.m_size;
+        int       a   = 0;
         while (a < len)
             push_back(str.m_buffer[a++]);
     }
-
 
     skFixedString& operator=(const skFixedString& rhs)
     {
@@ -218,13 +209,13 @@ public:
         return L;
     }
 
-    SK_INLINE const char operator[](SKuint16 i) const
+    SK_INLINE char operator[](SKuint16 i) const
     {
         SK_ASSERT(i < m_size && i < L);
         return m_buffer[i];
     }
 
-    SK_INLINE const char at(SKuint16 i) const
+    SK_INLINE char at(SKuint16 i) const
     {
         SK_ASSERT(i < m_size && i < L);
         return m_buffer[i];
@@ -268,13 +259,11 @@ private:
     SKuint16       m_size;
     mutable SKhash m_hash;
 
-
-
     void copy(const char* src, SKuint16 size, SKuint16 other = SK_NPOS16)
     {
-        SKuint16 val = skMin(size, skMin(L, other));
-        m_size       = 0;
-        m_hash       = -1;
+        const SKuint16 val = skMin(size, skMin(L, other));
+        m_size             = 0;
+        m_hash             = -1;
 
         while (m_size < val && src[m_size])
         {

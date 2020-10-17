@@ -29,7 +29,7 @@
 #include "skArray.h"
 #include "skHash.h"
 
-template <typename T, typename SizeType=SKsize>
+template <typename T, typename SizeType = SKsize>
 class skHashTableIncrementIterator : public skPointerIncrementIterator<T, SizeType>
 {
 public:
@@ -38,7 +38,6 @@ public:
     typedef typename T::PointerType                 PointerType;
     typedef skPointerIncrementIterator<T, SizeType> BaseType;
 
-    
 public:
     skHashTableIncrementIterator()
     {
@@ -172,7 +171,6 @@ public:
     }
 };
 
-
 // Derived from btHashTable
 // https://github.com/bulletphysics/bullet3/blob/master/src/LinearMath/btHashMap.h
 template <typename Key,
@@ -186,7 +184,7 @@ public:
 
 public:
     typedef skEntry<Key, Value> Pair;
-    SK_DECLARE_TYPE(Pair);
+    SK_DECLARE_TYPE(Pair)
 
     typedef SKsize*                  IndexArray;
     typedef Key                      PairKeyType;
@@ -199,12 +197,10 @@ public:
     typedef skHashTableDecrementIterator<SelfType>       ReverseIterator;
     typedef const skHashTableDecrementIterator<SelfType> ConstReverseIterator;
 
-    // TODO: this needs to use the type defined via template parameters. 
+    // TODO: this needs to use the type defined via template parameters.
     const SKsize npos = SK_NPOS;
 
-
 public:
-
     skHashTable() :
         m_size(0),
         m_capacity(0),
@@ -221,6 +217,7 @@ public:
         m_nptr(0),
         m_bptr(0)
     {
+        reserve(capacity);
     }
 
     skHashTable(const skHashTable& rhs) :
@@ -238,7 +235,7 @@ public:
         clear();
     }
 
-    SelfType& operator=(const SelfType& rhs)
+    skHashTable<Key, Value, Allocator>& operator=(const SelfType& rhs)
     {
         if (this != &rhs)
             copy(rhs);
@@ -293,7 +290,6 @@ public:
         return m_bptr[i].first;
     }
 
-
     Value* get(const Key& key)
     {
         SKsize i = find(key);
@@ -317,9 +313,9 @@ public:
         if (empty())
             return npos;
 
-        SKhash hk = skHash(key);
-        SKhash hr = (hk & (m_capacity - 1));
-        SKsize fh = m_iptr[hr];
+        SKhash       hk = skHash(key);
+        const SKhash hr = hk & (m_capacity - 1);
+        SKsize       fh = m_iptr[hr];
 
         while (fh != npos && hk != m_bptr[fh].hash)
             fh = m_nptr[fh];
@@ -338,8 +334,8 @@ public:
         if (m_size == m_capacity)
             reserve(m_size == 0 ? 32 : m_size * 2);
 
-        SKhash hk = skHash(key);
-        SKhash hr = hk & (m_capacity - 1);
+        SKhash       hk = skHash(key);
+        const SKhash hr = hk & (m_capacity - 1);
 
         m_bptr[m_size] = Pair(key, val, hk);
         m_nptr[m_size] = m_iptr[hr];
@@ -471,7 +467,7 @@ public:
     }
 
 private:
-    void _zeroIndices(SKsize from, SKsize to)
+    void _zeroIndices(SKsize from, SKsize to) const
     {
         if (to <= 0 || from >= to)
             return;
@@ -481,7 +477,6 @@ private:
             m_iptr[i] = m_nptr[i] = npos;
         while (++i < to);
     }
-
 
     void copy(const SelfType& rhs)
     {
@@ -538,14 +533,12 @@ private:
     IndexAllocator m_ialloc;
 };
 
-
-
 template <typename T, typename Allocator = skAllocator<skEntry<T, bool> > >
 class skHashSet
 {
 public:
     typedef skHashTable<T, bool, Allocator> TableType;
-    SK_DECLARE_REF_TYPE(TableType);
+    SK_DECLARE_REF_TYPE(TableType)
 
     typedef skHashSet<T, Allocator>                            SelfType;
     typedef skPointerIncrementIterator<SelfType, SKsize>       Iterator;

@@ -31,6 +31,7 @@
 class skFileStream : public skStream
 {
 public:
+
     skFileStream();
     skFileStream(const char* path, int mode);
     virtual ~skFileStream();
@@ -47,7 +48,7 @@ public:
 
     inline bool isOpen(void) const
     {
-        return m_handle != 0;
+        return m_handle != nullptr;
     }
 
 private:

@@ -35,7 +35,7 @@ template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skArray : public skArrayBase<T, Allocator>
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
     typedef skArray<T, Allocator>        SelfType;
     typedef skArrayBase<T, Allocator>    BaseType;
@@ -46,7 +46,7 @@ public:
     typedef skPointerDecrementIterator<SelfType, SizeType>       ReverseIterator;
     typedef const skPointerDecrementIterator<SelfType, SizeType> ConstReverseIterator;
 
-    SK_IMPLEMENT_QSORT(T, skArray, SizeType);
+    SK_IMPLEMENT_QSORT(T, skArray, SizeType)
 
 
 public:
@@ -97,7 +97,7 @@ public:
         if (this->m_size > 0)
         {
             this->m_alloc.destroy(&this->m_data[this->m_size]);
-            this->m_size--;
+            --this->m_size;
         }
     }
 

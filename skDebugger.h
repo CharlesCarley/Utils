@@ -90,7 +90,7 @@ private:
 
 
 #ifdef SK_NO_DEBUGGER
-#include <stdio.h>
+#include <cstdio>
 #define skPrintf ::printf
 #else
 #define skPrintf skDebugger::report

@@ -39,8 +39,8 @@ public:
     typedef skPointerDecrementIterator<SelfType>       ReverseIterator;
     typedef const skPointerDecrementIterator<SelfType> ConstReverseIterator;
 
-    SK_DECLARE_TYPE(T);
-    SK_IMPLEMENT_QSORT(T, SelfType, SKuint16);
+    SK_DECLARE_TYPE(T)
+    SK_IMPLEMENT_QSORT(T, SelfType, SKuint16)
 
     const SKuint16 limit = L;
     const SKuint16 npos  = SK_NPOS16;

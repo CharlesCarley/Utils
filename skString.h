@@ -49,27 +49,21 @@ namespace skStringUtils
     extern const SKuint16 BinaryTable[9];
 };  // namespace skStringUtils
 
-
 #define sk_strncpy(dest, size, source, count) skStringUtils::copyn(dest, source, size)
-
-
-
-
 
 class skString
 {
 public:
-    SK_DECLARE_TYPE(char);
-
+    SK_DECLARE_TYPE(char)
 
     typedef skPointerIncrementIterator<skString, SKsize>       Iterator;
     typedef const skPointerIncrementIterator<skString, SKsize> ConstIterator;
     typedef skPointerDecrementIterator<skString, SKsize>       ReverseIterator;
     typedef const skPointerDecrementIterator<skString, SKsize> ConstReverseIterator;
 
-    SK_IMPLEMENT_SORT(ValueType, skString, SKsize);
+    SK_IMPLEMENT_SORT(ValueType, skString, SKsize)
 
-	const SKsize npos = -1;
+    const SKsize npos = -1;
 
 public:
     skString() :
@@ -161,7 +155,7 @@ public:
     SK_INLINE char operator[](SKsize idx) const
     {
         SK_ASSERT(idx != npos);
-        return m_data ? m_data[idx] : 0;
+        return m_data ? m_data[idx] : '\0';
     }
 
     skString& operator=(const skString& rhs);
@@ -174,14 +168,14 @@ public:
     skString  substr(SKsize pos, SKsize nr) const;
     void      substr(skString& dest, SKsize pos, SKsize nr = 0) const;
     void      swap(skString& rhs);
-    SKsize    copy(char* arr, SKsize nr, SKsize offs = 0);
+    SKsize    copy(char* arr, SKsize nr, SKsize offs = 0) const;
     void      split(skArray<skString>& dst, const char* op) const;
     void      toBinary(void);
     void      fromBinary(void);
     void      toHex(void);
     void      fromHex(void);
-    void      encrypt(SKbyte* LB, int b1, SKuint16* UB, int b2);
-    void      decrypt(SKbyte* LB, int b1, SKuint16* UB, int b2);
+    void      encrypt(const SKbyte* lb, int b1, SKuint16* ub, int b2);
+    void      decrypt(const SKbyte* lb, int b1, SKuint16* ub, int b2);
     void      encrypt(const char* password);
     void      decrypt(const char* password);
     void      encrypt(void);
@@ -191,7 +185,7 @@ public:
     void      resize(SKsize nr);
 
     static skString format(const char* fmt, ...);
-    static void     format(skString &dst, const char* fmt, ...);
+    static void     format(skString& dst, const char* fmt, ...);
 
     skString& asHex(void)
     {
@@ -203,7 +197,6 @@ public:
     {
         return append(rhs.c_str(), rhs.size());
     }
-
 
     SK_INLINE ConstPointerType c_str(void) const
     {
@@ -233,7 +226,7 @@ public:
     SK_INLINE char at(SKsize idx) const
     {
         SK_ASSERT(idx != npos);
-        return m_data ? m_data[idx] : 0;
+        return m_data ? m_data[idx] : '\0';
     }
 
     SK_INLINE Iterator iterator(void)
@@ -256,22 +249,22 @@ public:
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
     }
 
-    bool toBoolean(void)
+    bool toBoolean(void) const
     {
         return skStringUtils::toBool(m_data);
     }
 
-    SKint32 toInteger(void)
+    SKint32 toInteger(void) const
     {
         return skStringUtils::toInt(m_data);
     }
 
-    float toFloat(void)
+    float toFloat(void) const
     {
         return skStringUtils::toFloat(m_data);
     }
 
-    double toDouble(void)
+    double toDouble(void) const
     {
         return skStringUtils::toDouble(m_data);
     }
@@ -281,13 +274,11 @@ protected:
     SKsize      m_size, m_capacity;
 
     void alloc(const char* str, SKsize len);
-    void alloc(const char p, SKsize len);
+    void alloc(char p, SKsize len);
     void alloc(SKsize len, const void* p);
 };
 
-
 typedef skArray<skString> skStringArray;
-
 
 SK_INLINE SKhash skHash(const skString& key)
 {

@@ -26,7 +26,6 @@
 #ifndef _skLogger_h_
 #define _skLogger_h_
 
-
 #include "Utils/Config/skConfig.h"
 #include "Utils/skSingleton.h"
 
@@ -44,14 +43,13 @@ enum skLogDetail
 
 enum LogFlag
 {
-    LF_STDOUT   = 1 << 0,
-    LF_VS_DEBUG = 1 << 1,
-    LF_FILE     = 1 << 2,
-    LF_TIMESTAMP= 1 << 3,
-    LF_DETAIL   = 1 << 4,
+    LF_STDOUT    = 1 << 0,
+    LF_VS_DEBUG  = 1 << 1,
+    LF_FILE      = 1 << 2,
+    LF_TIMESTAMP = 1 << 3,
+    LF_DETAIL    = 1 << 4,
     LF_ALL       = LF_STDOUT | LF_VS_DEBUG | LF_TIMESTAMP | LF_DETAIL,
 };
-
 
 class skLogListener
 {
@@ -63,14 +61,13 @@ public:
     {
     }
 
-    virtual void messageLogged(int detail, int setflags, const char *logged, int length ) = 0;
+    virtual void messageLogged(int detail, int setflags, const char* logged, int length) = 0;
 };
-
 
 class skLogger : public skSingleton<skLogger>
 {
 public:
-    SK_DECLARE_SINGLETON(skLogger);
+    SK_DECLARE_SINGLETON(skLogger)
 
 private:
     skStream*      m_stream;    // Open ors LF_FILE
@@ -81,7 +78,6 @@ private:
 public:
     skLogger();
     ~skLogger();
-
 
     inline void setDetail(int val)
     {
@@ -103,13 +99,12 @@ public:
         return m_flags;
     }
 
-
     inline void clearFlag(int flag)
     {
         m_flags &= ~flag;
     }
 
-    void setListener(skLogListener *listener)
+    void setListener(skLogListener* listener)
     {
         m_listener = listener;
     }
@@ -123,6 +118,6 @@ private:
     void writeMessage(const char* msg, SKint32 len = 0) const;
 };
 
-extern void skLogf(SKint32 detail, const char* fmt, ...);
+extern void skLogf(SKint32 detail, const char* format, ...);
 
 #endif  //_skLogger_h_

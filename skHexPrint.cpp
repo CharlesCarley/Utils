@@ -51,7 +51,7 @@ namespace skHexPrint
         union {
             SKuint8  b[4];
             SKuint64 i;
-        } cmp;
+        } cmp{};
         cmp.i = mark;
 
         if (!cp || offs == SK_NPOS32 || max == -1)
@@ -65,7 +65,7 @@ namespace skHexPrint
 
             if (offs + j < max)
             {
-                c1 = (SKuint32)cp[offs + j];
+                c1 = (SKuint8)(SKuint32)cp[offs + j];
 
                 if (n)
                 {
@@ -80,7 +80,7 @@ namespace skHexPrint
                     {
                         if (n == 0)
                         {
-                            c2 = (SKuint32)cp[offs + ((j + 1) % 16)];
+                            c2 = (SKuint8)(SKuint32)cp[offs + (j + 1) % 16];
 
                             if ((c1 == cmp.b[1] && c2 == cmp.b[0]) ||
                                 (c1 == cmp.b[0] && c2 == cmp.b[1]))
@@ -99,9 +99,9 @@ namespace skHexPrint
                     {
                         if (n == 0)
                         {
-                            c2 = (SKuint32)cp[offs + ((j + 1) % 16)];
-                            c3 = (SKuint32)cp[offs + ((j + 2) % 16)];
-                            c4 = (SKuint32)cp[offs + ((j + 3) % 16)];
+                            c2 = (SKuint8)(SKuint32)cp[offs + ((j + 1) % 16)];
+                            c3 = (SKuint8)(SKuint32)cp[offs + ((j + 2) % 16)];
+                            c4 = (SKuint8)(SKuint32)cp[offs + ((j + 3) % 16)];
 
                             if ((c1 == cmp.b[3] && c2 == cmp.b[2] && c3 == cmp.b[1] && c4 == cmp.b[0]) ||
                                 (c1 == cmp.b[0] && c2 == cmp.b[1] && c3 == cmp.b[2] && c4 == cmp.b[3]))
@@ -133,7 +133,7 @@ namespace skHexPrint
         SKuint8 c;
         SKsize  j;
 
-        if (!cp || offs == -1 || max == -1)
+        if (!cp || offs == SK_NPOS || max == SK_NPOS)
             return;
 
 
@@ -196,7 +196,7 @@ namespace skHexPrint
 
     void dumpHex(void* ptr, SKsize offset, SKsize len, int flags, SKuint64 mark, bool nl)
     {
-        if (!ptr || offset == -1 || len == -1)
+        if (!ptr || offset == SK_NPOS || len == SK_NPOS)
             return;
 
         SKsize i;
