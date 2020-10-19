@@ -27,9 +27,8 @@
 #define _skArray_h_
 
 #include "skAllocator.h"
-#include "skSort.h"
 #include "skArrayBase.h"
-
+#include "skSort.h"
 
 template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skArray : public skArrayBase<T, Allocator>
@@ -47,7 +46,6 @@ public:
     typedef const skPointerDecrementIterator<SelfType, SizeType> ConstReverseIterator;
 
     SK_IMPLEMENT_QSORT(T, skArray, SizeType)
-
 
 public:
     skArray() :
@@ -70,15 +68,14 @@ public:
         this->destroy();
     }
 
-
     void push_back(ConstReferenceType v)
     {
         if (this->m_size + 1 <= this->m_alloc.limit)
         {
             // If the size of the array is known ahead of time
-            // and the data is reserved before pushing any elements. 
-            // The reserved size should be plus one. 
-            // This needs to know that the next element to 
+            // and the data is reserved before pushing any elements.
+            // The reserved size should be plus one.
+            // This needs to know that the next element to
             // push will not overflow the array.
             if (this->m_size + 1 > this->m_capacity)
             {
@@ -183,8 +180,7 @@ public:
 
     SK_INLINE ConstReverseIterator reverseIterator(void) const
     {
-        return this->m_data && this->m_size > 0 ? 
-            ConstReverseIterator(this->m_data, this->m_size) : ConstReverseIterator();
+        return this->m_data && this->m_size > 0 ? ConstReverseIterator(this->m_data, this->m_size) : ConstReverseIterator();
     }
 
     skArray& operator=(const skArray& rhs)

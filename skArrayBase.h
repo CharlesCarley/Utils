@@ -36,7 +36,6 @@ class skPointerIncrementIterator
 public:
     SK_DECLARE_REF_TYPE(T)
 
-
 protected:
     mutable PointerType m_beg;
     mutable PointerType m_end;
@@ -125,7 +124,6 @@ class skPointerDecrementIterator
 public:
     SK_DECLARE_REF_TYPE(T)
 
-
 protected:
     mutable PointerType m_beg;
     mutable PointerType m_end;
@@ -138,8 +136,8 @@ protected:
 
 public:
     skPointerDecrementIterator() :
-        m_beg(0),
-        m_end(0)
+        m_beg(nullptr),
+        m_end(nullptr)
     {
     }
 
@@ -208,8 +206,6 @@ public:
     }
 };
 
-
-
 template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skArrayBase
 {
@@ -236,16 +232,16 @@ public:
     // Param should be some common member of the type T.
     // Returns NPOS if not found or the index of the found array element.
     template <typename Param>
-    SizeType findBinary(int (*CmpFunc)(ValueType a, Param b), Param param) const
+    SizeType findBinary(int (*cmpFunc)(ValueType a, Param b), Param param) const
     {
-        if (!CmpFunc)
+        if (!cmpFunc)
             return m_alloc.npos;
 
         SizeType f = 0, l = m_size, m, cmp;
         while (f <= l)
         {
             m   = (f + l) / 2;
-            cmp = CmpFunc(m_data[m], param);
+            cmp = cmpFunc(m_data[m], param);
             if (cmp == 0)
                 return m;
             if (cmp > 0)
@@ -255,7 +251,6 @@ public:
         }
         return m_alloc.npos;
     }
-
 
     SizeType findBinary(ConstReferenceType key) const
     {
@@ -278,11 +273,11 @@ public:
 
     void resizeFast(SizeType nr)
     {
-		// Do not call this with a type T that has 
-        // cleanup code in ~T(). This is intended 
-        // for atomic and simple class types. 
+        // Do not call this with a type T that has
+        // cleanup code in ~T(). This is intended
+        // for atomic and simple class types.
         if (nr > m_size)
-			reserve(nr);
+            reserve(nr);
         m_size = nr;
     }
 
@@ -341,7 +336,6 @@ public:
         }
     }
 
-
     void write(PointerType writeData, SizeType writeDataCount)
     {
         if (m_capacity < writeDataCount)
@@ -350,7 +344,6 @@ public:
         skFill(m_data, writeData, writeDataCount);
         m_size = writeDataCount;
     }
-
 
     SK_INLINE ConstPointerType ptr(void) const
     {
@@ -402,7 +395,6 @@ protected:
     {
     }
 
-
     void replicate(const skArrayBase& rhs)
     {
         if (this != &rhs)
@@ -432,7 +424,6 @@ protected:
         m_capacity = 0;
         m_size     = 0;
     }
-
 
     PointerType m_data;
     SizeType    m_size, m_capacity;

@@ -34,7 +34,7 @@ template <typename T>
 class skQueueIncrementIterator
 {
 public:
-    SK_DECLARE_REF_TYPE(T);
+    SK_DECLARE_REF_TYPE(T)
 
 protected:
     mutable PointerType m_beg;
@@ -91,13 +91,13 @@ public:
     SK_INLINE ReferenceType getNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg++);
+        return *m_beg++;
     }
 
     SK_INLINE ConstReferenceType getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg++);
+        return *m_beg++;
     }
 
     SK_INLINE void next(void) const
@@ -109,13 +109,13 @@ public:
     SK_INLINE ReferenceType peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg);
+        return *m_beg;
     }
 
     SK_INLINE ConstReferenceType peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg);
+        return *m_beg;
     }
 };
 
@@ -123,7 +123,7 @@ template <typename T>
 class skQueueDecrementIterator
 {
 public:
-    SK_DECLARE_REF_TYPE(T);
+    SK_DECLARE_REF_TYPE(T)
 
 protected:
     mutable PointerType m_beg;
@@ -179,13 +179,13 @@ public:
     SK_INLINE ReferenceType getNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg--);
+        return *m_beg--;
     }
 
     SK_INLINE ConstReferenceType getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg--);
+        return *m_beg--;
     }
 
     SK_INLINE void next(void) const
@@ -197,13 +197,13 @@ public:
     SK_INLINE ReferenceType peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg);
+        return *m_beg;
     }
 
     SK_INLINE ConstReferenceType peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
-        return (*m_beg);
+        return *m_beg;
     }
 };
 
@@ -213,7 +213,7 @@ template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skQueue : public skArrayBase<T, Allocator>
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
     typedef skQueue<T, Allocator>                    SelfType;
     typedef skQueueIncrementIterator<SelfType>       Iterator;
@@ -274,9 +274,9 @@ public:
         }
 
         this->m_data[m_back] = value;
-        this->m_size++;
+        ++this->m_size;
 
-        m_back = (m_back + 1) % (this->m_capacity);
+        m_back = (m_back + 1) % this->m_capacity;
     }
 
     ReferenceType pop_front(void)
@@ -287,13 +287,13 @@ public:
     ReferenceType dequeue(void)
     {
         if (m_front >= this->m_capacity)
-            throw(m_front);
+            throw m_front;
 
 
         ReferenceType returnValue = this->m_data[m_front];
 
-        m_front = (m_front + 1) % (this->m_capacity);
-        this->m_size--;
+        m_front = (m_front + 1) % this->m_capacity;
+        --this->m_size;
         return returnValue;
     }
 
@@ -309,15 +309,15 @@ public:
 
     SK_INLINE ReferenceType operator[](SKsize idx)
     {
-        SK_ASSERT(m_data);
-        SK_ASSERT(idx != npos && idx < this->m_capacity);
+        SK_ASSERT(this->m_data);
+        SK_ASSERT(idx != this->npos && idx < this->m_capacity);
         return this->m_data[(m_front + idx) % (this->m_capacity - 1)];
     }
 
     SK_INLINE ConstReferenceType operator[](SKsize idx) const
     {
-        SK_ASSERT(m_data);
-        SK_ASSERT(idx != npos && idx < this->m_capacity);
+        SK_ASSERT(this->m_data);
+        SK_ASSERT(idx != this->npos && idx < this->m_capacity);
         return this->m_data[(m_front + idx) % (this->m_capacity - 1)];
     }
 

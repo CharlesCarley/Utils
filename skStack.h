@@ -34,7 +34,7 @@ template <typename T, typename Allocator = skAllocator<T, SKuint32> >
 class skStack : public skArrayBase<T, Allocator>
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
     typedef skStack<T, Allocator>       SelfType;
     typedef skArrayBase<T, Allocator>   BaseType;
@@ -84,7 +84,7 @@ public:
         if (this->m_size > 0)
         {
             this->m_alloc.destroy(&this->m_data[this->m_size]);
-            this->m_size--;
+            --this->m_size;
         }
     }
 
@@ -132,9 +132,12 @@ public:
         return ConstIterator(this->m_data, this->m_size);
     }
 
-    SelfType& operator=(const SelfType& rhs)
+    skStack<T, Allocator>& operator=(const SelfType& rhs)
     {
-        this->replicate(rhs);
+        if (this != &rhs)
+        {
+            this->replicate(rhs);
+        }
         return *this;
     }
 };

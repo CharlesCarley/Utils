@@ -31,8 +31,6 @@
 #include "skMinMax.h"
 #include "skTraits.h"
 
-
-
 template <typename T, typename UnsignedSizeType, const UnsignedSizeType alloc_limit>
 class skAllocBase
 {
@@ -44,8 +42,6 @@ public:
     static const SizeType npos;
     static const SizeType limit;
 
-
-
     void fill(PointerType dst, ConstPointerType src, const SizeType capacity)
     {
         if (capacity > 0 && capacity < limit && capacity != npos)
@@ -56,7 +52,6 @@ public:
             while (++i < capacity);
         }
     }
-
 
     void construct(PointerType base, ConstReferenceType v)
     {
@@ -120,14 +115,13 @@ const SizeType skAllocBase<T, SizeType, alloc_limit>::limit = alloc_limit;
 template <typename T, typename SizeType, const SizeType alloc_limit>
 const SizeType skAllocBase<T, SizeType, alloc_limit>::npos = SK_MKNPOS(SizeType);
 
-
 template <typename T,
           typename SizeType          = SKsize,
           const SizeType alloc_limit = SK_MKMX(SizeType)>
 class skMallocAllocator : public skAllocBase<T, SizeType, alloc_limit>
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
 public:
     typedef skMallocAllocator<T, SizeType, alloc_limit> SelfType;
@@ -141,11 +135,9 @@ public:
     {
     }
 
-
     ~skMallocAllocator()
     {
     }
-
 
     PointerType allocate(void)
     {
@@ -153,7 +145,6 @@ public:
         this->construct(base);
         return base;
     }
-
 
     void deallocate(PointerType base)
     {
@@ -175,7 +166,7 @@ public:
     {
         this->enforce_limit(capacity);
 
-        PointerType base = reinterpret_cast<PointerType>(skMalloc(sizeof(T) * capacity));
+        PointerType base = static_cast<PointerType>(skMalloc(sizeof(T) * capacity));
         this->construct(base, base + capacity);
         return base;
     }
@@ -184,19 +175,18 @@ public:
     {
         this->enforce_limit(capacity);
 
-        PointerType base = reinterpret_cast<PointerType>(
+        PointerType base = static_cast<PointerType>(
             skMalloc(sizeof(T) * capacity));
 
         this->construct(base, base + capacity, val);
         return base;
     }
 
-
     PointerType array_reallocate(PointerType oldPtr, SizeType capacity, SizeType os)
     {
         this->enforce_limit(capacity);
 
-        PointerType base = reinterpret_cast<PointerType>(
+        PointerType base = static_cast<PointerType>(
             skRealloc(oldPtr, sizeof(T) * capacity));
 
         if (oldPtr)
@@ -225,7 +215,7 @@ template <typename T,
 class skNewAllocator : public skAllocBase<T, SizeType, alloc_limit>
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
 public:
     typedef skNewAllocator<T, SizeType, alloc_limit> SelfType;
@@ -278,7 +268,6 @@ public:
         delete[] base;
     }
 };
-
 
 #if SK_ALLOCATOR == 1
 #define skAllocator skMallocAllocator

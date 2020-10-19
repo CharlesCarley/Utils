@@ -119,7 +119,7 @@ public:
 
     void append(const char* str)
     {
-        int len = (int)strlen(str);
+        const int len = (int)strlen(str);
         int a   = 0;
         while (a < len)
             push_back(str[a++]);

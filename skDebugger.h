@@ -56,8 +56,8 @@ class skDebugger
 public:
     enum Flags
     {
-        DISABLE_COLOR       = (1 << 0),
-        VS_DBG_OUTPUT_PANEL = (1 << 1)
+        DISABLE_COLOR       = 1 << 0,
+        VS_DBG_OUTPUT_PANEL = 1 << 1
     };
 
     static void setPrintFlag(SKuint32 flag);

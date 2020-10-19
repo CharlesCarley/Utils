@@ -34,12 +34,12 @@ namespace skHexPrint
     enum PrintFlags
     {
         PF_NONE       = 0,
-        PF_COLORIZE   = (1 << 0),
-        PF_HEX        = (1 << 1),
-        PF_ASCII      = (1 << 2),
-        PF_ADDRESS    = (1 << 3),
-        PF_FULLADDR   = (1 << 4),
-        PF_DISASEMBLE = (1 << 5),
+        PF_COLORIZE   = 1 << 0,
+        PF_HEX        = 1 << 1,
+        PF_ASCII      = 1 << 2,
+        PF_ADDRESS    = 1 << 3,
+        PF_FULLADDR   = 1 << 4,
+        PF_DISASEMBLE = 1 << 5,
         PF_DEFAULT    = PF_COLORIZE | PF_ADDRESS | PF_HEX | PF_ASCII | PF_FULLADDR,
         PF_HEXDIS     = PF_COLORIZE | PF_HEX,
     };

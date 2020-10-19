@@ -45,7 +45,7 @@ void skDebugger::breakProcess(void)
     if (!isDebugger())
         return;
 #if SK_COMPILER == SK_COMPILER_MSVC
-    ::DebugBreak();
+    DebugBreak();
 #else
     asm("int $3");
 #endif
@@ -93,7 +93,7 @@ void skDebugger::report(const char* format, ...)
 
         if (s1 > 0)
         {
-            buffer = (char*)::malloc((SKsize)s1 + 1);
+            buffer = (char*)malloc((SKsize)s1 + 1);
             if (buffer)
             {
                 va_start(l1, format);
@@ -101,12 +101,12 @@ void skDebugger::report(const char* format, ...)
                 va_end(l1);
 
 #if SK_COMPILER == SK_COMPILER_MSVC
-                if (skPrintFlags & skDebugger::VS_DBG_OUTPUT_PANEL && IsDebuggerPresent())
+                if (skPrintFlags & VS_DBG_OUTPUT_PANEL && IsDebuggerPresent())
                     OutputDebugString(buffer);
                 else
 #endif
                     fprintf(stdout, "%s", buffer);
-                ::free(buffer);
+                free(buffer);
             }
         }
     }
@@ -210,7 +210,7 @@ unsigned char* skDebugger::getColor(skConsoleColorSpace fore, skConsoleColorSpac
 
 void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
 {
-    if ((skPrintFlags & skDebugger::DISABLE_COLOR) != 0)
+    if ((skPrintFlags & DISABLE_COLOR) != 0)
         return;
 
     if (fg < 0 || fg > CS_COLOR_MAX || bg < 0 || bg > CS_COLOR_MAX ||
@@ -227,7 +227,7 @@ void skDebugger::writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg)
     printf("\e[%im", col[0]);
 
 #elif SK_PLATFORM == SK_PLATFORM_WIN32
-    ::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), getColor(m_cacheFore, m_cacheBack));
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), getColor(m_cacheFore, m_cacheBack));
 #else
     // untested
 #endif
@@ -248,7 +248,7 @@ void skDebugger::clear(void)
 
 void skDebugger::pause(void)
 {
-    if ((skPrintFlags & skDebugger::DISABLE_COLOR) == 0)
+    if ((skPrintFlags & DISABLE_COLOR) == 0)
         writeColor(CS_WHITE);
 
     puts("\nPress enter to continue . . .");
@@ -256,7 +256,7 @@ void skDebugger::pause(void)
     (void)getc(stdin);
     for (;;)
     {
-        int ch = getc(stdin);
+        const int ch = getc(stdin);
         if (ch == '\n' || ch == '\r')
             break;
     }

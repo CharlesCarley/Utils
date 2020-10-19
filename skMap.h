@@ -127,15 +127,15 @@ public:
     }
 };
 
-#define _SK_HASHTABLE_POW2(x) \
-    --x;                      \
-    x |= x >> 16;             \
-    x |= x >> 8;              \
-    x |= x >> 4;              \
-    x |= x >> 2;              \
-    x |= x >> 1;              \
-    ++x;
-#define _SK_HASHTABLE_IS_POW2(x) (x && !((x - 1) & x))
+#define SK_HASHTABLE_POW2(x) \
+    --(x);                   \
+    (x) |= (x) >> 16;        \
+    (x) |= (x) >> 8;         \
+    (x) |= (x) >> 4;         \
+    (x) |= (x) >> 2;         \
+    (x) |= (x) >> 1;         \
+    ++(x);
+#define SK_HASHTABLE_IS_POW2(x) ((x) && !(((x)-1) & (x)))
 
 template <typename Key, typename Value>
 class skEntry
@@ -502,9 +502,9 @@ private:
 
     void rehash(SKsize nr)
     {
-        if (!_SK_HASHTABLE_IS_POW2(nr))
+        if (!SK_HASHTABLE_IS_POW2(nr))
         {
-            _SK_HASHTABLE_POW2(nr);
+            SK_HASHTABLE_POW2(nr);
         }
 
         m_bptr = m_alloc.array_reallocate(m_bptr, nr, m_capacity);
