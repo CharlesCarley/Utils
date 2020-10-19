@@ -31,7 +31,6 @@
 #include "Utils/skPlatformHeaders.h"
 #include "Utils/skTimer.h"
 
-
 skLogger::skLogger() :
     m_stream(nullptr),
     m_flags(LF_ALL),
