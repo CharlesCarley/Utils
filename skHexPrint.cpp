@@ -23,8 +23,8 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "skPlatformHeaders.h"
 #include "skHexPrint.h"
+#include "skPlatformHeaders.h"
 
 namespace skHexPrint
 {
@@ -34,29 +34,29 @@ namespace skHexPrint
         PL4 = sizeof(void*) == 4,
     };
 
-
-
     void writeColor(skConsoleColorSpace cs)
     {
         skDebugger::writeColor(cs);
     }
 
-
-
-    void writeHex(char* cp, SKsize offs, SKsize max, int flags, SKuint64 mark)
+    void writeHex(const char*    cp,
+                  SKsize   offs,
+                  SKsize   max,
+                  SKuint64 mark)
     {
         SKuint8 c1, c2, c3, c4;
         SKsize  j, n = 0;
 
-        union {
-            SKuint8  b[4];
+        union
+        {
+            SKuint8 b[4];
             SKuint64 i;
-        } cmp{};
+        } cmp;
+
         cmp.i = mark;
 
-        if (!cp || offs == SK_NPOS32 || max == -1)
+        if (!cp || offs == SK_NPOS32 || max == (SKuint64)-1)
             return;
-
 
         for (j = 0; j < 16; ++j)
         {
@@ -82,8 +82,8 @@ namespace skHexPrint
                         {
                             c2 = (SKuint8)(SKuint32)cp[offs + (j + 1) % 16];
 
-                            if ((c1 == cmp.b[1] && c2 == cmp.b[0]) ||
-                                (c1 == cmp.b[0] && c2 == cmp.b[1]))
+                            if (c1 == cmp.b[1] && c2 == cmp.b[0] ||
+                                c1 == cmp.b[0] && c2 == cmp.b[1])
                             {
                                 n = 1;  // bleed through x times
                                 markColor(1, 1);
@@ -99,12 +99,12 @@ namespace skHexPrint
                     {
                         if (n == 0)
                         {
-                            c2 = (SKuint8)(SKuint32)cp[offs + ((j + 1) % 16)];
-                            c3 = (SKuint8)(SKuint32)cp[offs + ((j + 2) % 16)];
-                            c4 = (SKuint8)(SKuint32)cp[offs + ((j + 3) % 16)];
+                            c2 = (SKuint8)(SKuint32)cp[offs + (j + 1) % 16];
+                            c3 = (SKuint8)(SKuint32)cp[offs + (j + 2) % 16];
+                            c4 = (SKuint8)(SKuint32)cp[offs + (j + 3) % 16];
 
-                            if ((c1 == cmp.b[3] && c2 == cmp.b[2] && c3 == cmp.b[1] && c4 == cmp.b[0]) ||
-                                (c1 == cmp.b[0] && c2 == cmp.b[1] && c3 == cmp.b[2] && c4 == cmp.b[3]))
+                            if (c1 == cmp.b[3] && c2 == cmp.b[2] && c3 == cmp.b[1] && c4 == cmp.b[0] ||
+                                c1 == cmp.b[0] && c2 == cmp.b[1] && c3 == cmp.b[2] && c4 == cmp.b[3])
                             {
                                 n = 3;  // bleed through x times
                                 markColor(1, 1);
@@ -126,9 +126,16 @@ namespace skHexPrint
         writeColor(CS_WHITE);
     }
 
+    void writeHex(const char*  cp,
+                  SKsize size)
+    {
+        dumpHex((const void*)cp, 0, size, PF_DEFAULT, -1);
+    }
 
-
-    void writeAscii(char* cp, SKsize offs, SKsize max, int flags, SKuint64 mark)
+    void writeAscii(const char*    cp,
+                    SKsize   offs,
+                    SKsize   max,
+                    SKuint64 mark)
     {
         SKuint8 c;
         SKsize  j;
@@ -159,9 +166,6 @@ namespace skHexPrint
         writeColor(CS_WHITE);
         printf("|");
     }
-
-
-
     void markColor(SKuint32 c, SKuint64 mark)
     {
         if (c == mark)
@@ -171,8 +175,6 @@ namespace skHexPrint
         else
             writeColor(CS_WHITE);
     }
-
-
 
     void writeAddress(SKsize addr, int flags)
     {
@@ -194,22 +196,27 @@ namespace skHexPrint
     }
 
 
-    void dumpHex(void* ptr, SKsize offset, SKsize len, int flags, SKuint64 mark, bool nl)
+    void dumpHex(const void* ptr,
+                 SKsize      offset,
+                 SKsize      len,
+                 int         flags,
+                 SKuint64    mark,
+                 bool        nl)
     {
         if (!ptr || offset == SK_NPOS || len == SK_NPOS)
             return;
 
         SKsize i;
-        char*  cp = (char*)ptr;
+        const char*  cp = (const char*)ptr;
 
         for (i = 0; i < len; i += 16)
         {
             if (flags & PF_ADDRESS)
                 writeAddress((SKsize)(i + offset), flags);
             if (flags & PF_HEX)
-                writeHex(cp, i, len, flags, mark);
+                writeHex(cp, i, len, mark);
             if (flags & PF_ASCII)
-                writeAscii(cp, i, len, flags, mark);
+                writeAscii(cp, i, len, mark);
             if (nl)
                 printf("\n");
         }

@@ -47,10 +47,12 @@ namespace skHexPrint
     extern void writeColor(skConsoleColorSpace cs);
     extern void writeAddress(SKsize addr, int flags = 0);
 
-    extern void dumpHex(void* ptr, SKsize offset, SKsize len, int flags = PF_DEFAULT, SKuint64 mark = -1, bool nl = true);
+    extern void dumpHex(const void* ptr, SKsize offset, SKsize len, int flags = PF_DEFAULT, SKuint64 mark = -1, bool nl = true);
     extern void markColor(SKuint32 c, SKuint64 mark);
-    extern void writeAscii(char* cp, SKsize offs, SKsize max, int flags, SKuint64 mark);
-    extern void writeHex(char* cp, SKsize offs, SKsize max, int flags, SKuint64 mark);
+    extern void writeAscii(const char* cp, SKsize offs, SKsize max, SKuint64 mark);
+    extern void writeHex(const char* cp, SKsize offs, SKsize max, SKuint64 mark);
+    extern void writeHex(const char* cp, SKsize size);
+
 }  // namespace skHexPrint
 
 #endif  //_skHexPrint_h_
