@@ -31,11 +31,11 @@
 #include "skMinMax.h"
 #include "skTraits.h"
 
-template <typename T, typename UnsignedSizeType, const UnsignedSizeType alloc_limit>
+template <typename T, typename UnsignedSizeType, const UnsignedSizeType AllocLimit>
 class skAllocBase
 {
 public:
-    SK_DECLARE_TYPE(T);
+    SK_DECLARE_TYPE(T)
 
     typedef UnsignedSizeType SizeType;
 
@@ -110,21 +110,21 @@ protected:
     }
 };
 
-template <typename T, typename SizeType, const SizeType alloc_limit>
-const SizeType skAllocBase<T, SizeType, alloc_limit>::limit = alloc_limit;
-template <typename T, typename SizeType, const SizeType alloc_limit>
-const SizeType skAllocBase<T, SizeType, alloc_limit>::npos = SK_MKNPOS(SizeType);
+template <typename T, typename SizeType, const SizeType AllocLimit>
+const SizeType skAllocBase<T, SizeType, AllocLimit>::limit = AllocLimit;
+template <typename T, typename SizeType, const SizeType AllocLimit>
+const SizeType skAllocBase<T, SizeType, AllocLimit>::npos = SK_MKNPOS(SizeType);
 
 template <typename T,
           typename SizeType          = SKsize,
-          const SizeType alloc_limit = SK_MKMX(SizeType)>
-class skMallocAllocator : public skAllocBase<T, SizeType, alloc_limit>
+          const SizeType AllocLimit = SK_MKMX(SizeType)>
+class skMallocAllocator : public skAllocBase<T, SizeType, AllocLimit>
 {
 public:
     SK_DECLARE_TYPE(T)
 
 public:
-    typedef skMallocAllocator<T, SizeType, alloc_limit> SelfType;
+    typedef skMallocAllocator<T, SizeType, AllocLimit> SelfType;
 
 public:
     explicit skMallocAllocator()
@@ -141,7 +141,7 @@ public:
 
     PointerType allocate(void)
     {
-        PointerType base = reinterpret_cast<PointerType>(skMalloc(sizeof(T)));
+        PointerType base = static_cast<PointerType>(skMalloc(sizeof(T)));
         this->construct(base);
         return base;
     }
@@ -154,7 +154,7 @@ public:
 
     PointerType allocate_base(void)
     {
-        return reinterpret_cast<PointerType>(skMalloc(sizeof(T)));
+        return static_cast<PointerType>(skMalloc(sizeof(T)));
     }
 
     void deallocate_base(PointerType& base)
