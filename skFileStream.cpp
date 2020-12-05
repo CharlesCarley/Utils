@@ -23,13 +23,11 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include <cstdio>
-#include <cstdarg>
 #include "skFileStream.h"
+#include <cstdarg>
+#include <cstdio>
 #include "skMinMax.h"
 #include "skPlatformHeaders.h"
-
-
 
 skFileStream::skFileStream() :
     m_handle(0)
@@ -42,7 +40,6 @@ skFileStream::skFileStream(const char* path, int mode) :
     open(path, mode);
 }
 
-
 skFileStream::~skFileStream()
 {
     skFileStream::close();
@@ -54,7 +51,7 @@ void skFileStream::open(const char* path, int mode)
     {
         if (isOpen())
             close();
- 
+
         m_mode = mode;
         if (m_mode == READ)
             m_handle = fopen(path, "rb");
@@ -81,8 +78,6 @@ void skFileStream::close(void)
     m_mode = SK_NPOS32;
 }
 
-
-
 bool skFileStream::eof(void) const
 {
     if (!isOpen())
@@ -98,7 +93,6 @@ SKsize skFileStream::read(void* dst, SKsize nr) const
 
     return fread(dst, 1, nr, static_cast<FILE*>(m_handle));
 }
-
 
 bool skFileStream::seek(SKint64 offs, SKsize dir)
 {
@@ -118,7 +112,6 @@ bool skFileStream::seek(SKint64 offs, SKsize dir)
     return result;
 }
 
-
 SKsize skFileStream::write(const void* src, SKsize nr)
 {
     if (!src || nr <= 0 || !isOpen() || !canWrite())
@@ -127,17 +120,14 @@ SKsize skFileStream::write(const void* src, SKsize nr)
     return fwrite(src, 1, nr, static_cast<FILE*>(m_handle));
 }
 
-
 SKsize skFileStream::position(void) const
 {
     return isOpen() ? (SKsize)ftell(static_cast<FILE*>(m_handle)) : SK_NPOS;
 }
 
-
 SKsize skFileStream::size(void) const
 {
     SKsize size = SK_NPOS;
-
     if (isOpen())
     {
         FILE* fp  = static_cast<FILE*>(m_handle);

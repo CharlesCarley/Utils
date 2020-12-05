@@ -24,9 +24,9 @@
 -------------------------------------------------------------------------------
 */
 #include "Utils/skLogger.h"
-#include "Utils/skDebugger.h"
 #include <cstdarg>
 #include <cstdio>
+#include "Utils/skDebugger.h"
 #include "Utils/skFileStream.h"
 #include "Utils/skPlatformHeaders.h"
 #include "Utils/skTimer.h"
@@ -45,15 +45,12 @@ skLogger::~skLogger()
     m_stream = nullptr;
 }
 
-
-
 void skLogger::open(const char* logname)
 {
     m_flags |= LF_FILE;
     delete m_stream;
     m_stream = new skFileStream(logname, skStream::WRITE);
 }
-
 
 void skLogger::writeDetail(SKint32 detail) const
 {
@@ -84,7 +81,6 @@ void skLogger::writeDetail(SKint32 detail) const
     writeMessage(ts, 4);
 }
 
-
 void skLogger::writeTimeStamp() const
 {
     char       ts[33];
@@ -92,7 +88,6 @@ void skLogger::writeTimeStamp() const
     ts[br]        = 0;
     writeMessage(ts, br);
 }
-
 
 void skLogger::writeMessage(const char* msg, SKint32 len) const
 {
@@ -125,7 +120,6 @@ void skLogger::writeMessage(const char* msg, SKint32 len) const
 #endif
 }
 
-
 void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
 {
     if (msg && m_detail >= detail)
@@ -143,12 +137,11 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
             writeDetail(detail);
 
         writeMessage(msg, len);
-        
+
         if (detail <= LD_WARN)
             skDebugger::writeColor(CS_WHITE);
     }
 }
-
 
 void skLogf(SKint32 detail, const char* format, ...)
 {

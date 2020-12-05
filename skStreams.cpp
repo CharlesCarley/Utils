@@ -23,11 +23,10 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#include "skStreams.h"
 #include <cstdarg>
 #include <cstdio>
-#include "skStreams.h"
 #include "skPlatformHeaders.h"
-
 
 skStream::skStream() :
     m_mode(UNDEFINED)

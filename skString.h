@@ -174,8 +174,8 @@ public:
     void      fromBinary(void);
     void      toHex(void);
     void      fromHex(void);
-    void      encrypt(const SKbyte* lb, int b1, SKuint16* ub, int b2);
-    void      decrypt(const SKbyte* lb, int b1, SKuint16* ub, int b2);
+    void      encrypt(const SKbyte* lb, int b1, const SKuint16* ub, int b2);
+    void      decrypt(const SKbyte* lb, int b1, const SKuint16* ub, int b2);
     void      encrypt(const char* password);
     void      decrypt(const char* password);
     void      encrypt(void);
