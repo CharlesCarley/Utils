@@ -176,7 +176,6 @@ void skString::resize(SKsize nr)
     m_size = nr;
 }
 
-
 bool skString::equals(const skString& rhs) const
 {
     return !skStringUtils::equals(m_data, rhs.m_data);
@@ -186,12 +185,13 @@ void skString::alloc(const char* str, SKsize len)
 {
     if (!str)
         return;
-    if (!len)
+
+    if (!len)  // == 0 by default
         len = skStringUtils::length(str);
+
     if (len > 0)
     {
         reserve(len);
-
         if (m_data)
         {
             skStringUtils::copyn(m_data, str, len);
