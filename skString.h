@@ -183,7 +183,8 @@ public:
     void      clear(void);
     void      reserve(SKsize nr);
     void      resize(SKsize nr);
-
+    void      assign(const skString& rhs);
+    
     static skString format(const char* fmt, ...);
     static void     format(skString& dst, const char* fmt, ...);
 

@@ -148,6 +148,25 @@ void skString::reserve(SKsize nr)
     }
 }
 
+void skString::assign(const skString& rhs)
+{
+    if (rhs.empty())
+    {
+        clear();
+        return;
+    }
+
+    if (m_size < rhs.size())
+        resize(rhs.size());
+
+    SK_ASSERT(m_data);
+    if (!m_data)
+        return;
+
+    skMemcpy(m_data, rhs.m_data, m_size);
+    m_data[m_size] = 0;
+}
+
 void skString::resize(SKsize nr)
 {
     if (nr < m_size)
