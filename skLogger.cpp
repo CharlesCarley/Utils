@@ -48,7 +48,8 @@ skLogger::~skLogger()
 void skLogger::open(const char* logname)
 {
     m_flags |= LF_FILE;
-    delete m_stream;
+    if (m_stream)
+        delete m_stream;
     m_stream = new skFileStream(logname, skStream::WRITE);
 }
 
