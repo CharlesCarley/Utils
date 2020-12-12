@@ -63,7 +63,8 @@ public:
 
     SK_IMPLEMENT_SORT(ValueType, skString, SKsize)
 
-    const SKsize npos = -1;
+    static const SKsize npos;
+    static const skString Blank;
 
 public:
     skString() :

@@ -119,6 +119,9 @@ namespace skStringUtils
     const SKuint16 BinaryTable[9] = {256, 128, 64, 32, 16, 8, 4, 2, 1};
 }  // namespace skStringUtils
 
+const SKsize   skString::npos  = -1;
+const skString skString::Blank = skString();
+
 void skString::clear(void)
 {
     if (m_data)
