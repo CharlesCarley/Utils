@@ -30,7 +30,9 @@ using namespace skCommandLine;
 
 Parser::Parser() :
     m_base(0),
-    m_maxHelp(0)
+    m_maxHelp(0),
+    m_required(0),
+    m_used(0)
 {
 }
 
@@ -64,9 +66,10 @@ int Parser::parse(int argc, char **argv)
     m_program.clear();
     m_program.append(argv[0]);
     m_base = getBaseName(argv[0]);
-
+    m_used = 0;
     m_scanner.clear();
 
+    // it's easier to parse it as a single string
     for (int i = 1; i < argc; ++i)
         m_scanner.append(argv[i]);
 
@@ -78,7 +81,7 @@ int Parser::parse(int argc, char **argv)
 
         if (a.getType() == TOK_ERROR)
         {
-            skLogf(LD_ERROR, "\nError %s\n\n", a.getValue().c_str());
+            skLogf(LD_ERROR, "\nunknown error %s\n\n", a.getValue().c_str());
             usage();
             return -1;
         }
@@ -90,7 +93,7 @@ int Parser::parse(int argc, char **argv)
 
             if (a.getType() == TOK_NEXT || a.getType() == TOK_EOS)
             {
-                skLogf(LD_ERROR, "Expected a switch argument\n");
+                skLogf(LD_ERROR, "expected a switch value to follow '-'\n");
                 usage();
                 return -1;
             }
@@ -115,6 +118,9 @@ int Parser::parse(int argc, char **argv)
                     ParseOption *opt = m_switches.at(pos);
                     opt->makePresent();
 
+                    if (!opt->isOptional())
+                        m_used++;
+
                     if (opt->getArgCount() > 0)
                     {
                         // parse
@@ -125,7 +131,7 @@ int Parser::parse(int argc, char **argv)
                             if (a.getValue().empty())
                             {
                                 skLogf(LD_ERROR,
-                                       "Missing argument for option '%s'\n",
+                                       "missing argument for option '%s'\n",
                                        opt->getSwitch().name);
                                 usage();
                                 return -1;
@@ -137,7 +143,7 @@ int Parser::parse(int argc, char **argv)
                         if (i != opt->getArgCount())
                         {
                             skLogf(LD_ERROR,
-                                   "Not all arguments converted when parsing switch '%s'\n",
+                                   "not all arguments converted when parsing switch '%s'\n",
                                    opt->getSwitch().name);
                             usage();
                             return -1;
@@ -152,18 +158,25 @@ int Parser::parse(int argc, char **argv)
         {
             if (type != TOK_EOS)
             {
-                skLogf(LD_ERROR, "unknown option");
+                skLogf(LD_ERROR, "unknown option '%s'\n", a.getValue().c_str());
                 usage();
                 return -1;
             }
         }
+    }
+
+    if (m_used != m_required)
+    {
+        skLogf(LD_ERROR, "missing required options.\n");
+        usage();
+        return -1;
     }
     return 0;
 }
 
 void Parser::logInput()
 {
-    skLogf(LD_INFO, "\n%s %s\n\n", getBaseProgram().c_str(), m_scanner.getValue().c_str());
+    skLogf(LD_INFO, "\n ~> %s %s\n\n", getBaseProgram().c_str(), m_scanner.getValue().c_str());
 }
 
 const skString &Parser::getProgram()
@@ -237,7 +250,7 @@ bool Parser::isPresent(const skString &name)
 ParseOption *Parser::getOption(const skString &name)
 {
     ParseOption *rval = nullptr;
-    SKsize pos = m_switches.find(name);
+    SKsize       pos  = m_switches.find(name);
     if (pos != SK_NPOS)
         rval = m_switches.at(pos);
     return rval;
@@ -245,6 +258,8 @@ ParseOption *Parser::getOption(const skString &name)
 
 void Parser::usage()
 {
+
+    logInput();
     skLogf(LD_INFO, "Usage: %s <options>\n\n", getBaseProgram().c_str());
 
     skLogf(LD_INFO, "  <options>: ");
@@ -300,5 +315,10 @@ void Parser::usage()
 void Parser::initializeSwitches(const Switch *switches, SKsize count)
 {
     for (SKsize i = 0; i < count; ++i)
+    {
+        if (!switches[i].optional)
+            m_required++;
+
         addOption(switches[i]);
+    }
 }

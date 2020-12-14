@@ -46,7 +46,8 @@ namespace skCommandLine
         skString m_program;
         int      m_base;
         int      m_maxHelp;
-
+        int      m_required;
+        int      m_used;
         Scanner  m_scanner;
         Switches m_switches;
         List     m_argList;
