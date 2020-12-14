@@ -120,7 +120,7 @@ namespace skCommandLine
         inline const skString &getValue(SKsize idx = 0)
         {
             if (idx < m_value.size())
-                return m_value[idx];
+                return m_value[(SKuint32)idx];
             return skString::Blank;
         }
 

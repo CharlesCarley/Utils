@@ -299,7 +299,7 @@ void Parser::usage()
         int space = m_maxHelp;
         if (sw.longSwitch != nullptr)
         {
-            space -= skStringUtils::length(sw.longSwitch);
+            space -= (int)skStringUtils::length(sw.longSwitch);
             skLogf(LD_INFO, "--%s", sw.longSwitch);
         }
 
