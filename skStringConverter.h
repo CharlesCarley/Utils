@@ -39,8 +39,8 @@ public:
     static void   toString(skString& dest, float v);
     static void   toString(skString& dest, double v);
     static void   toString(skString& dest, bool v);
-    static int    toInt(const skString& src);
-    static long   toLong(const skString& src);
+    static int    toInt(const skString& src, int base = 10);
+    static long   toLong(const skString& src, int base = 10);
     static float  toFloat(const skString& src);
     static double toDouble(const skString& src);
     static bool   toBool(const skString& src);

@@ -27,9 +27,9 @@
 #define _skCommandLineOption_h_
 
 #include "Utils/skArray.h"
-#include "Utils/skStringConverter.h"
 #include "Utils/skMap.h"
 #include "Utils/skString.h"
+#include "Utils/skStringConverter.h"
 
 namespace skCommandLine
 {
@@ -101,10 +101,10 @@ namespace skCommandLine
             return m_value;
         }
 
-        inline const skString &getValue()
+        inline const skString &getValue(SKsize idx = 0)
         {
-            if (m_value.size() > 0)
-                return m_value[0];
+            if (idx < m_value.size())
+                return m_value[idx];
             return skString::Blank;
         }
 
@@ -114,11 +114,10 @@ namespace skCommandLine
                 m_value[0] = str;
         }
 
-        int getInt()
+        int getInt(SKsize idx = 0, int base=10)
         {
-            return skStringConverter::toInt(getValue());
+            return skStringConverter::toInt(getValue(idx), base);
         }
-
 
         inline void setValue(SKsize i, const skString &str)
         {

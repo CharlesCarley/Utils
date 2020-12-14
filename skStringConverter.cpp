@@ -57,14 +57,14 @@ void skStringConverter::toString(skString& dest, bool v)
     dest = skString::format("%s", v ? "true" : "false");
 }
 
-int skStringConverter::toInt(const skString& src)
+int skStringConverter::toInt(const skString& src, int base)
 {
-    return skStringUtils::toInt(src.c_str());
+    return skStringUtils::toInt(src.c_str(), base);
 }
 
-long skStringConverter::toLong(const skString& src)
+long skStringConverter::toLong(const skString& src, int base)
 {
-    return skStringUtils::toLong(src.c_str());
+    return skStringUtils::toLong(src.c_str(), base);
 }
 
 float skStringConverter::toFloat(const skString& src)

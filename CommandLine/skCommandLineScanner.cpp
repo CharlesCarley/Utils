@@ -73,6 +73,19 @@ void Scanner::lex(Token &tok)
     while (m_pos < m_value.size())
     {
         char ch = m_value.at(m_pos++);
+        if (ch == '-')
+        {
+            char nx = m_value.at(m_pos);
+            if (nx >='0' && nx <= '9')
+            {
+                tok.append(ch);
+                continue;
+
+            }
+        }
+
+
+
         switch (ch)
         {
         case '-':

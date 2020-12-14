@@ -249,7 +249,7 @@ namespace skHexPrint
                 writeAddress((SKsize)(i + offset), flags);
             if (flags & PF_HEX)
             {
-                if (flags & PF_COLORIZE && mark != -1)
+                if (flags & PF_COLORIZE)
                     writeHex(cp, i, len, mark, flags);
                 else
                     writeHex(cp, i, len, flags);

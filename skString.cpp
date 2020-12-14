@@ -36,14 +36,18 @@ namespace skStringUtils
         return equals(in, "true") == 0 || equals(in, "yes") == 0 || equals(in, "1") == 0;
     }
 
-    long toLong(const char* in)
+    long toLong(const char* in, int base)
     {
-        return ::atol(in);
+        if (in && *in)
+            return (long)std::strtol(in, nullptr, base);
+        return -1;
     }
 
-    int toInt(const char* in)
+    int toInt(const char* in, int base)
     {
-        return ::atoi(in);
+        if (in && *in)
+            return (int)std::strtol(in, nullptr, base);
+        return -1;
     }
 
     float toFloat(const char* in)
@@ -121,6 +125,42 @@ namespace skStringUtils
 
 const SKsize   skString::npos  = -1;
 const skString skString::Blank = skString();
+
+skString::skString() :
+    m_data(0),
+    m_size(0),
+    m_capacity(0)
+{
+}
+
+skString::skString(const ValueType* str, SKsize len) :
+    m_data(0),
+    m_size(0),
+    m_capacity(0)
+{
+    alloc(str, len);
+}
+
+skString::skString(const skString& str) :
+    m_data(0),
+    m_size(0),
+    m_capacity(0)
+{
+    alloc(str.c_str(), str.size());
+}
+
+skString::skString(const char ch, SKsize nr) :
+    m_data(0),
+    m_size(0),
+    m_capacity(0)
+{
+    alloc(ch, nr);
+}
+
+skString::~skString()
+{
+    clear();
+}
 
 void skString::clear(void)
 {

@@ -40,8 +40,8 @@ namespace skStringUtils
     extern SKsize equalsn(const char* a, const char* b, SKsize n);
 
     extern bool   toBool(const char* in);
-    extern int    toInt(const char* in);
-    extern long   toLong(const char* in);
+    extern int    toInt(const char* in, int base = 10);
+    extern long   toLong(const char* in, int base = 10);
     extern float  toFloat(const char* in);
     extern double toDouble(const char* in);
 
@@ -63,45 +63,16 @@ public:
 
     SK_IMPLEMENT_SORT(ValueType, skString, SKsize)
 
-    static const SKsize npos;
+    static const SKsize   npos;
     static const skString Blank;
 
 public:
-    skString() :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
-    {
-    }
+    skString();
+    skString(const ValueType* str, SKsize len = 0);
+    skString(const skString& str);
+    skString(const char ch, SKsize nr);
 
-    skString(const ValueType* str, SKsize len = 0) :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
-    {
-        alloc(str, len);
-    }
-
-    skString(const skString& str) :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
-    {
-        alloc(str.c_str(), str.size());
-    }
-
-    skString(const char ch, SKsize nr) :
-        m_data(0),
-        m_size(0),
-        m_capacity(0)
-    {
-        alloc(ch, nr);
-    }
-
-    ~skString()
-    {
-        clear();
-    }
+    ~skString();
 
     SK_INLINE bool operator==(const skString& rhs) const
     {
