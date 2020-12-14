@@ -39,17 +39,18 @@ namespace skHexPrint
         skDebugger::writeColor(cs);
     }
 
-    void writeHex(const char*    cp,
-                  SKsize   offs,
-                  SKsize   max,
-                  SKuint64 mark)
+    void writeHex(const char* cp,
+                  SKsize      offs,
+                  SKsize      max,
+                  SKuint64    mark,
+                  SKuint32    flags)
     {
         SKuint8 c1, c2, c3, c4;
         SKsize  j, n = 0;
 
         union
         {
-            SKuint8 b[4];
+            SKuint8  b[4];
             SKuint64 i;
         } cmp;
 
@@ -126,16 +127,47 @@ namespace skHexPrint
         writeColor(CS_WHITE);
     }
 
-    void writeHex(const char*  cp,
-                  SKsize size)
+
+    
+    void writeHex(const char* cp,
+                  SKsize      offs,
+                  SKsize      max,
+                  SKuint32    flags)
+    {
+        SKuint8 c1;
+        SKsize  j, n = 0;
+
+        if (!cp || offs == SK_NPOS32 || max == (SKuint64)-1)
+            return;
+
+        for (j = 0; j < 16; ++j)
+        {
+            if (j % 8 == 0)
+                printf(" ");
+
+            if (offs + j < max)
+            {
+                c1 = (SKuint8)(SKuint32)cp[offs + j];
+                printf("%02X ", c1);
+            }
+            else
+                printf("   ");
+        }
+
+        writeColor(CS_WHITE);
+    }
+
+    void writeHex(const char* cp,
+                  SKsize      size)
     {
         dumpHex((const void*)cp, 0, size, PF_DEFAULT, -1);
     }
 
-    void writeAscii(const char*    cp,
-                    SKsize   offs,
-                    SKsize   max,
-                    SKuint64 mark)
+    void writeAscii(const char* cp,
+                    SKsize      offs,
+                    SKsize      max,
+                    SKuint64    mark,
+                    SKuint32    flags)
     {
         SKuint8 c;
         SKsize  j;
@@ -143,8 +175,9 @@ namespace skHexPrint
         if (!cp || offs == SK_NPOS || max == SK_NPOS)
             return;
 
+        if (flags & PF_COLORIZE)
+            writeColor(CS_WHITE);
 
-        writeColor(CS_WHITE);
         printf(" |");
         for (j = 0; j < 16; ++j)
         {
@@ -152,8 +185,8 @@ namespace skHexPrint
             {
                 c = (SKuint8)cp[offs + j];
 
-
-                markColor(c, mark);
+                if (flags & PF_COLORIZE)
+                    markColor(c, mark);
                 if (c >= 0x20 && c < 0x7F)
                     printf("%c", c);
                 else
@@ -163,7 +196,8 @@ namespace skHexPrint
                 printf(" ");
         }
 
-        writeColor(CS_WHITE);
+        if (flags & PF_COLORIZE)
+            writeColor(CS_WHITE);
         printf("|");
     }
     void markColor(SKuint32 c, SKuint64 mark)
@@ -178,7 +212,8 @@ namespace skHexPrint
 
     void writeAddress(SKsize addr, int flags)
     {
-        writeColor(CS_LIGHT_GREY);
+        if (flags & PF_COLORIZE)
+            writeColor(CS_LIGHT_GREY);
         if (PL8)
         {
             if (flags & PF_FULLADDR)
@@ -195,7 +230,6 @@ namespace skHexPrint
         }
     }
 
-
     void dumpHex(const void* ptr,
                  SKsize      offset,
                  SKsize      len,
@@ -206,17 +240,22 @@ namespace skHexPrint
         if (!ptr || offset == SK_NPOS || len == SK_NPOS)
             return;
 
-        SKsize i;
-        const char*  cp = (const char*)ptr;
+        SKsize      i;
+        const char* cp = (const char*)ptr;
 
         for (i = 0; i < len; i += 16)
         {
             if (flags & PF_ADDRESS)
                 writeAddress((SKsize)(i + offset), flags);
             if (flags & PF_HEX)
-                writeHex(cp, i, len, mark);
+            {
+                if (flags & PF_COLORIZE && mark != -1)
+                    writeHex(cp, i, len, mark, flags);
+                else
+                    writeHex(cp, i, len, flags);
+            }
             if (flags & PF_ASCII)
-                writeAscii(cp, i, len, mark);
+                writeAscii(cp, i, len, mark, flags);
             if (nl)
                 printf("\n");
         }

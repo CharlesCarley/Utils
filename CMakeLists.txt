@@ -76,6 +76,8 @@ set(Utils_SRC
     skStreams.cpp
     skRandom.cpp
     skTimer.cpp
+    CommandLine/skCommandLineParser.cpp
+    CommandLine/skCommandLineScanner.cpp
 )
 
 set(Utils_HDR
@@ -113,6 +115,10 @@ set(Utils_HDR
     skUserObject.h
     skValue.h
     Config/skConfig.h
+    CommandLine/skCommandLineOption.h
+    CommandLine/skCommandLineParser.h
+    CommandLine/skCommandLineScanner.h
+    CommandLine/skCommandLineToken.h
 )
 
 

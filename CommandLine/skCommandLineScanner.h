@@ -1,7 +1,7 @@
 /*
 -------------------------------------------------------------------------------
 
-    Copyright (c) 2019 Charles Carley.
+    Copyright (c) Charles Carley.
 
     Contributor(s): none yet.
 
@@ -23,33 +23,31 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#ifndef _skHexPrint_h_
-#define _skHexPrint_h_
+#ifndef _skCommandLineScanner_h_
+#define _skCommandLineScanner_h_
 
-#include "Utils/skDebugger.h"
+#include "Utils/CommandLine/skCommandLineToken.h"
 
-
-namespace skHexPrint
+namespace skCommandLine
 {
-    enum PrintFlags
+    class Scanner
     {
-        PF_NONE       = 0,
-        PF_COLORIZE   = 1 << 0,
-        PF_HEX        = 1 << 1,
-        PF_ASCII      = 1 << 2,
-        PF_ADDRESS    = 1 << 3,
-        PF_FULLADDR   = 1 << 4,
-        PF_DISASEMBLE = 1 << 5,
-        PF_DEFAULT    = PF_COLORIZE | PF_ADDRESS | PF_HEX | PF_ASCII | PF_FULLADDR,
-        PF_HEXDIS     = PF_COLORIZE | PF_HEX,
+    private:
+        skString m_value;
+        SKsize   m_pos;
+
+    public:
+        Scanner();
+        void clear();
+        void lex(Token &tok);
+
+        void append(const char *arg);
+
+        inline const skString &getValue()
+        {
+            return m_value;
+        }
     };
+}  // namespace skCommandLine
 
-    extern void writeColor(skConsoleColorSpace cs);
-    
-    extern void dumpHex(const void* ptr, SKsize offset, SKsize len, int flags = PF_DEFAULT, SKuint64 mark = -1, bool nl = true);
-    extern void markColor(SKuint32 c, SKuint64 mark);
-    extern void writeHex(const char* cp, SKsize size);
-
-}  // namespace skHexPrint
-
-#endif  //_skHexPrint_h_
+#endif  // !_skCommandLineScanner_h_
