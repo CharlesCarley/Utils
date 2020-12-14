@@ -76,15 +76,12 @@ void Scanner::lex(Token &tok)
         if (ch == '-')
         {
             char nx = m_value.at(m_pos);
-            if (nx >='0' && nx <= '9')
+            if (nx >= '0' && nx <= '9')
             {
                 tok.append(ch);
                 continue;
-
             }
         }
-
-
 
         switch (ch)
         {

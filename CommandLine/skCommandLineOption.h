@@ -33,14 +33,30 @@
 
 namespace skCommandLine
 {
+    /// <summary>
+    /// Represents a command line switch
+    /// </summary>
     struct Switch
     {
+        /// Switch name
         const char *name;
-        char        shortSwitch;
+
+        /// Short switch (-[a-zA-Z]+)
+        /// A value of 0 means unused
+        char shortSwitch;
+
+        // Long switch (--[.]+)
+        // A value of null means unused
         const char *longSwitch;
+
+        /// A brief description for the -h, --help builtin option
         const char *description;
-        bool        isOptional;
-        int         argCount;
+
+        /// Means it's an optional switch
+        bool optional;
+
+        /// Defines the number of required arguments
+        int argCount;
     };
 
     class ParseOption
@@ -73,7 +89,7 @@ namespace skCommandLine
 
         inline bool isOptional()
         {
-            return m_switch.isOptional;
+            return m_switch.optional;
         }
 
         inline bool isPresent()
@@ -114,9 +130,14 @@ namespace skCommandLine
                 m_value[0] = str;
         }
 
-        int getInt(SKsize idx = 0, int base=10)
+        int getInt(SKsize idx = 0, int base = 10)
         {
             return skStringConverter::toInt(getValue(idx), base);
+        }
+
+        SKint64 getInt64(SKsize idx = 0, int base = 10)
+        {
+            return skStringConverter::toInt64(getValue(idx), base);
         }
 
         inline void setValue(SKsize i, const skString &str)

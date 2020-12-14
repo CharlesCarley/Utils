@@ -62,6 +62,11 @@ int skStringConverter::toInt(const skString& src, int base)
     return skStringUtils::toInt(src.c_str(), base);
 }
 
+SKint64 skStringConverter::toInt64(const skString& src, int base)
+{
+    return skStringUtils::toInt64(src.c_str(), base);
+}
+
 long skStringConverter::toLong(const skString& src, int base)
 {
     return skStringUtils::toLong(src.c_str(), base);

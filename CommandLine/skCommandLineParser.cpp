@@ -237,7 +237,6 @@ bool Parser::isPresent(const skString &name)
 ParseOption *Parser::getOption(const skString &name)
 {
     ParseOption *rval = nullptr;
-
     SKsize pos = m_switches.find(name);
     if (pos != SK_NPOS)
         rval = m_switches.at(pos);
@@ -263,7 +262,7 @@ void Parser::usage()
         ParseOption * opt = it.getNext();
         const Switch &sw  = opt->getSwitch();
 
-        if (!sw.isOptional)
+        if (!sw.optional)
             skLogf(LD_INFO, "!, ");
         else
             skLogf(LD_INFO, "    ");

@@ -43,6 +43,13 @@ namespace skStringUtils
         return -1;
     }
 
+    SKint64 toInt64(const char* in, int base)
+    {
+        if (in && *in)
+            return (SKint64)std::strtoll(in, nullptr, base);
+        return -1;
+    }
+
     int toInt(const char* in, int base)
     {
         if (in && *in)
