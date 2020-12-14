@@ -25,6 +25,7 @@
 */
 #include "skCommandLineParser.h"
 #include "Utils/skLogger.h"
+#include "Utils/skDebugger.h"
 
 using namespace skCommandLine;
 
@@ -258,10 +259,12 @@ ParseOption *Parser::getOption(const skString &name)
 
 void Parser::usage()
 {
-
+    skLogger *log = skLogger::getSingletonPtr();
+    skDebugger::writeColor(CS_DARKYELLOW);
     logInput();
-    skLogf(LD_INFO, "Usage: %s <options>\n\n", getBaseProgram().c_str());
+    skDebugger::writeColor(CS_WHITE);
 
+    skLogf(LD_INFO, "Usage: %s <options>\n\n", getBaseProgram().c_str());
     skLogf(LD_INFO, "  <options>: ");
     skLogf(LD_INFO, "<!> == required\n\n");
     skLogf(LD_INFO, "    -h, --help");
@@ -303,9 +306,13 @@ void Parser::usage()
         for (int i = 0; i < space; i++)
             skLogf(LD_INFO, " ");
 
+
+        
+        skDebugger::writeColor(CS_LIGHT_GREY);
+
         if (sw.description != nullptr)
             skLogf(LD_INFO, " %s", sw.description);
-
+        skDebugger::writeColor(CS_WHITE);
         skLogf(LD_INFO, "\n");
     }
 
