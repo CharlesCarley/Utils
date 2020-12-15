@@ -59,12 +59,16 @@ namespace skStringUtils
 
     float toFloat(const char* in)
     {
-        return (float)::atof(in);
+        if (in && *in)
+            return (float)atof(in);
+        return 0.f;
     }
 
     double toDouble(const char* in)
     {
-        return (double)::atof(in);
+        if (in && *in)
+            return (double)atof(in);
+        return 0.0;
     }
 
     SKsize length(const char* in)
@@ -141,7 +145,7 @@ skString::skString() :
 }
 
 skString::skString(const ValueType* str, SKsize len) :
-    m_data(0),
+    m_data(nullptr),
     m_size(0),
     m_capacity(0)
 {
@@ -149,7 +153,7 @@ skString::skString(const ValueType* str, SKsize len) :
 }
 
 skString::skString(const skString& str) :
-    m_data(0),
+    m_data(nullptr),
     m_size(0),
     m_capacity(0)
 {
@@ -157,7 +161,7 @@ skString::skString(const skString& str) :
 }
 
 skString::skString(const char ch, SKsize nr) :
-    m_data(0),
+    m_data(nullptr),
     m_size(0),
     m_capacity(0)
 {
@@ -212,7 +216,6 @@ void skString::assign(const skString& rhs)
     SK_ASSERT(m_data);
     if (!m_data)
         return;
-
     skMemcpy(m_data, rhs.m_data, m_size);
     m_data[m_size] = 0;
 }
@@ -315,8 +318,9 @@ void skString::split(skArray<skString>& dst, const char* op) const
         return;
 
     dst.reserve(32);
-    skString sub;
-    SKsize   i, j = 0, len = strlen(op);
+    skString     sub;
+    SKsize       i, j = 0;
+    const SKsize len = strlen(op);
 
     for (i = 0; i < m_size && i != npos;)
     {
@@ -366,23 +370,26 @@ skString skString::format(const char* fmt, ...)
 
 void skString::format(skString& dst, const char* fmt, ...)
 {
-    va_list lst;
-
-    int size = (int)dst.capacity();
-    if (size <= 0)
+    if (fmt)
     {
-        va_start(lst, fmt);
-        size = std::vsnprintf(nullptr, 0, fmt, lst);
-        va_end(lst);
+        va_list lst;
 
-        dst.reserve((SKsize)size + 1);
-    }
+        int size = (int)dst.capacity();
+        if (size <= 0)
+        {
+            va_start(lst, fmt);
+            size = std::vsnprintf(nullptr, 0, fmt, lst);
+            va_end(lst);
 
-    if (size > 0)
-    {
-        va_start(lst, fmt);
-        std::vsnprintf(dst.ptr(), dst.capacity(), fmt, lst);
-        va_end(lst);
+            dst.reserve((SKsize)size + 1);
+        }
+
+        if (size > 0)
+        {
+            va_start(lst, fmt);
+            std::vsnprintf(dst.ptr(), dst.capacity(), fmt, lst);
+            va_end(lst);
+        }
     }
 }
 
@@ -487,7 +494,7 @@ skString& skString::erase(SKsize pos, SKsize nr)
         return *this;
     }
 
-    SKsize left = pos;
+    const SKsize left = pos;
     if (left > m_size)
         return *this;
 
@@ -504,7 +511,7 @@ void skString::toHex(void)
     if (m_size == 0)
         return;
 
-    SKsize old_size = m_size;
+    const SKsize old_size = m_size;
     resize(m_size * 2);
 
     const char* cp = m_data;
@@ -716,12 +723,11 @@ void skString::decrypt(const char* password)
 
 int skSprintf(char* dst, int max_size, const char* fmt, ...)
 {
-    int     size;
-    va_list lst;
-
     if (max_size <= 0 || !dst || !fmt)
         return 0;
 
+    int     size;
+    va_list lst;
     max_size -= 1;
 
     va_start(lst, fmt);

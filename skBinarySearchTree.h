@@ -169,15 +169,13 @@ public:
                 out = node->m_data;
                 return true;
             }
-            else if (node->m_data < val)
+            if (node->m_data < val)
                 node = node->m_right;
             else
                 node = node->m_left;
         }
         return false;
     }
-
-
 
     void erase(ConstReferenceType val)
     {
@@ -232,7 +230,6 @@ public:
     }
 
 private:
-
     NodePointerType minimum_recursive(NodePointerType node)
     {
         if (node && node->m_left)
