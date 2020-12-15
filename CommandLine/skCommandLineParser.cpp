@@ -30,7 +30,6 @@
 using namespace skCommandLine;
 
 Parser::Parser() :
-    m_base(0),
     m_maxHelp(0),
     m_required(0),
     m_used(0)
@@ -44,7 +43,7 @@ Parser::~Parser()
         delete it.getNext();
 }
 
-int Parser::getBaseName(const char *input)
+int Parser::getBaseName(const char *input) const
 {
     int offs = 0;
     if (input)
@@ -64,17 +63,27 @@ bool Parser::hasSwitch(const skString &sw) const
     return m_switches.find(sw) != SK_NPOS;
 }
 
-int Parser::parse(int argc, char **argv)
+int Parser::parse(int           argc,
+                  char **       argv,
+                  const Switch *switches,
+                  SKsize        count)
 {
-    m_program.clear();
+    if (!m_program.empty())  // using as a check for multiple calls
+        return 0;
+
+    if (!initializeSwitches(switches, count))
+        return -1;
+
     m_program.append(argv[0]);
-    m_base = getBaseName(argv[0]);
     m_used = 0;
     m_scanner.clear();
 
     // it's easier to parse it as a single string
     for (int i = 1; i < argc; ++i)
         m_scanner.append(argv[i]);
+
+    skString curSwitch;
+    curSwitch.reserve(16);
 
     Token a;
     while (a.getType() != TOK_EOS)
@@ -107,6 +116,7 @@ int Parser::parse(int argc, char **argv)
             }
 
             // > next && < TOK_EOS
+
             const SKsize pos = m_switches.find(a.getValue());
             if (pos == SK_NPOS)
             {
@@ -114,6 +124,8 @@ int Parser::parse(int argc, char **argv)
                 usage();
                 return -1;
             }
+
+            curSwitch.assign(a.getValue());
 
             ParseOption *opt = m_switches.at(pos);
             opt->makePresent();
@@ -132,7 +144,7 @@ int Parser::parse(int argc, char **argv)
                     {
                         skLogf(LD_ERROR,
                                "missing argument for option '%s'\n",
-                               opt->getSwitch().name);
+                               curSwitch.c_str());
                         usage();
                         return -1;
                     }
@@ -144,7 +156,7 @@ int Parser::parse(int argc, char **argv)
                 {
                     skLogf(LD_ERROR,
                            "not all arguments converted when parsing switch '%s'\n",
-                           opt->getSwitch().name);
+                           curSwitch.c_str());
                     usage();
                     return -1;
                 }
@@ -174,85 +186,73 @@ int Parser::parse(int argc, char **argv)
 
 void Parser::logInput()
 {
-    skLogf(LD_INFO, "\n ~> %s %s\n\n", getBaseProgram().c_str(), m_scanner.getValue().c_str());
-}
-
-const skString &Parser::getProgram() const
-{
-    return m_program;
+    skLogf(LD_INFO,
+           "\n ~> %s %s\n\n",
+           getBaseProgram().c_str(),
+           m_scanner.getValue().c_str());
 }
 
 skString Parser::getBaseProgram() const
 {
     skString returnValue;
-    m_program.substr(returnValue, m_base, m_program.size());
+    m_program.substr(returnValue,
+                     getBaseName(m_program.c_str()),
+                     m_program.size());
     return returnValue;
 }
 
-void Parser::addOption(const Switch &sw)
+bool Parser::isPresent(const SKuint32 &enumId)
 {
-    if (sw.shortSwitch != 0)
-    {
-        if (hasSwitch(skString(sw.shortSwitch, 1)))
-        {
-            skLogf(LD_WARN, "Duplicate switch '-%c' found for %s\n", sw.shortSwitch, sw.name);
-            return;
-        }
-    }
-
-    if (sw.longSwitch != nullptr)
-    {
-        const skString lsw = skString(sw.longSwitch);
-
-        m_maxHelp = skMax(m_maxHelp, (int)lsw.size());
-
-        if (hasSwitch(lsw))
-        {
-            skLogf(LD_WARN, "Duplicate switch '--%l' found for %s\n", sw.longSwitch, sw.name);
-            return;
-        }
-    }
-
-    if (sw.name != nullptr)
-    {
-        if (hasSwitch(skString(sw.name)))
-        {
-            skLogf(LD_WARN, "Duplicate switch for %s\n", sw.name);
-            return;
-        }
-    }
-
-    auto *opt = new ParseOption(sw);
-    m_options.push_back(opt);
-
-    if (sw.shortSwitch != 0)
-        m_switches.insert(skString(sw.shortSwitch, 1), opt);
-    if (sw.longSwitch != nullptr)
-        m_switches.insert(sw.longSwitch, opt);
-    if (sw.name != nullptr)
-        m_switches.insert(sw.name, opt);
-}
-
-bool Parser::isPresent(const skString &name)
-{
-    const SKsize pos = m_switches.find(name);
-    if (pos != SK_NPOS)
-    {
-        ParseOption *opt = m_switches.at(pos);
-        if (opt)
-            return opt->isPresent();
-    }
+    if (enumId < m_options.size())
+        return m_options[enumId]->isPresent();
     return false;
 }
 
-ParseOption *Parser::getOption(const skString &name)
+ParseOption *Parser::getOption(const SKuint32 &enumId)
 {
-    ParseOption *ret = nullptr;
-    const SKsize pos = m_switches.find(name);
-    if (pos != SK_NPOS)
-        ret = m_switches.at(pos);
-    return ret;
+    if (enumId < m_options.size())
+        return m_options[enumId];
+    return nullptr;
 }
+
+SKint32 Parser::getValueInt(const SKuint32 &enumId,
+                            SKsize          idx,
+                            SKint32         defaultValue,
+                            SKint32         base) const
+{
+    if (enumId < m_options.size())
+    {
+        if (m_options[enumId] != nullptr)
+            return m_options[enumId]->getInt(idx, base);
+    }
+    return defaultValue;
+}
+
+SKint64 Parser::getValueInt64(const SKuint32 &enumId,
+                              SKsize          idx,
+                              SKint64         defaultValue,
+                              SKint32         base) const
+{
+    if (enumId < m_options.size())
+    {
+        if (m_options[enumId] != nullptr)
+            return m_options[enumId]->getInt64(idx, base);
+    }
+    return defaultValue;
+}
+
+const skString &Parser::getValueString(const SKuint32 &enumId,
+                                       SKsize          idx,
+                                       const skString &defaultValue) const
+{
+    if (enumId < m_options.size())
+    {
+        if (m_options[enumId] != nullptr)
+            return m_options[enumId]->getValue(idx);
+    }
+    return defaultValue;
+}
+
 
 void Parser::usage()
 {
@@ -313,13 +313,76 @@ void Parser::usage()
     skLogf(LD_INFO, "\n");
 }
 
-void Parser::initializeSwitches(const Switch *switches, SKsize count)
+bool Parser::initializeOption(ParseOption *opt, const Switch &sw)
 {
-    for (SKsize i = 0; i < count; ++i)
+    if (sw.shortSwitch == 0 && sw.longSwitch == nullptr)
     {
-        if (!switches[i].optional)
-            m_required++;
-
-        addOption(switches[i]);
+        skLogf(LD_ERROR,
+               "A switch must have at least a long or short name\n");
+        return false;
     }
+
+    if (sw.shortSwitch != 0)
+    {
+        if (hasSwitch(skString(sw.shortSwitch, 1)))
+        {
+            skLogf(LD_ERROR, "Duplicate switch '-%c'\n", sw.shortSwitch);
+            return false;
+        }
+    }
+
+    if (sw.longSwitch != nullptr)
+    {
+        const skString lsw = skString(sw.longSwitch);
+
+        m_maxHelp = skMax(m_maxHelp, (int)lsw.size());
+
+        if (hasSwitch(lsw))
+        {
+            skLogf(LD_ERROR, "Duplicate switch '--%s'\n", sw.longSwitch);
+            return false;
+        }
+    }
+
+    // cross reference short and long switch names.
+    // the option can be accessed by looking up
+    // via the short, long switch or directly by it's
+    // id defined in Switch::id
+
+    if (sw.shortSwitch != 0)
+        m_switches.insert(skString(sw.shortSwitch, 1), opt);
+    if (sw.longSwitch != nullptr)
+        m_switches.insert(sw.longSwitch, opt);
+
+    return true;
+}
+
+bool Parser::initializeSwitches(const Switch *switches, SKsize count)
+{
+    if (switches == nullptr || count == 0)
+        return true;
+
+    count = skMin<SKsize>(count, 0x100);
+
+    m_options.resize(count);
+    bool result = true;
+
+    for (SKsize i = 0; i < count && result; ++i)
+    {
+        if (switches[i].id != i)
+        {
+            skLogf(LD_ERROR, "Misaligned switch id.\n");
+            result = false;
+        }
+        else
+        {
+            if (!switches[i].optional)
+                m_required++;
+
+            m_options[i] = new ParseOption(switches[i]);
+
+            result = initializeOption(m_options[i], switches[i]);
+        }
+    }
+    return result;
 }

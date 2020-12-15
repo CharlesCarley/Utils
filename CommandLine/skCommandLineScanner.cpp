@@ -53,7 +53,7 @@ using namespace skCommandLine;
 Scanner::Scanner() :
     m_pos(0)
 {
-    m_value.reserve(64);
+    m_value.reserve(512);
 }
 
 void Scanner::clear()

@@ -38,8 +38,9 @@ namespace skCommandLine
     /// </summary>
     struct Switch
     {
-        /// Switch name
-        const char *name;
+        /// This needs to be it's index in the
+        /// context of all defined switches
+        SKuint32 id;
 
         /// Short switch (-[a-zA-Z]+)
         /// A value of 0 means unused
@@ -66,8 +67,9 @@ namespace skCommandLine
 
     private:
         const Switch m_switch{};
-        Arguments    m_value;
-        bool         m_isPresent;
+
+        Arguments m_value;
+        bool      m_isPresent;
 
     public:
         ParseOption() :

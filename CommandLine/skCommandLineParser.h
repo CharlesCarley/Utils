@@ -34,49 +34,97 @@
 
 namespace skCommandLine
 {
+    /// <summary>
+    /// Simple command line parser
+    /// </summary>
     class Parser
     {
     public:
         typedef skHashTable<skString, ParseOption *> Switches;
         typedef skArray<ParseOption *>               Options;
-        typedef skArray<skString>                    List;
+        typedef skArray<skString>                    StringArray;
 
     private:
-        skString m_program;
-        int      m_base;
-        int      m_maxHelp;
-        int      m_required;
-        int      m_used;
-        Scanner  m_scanner;
-        Switches m_switches;
-        List     m_argList;
-        Options  m_options;
+        skString    m_program;
+        int         m_maxHelp;
+        int         m_required;
+        int         m_used;
+        Scanner     m_scanner;
+        Switches    m_switches;
+        StringArray m_argList;
+        Options     m_options;
 
-        int  getBaseName(const char *input);
+        int getBaseName(const char *input) const;
+
         bool hasSwitch(const skString &sw) const;
+
+        bool initializeOption(ParseOption *opt, const Switch &sw);
+
+        bool initializeSwitches(const Switch *switches, SKsize count);
 
     public:
         Parser();
         ~Parser();
 
-        int  parse(int argc, char **argv);
+        /// <summary>
+        /// Parses the command line. Any switches that are needed must be
+        /// initialized via initializeSwitches. Arguments that have no switch
+        /// are placed into an array and accessed via getArgList
+        /// </summary>
+        /// <param name="argc">The argument count on program start.</param>
+        /// <param name="argv">The argument vector on program start.</param>
+        /// <param name="switches">A const array of Switch structures.</param>
+        /// <param name="count">The length of the switch structure array.</param>
+        /// <returns>Returns -1 on any error otherwise it returns 0</returns>
+        int parse(int           argc,
+                  char **       argv,
+                  const Switch *switches,
+                  SKsize        count);
+
+        /// <summary>
+        /// Logs the command line verbatim
+        /// </summary>
         void logInput();
 
-        inline List &getArgList()
+        inline StringArray &getArgList()
         {
             return m_argList;
         }
 
-        skString      getBaseProgram() const;
-        bool          isPresent(const skString & name);
-        ParseOption * getOption(const skString & name);
-        void          usage();
+        inline const skString &getProgram() const
+        {
+            return m_program;
+        }
 
-        const skString &getProgram() const;
+        /// <returns>The file name of the program from argv[0]</returns>
+        skString getBaseProgram() const;
 
-        void addOption(const Switch &sw);
+        /// <param name="enumId">The switch id</param>
+        /// <returns>true if it is supplied on the command line false otherwise</returns>
+        bool isPresent(const SKuint32 &enumId);
 
-        void initializeSwitches(const Switch *switches, SKsize count);
+        /// <param name="enumId">The switch id</param>
+        /// <returns> the option at the enumId or null if the id is out of bounds</returns>
+        ParseOption *getOption(const SKuint32 &enumId);
+
+        SKint32 getValueInt(const SKuint32 &enumId,
+                            SKsize          idx,
+                            SKint32         defaultValue = -1,
+                            SKint32         base         = 10) const;
+
+        SKint64 getValueInt64(const SKuint32 &enumId,
+                              SKsize          idx,
+                              SKint64         defaultValue = -1,
+                              SKint32         base         = 10) const;
+
+        const skString &getValueString(const SKuint32 &enumId,
+                                       SKsize          idx,
+                                       const skString &defaultValue = "") const;
+
+        /// <summary>
+        /// Prints a usage message with the supplied switch information
+        /// </summary>
+        void usage();
     };
 
 }  // namespace skCommandLine
