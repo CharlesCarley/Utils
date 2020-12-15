@@ -24,8 +24,8 @@
 -------------------------------------------------------------------------------
 */
 #include "skCommandLineParser.h"
-#include "Utils/skLogger.h"
 #include "Utils/skDebugger.h"
+#include "Utils/skLogger.h"
 
 using namespace skCommandLine;
 
@@ -49,7 +49,9 @@ int Parser::getBaseName(const char *input)
     int offs = 0;
     if (input)
     {
-        int len = (int)skStringUtils::length(input), i;
+        const int len = (int)skStringUtils::length(input);
+
+        int i;
         for (i = len - 1; i >= 0 && offs == 0; --i)
             if (input[i] == '/' || input[i] == '\\')
                 offs = i + 1;
@@ -57,7 +59,7 @@ int Parser::getBaseName(const char *input)
     return offs;
 }
 
-bool Parser::hasSwitch(const skString &sw)
+bool Parser::hasSwitch(const skString &sw) const
 {
     return m_switches.find(sw) != SK_NPOS;
 }
@@ -78,7 +80,7 @@ int Parser::parse(int argc, char **argv)
     while (a.getType() != TOK_EOS)
     {
         m_scanner.lex(a);
-        int type = a.getType();
+        const int type = a.getType();
 
         if (a.getType() == TOK_ERROR)
         {
@@ -98,58 +100,53 @@ int Parser::parse(int argc, char **argv)
                 usage();
                 return -1;
             }
-            else
+            if (a.getValue().equals("help") || a.getValue().equals("h"))
             {
-                if (a.getValue().equals("help") || a.getValue().equals("h"))
-                {
-                    usage();
-                    return -1;
-                }
+                usage();
+                return -1;
+            }
 
-                // > next && < TOK_EOS
-                SKsize pos = m_switches.find(a.getValue());
-                if (pos == SK_NPOS)
-                {
-                    skLogf(LD_ERROR, "Unknown option '%s'\n", a.getValue().c_str());
-                    usage();
-                    return -1;
-                }
-                else
-                {
-                    ParseOption *opt = m_switches.at(pos);
-                    opt->makePresent();
+            // > next && < TOK_EOS
+            const SKsize pos = m_switches.find(a.getValue());
+            if (pos == SK_NPOS)
+            {
+                skLogf(LD_ERROR, "Unknown option '%s'\n", a.getValue().c_str());
+                usage();
+                return -1;
+            }
 
-                    if (!opt->isOptional())
-                        m_used++;
+            ParseOption *opt = m_switches.at(pos);
+            opt->makePresent();
 
-                    if (opt->getArgCount() > 0)
+            if (!opt->isOptional())
+                m_used++;
+
+            if (opt->getArgCount() > 0)
+            {
+                // parse
+                SKsize i;
+                for (i = 0; i < opt->getArgCount(); ++i)
+                {
+                    m_scanner.lex(a);
+                    if (a.getValue().empty())
                     {
-                        // parse
-                        int i;
-                        for (i = 0; i < opt->getArgCount(); ++i)
-                        {
-                            m_scanner.lex(a);
-                            if (a.getValue().empty())
-                            {
-                                skLogf(LD_ERROR,
-                                       "missing argument for option '%s'\n",
-                                       opt->getSwitch().name);
-                                usage();
-                                return -1;
-                            }
-
-                            opt->setValue(i, a.getValue());
-                        }
-
-                        if (i != opt->getArgCount())
-                        {
-                            skLogf(LD_ERROR,
-                                   "not all arguments converted when parsing switch '%s'\n",
-                                   opt->getSwitch().name);
-                            usage();
-                            return -1;
-                        }
+                        skLogf(LD_ERROR,
+                               "missing argument for option '%s'\n",
+                               opt->getSwitch().name);
+                        usage();
+                        return -1;
                     }
+
+                    opt->setValue(i, a.getValue());
+                }
+
+                if (i != opt->getArgCount())
+                {
+                    skLogf(LD_ERROR,
+                           "not all arguments converted when parsing switch '%s'\n",
+                           opt->getSwitch().name);
+                    usage();
+                    return -1;
                 }
             }
         }
@@ -180,21 +177,20 @@ void Parser::logInput()
     skLogf(LD_INFO, "\n ~> %s %s\n\n", getBaseProgram().c_str(), m_scanner.getValue().c_str());
 }
 
-const skString &Parser::getProgram()
+const skString &Parser::getProgram() const
 {
     return m_program;
 }
 
-skString Parser::getBaseProgram()
+skString Parser::getBaseProgram() const
 {
-    skString rval;
-    m_program.substr(rval, m_base, m_program.size());
-    return rval;
+    skString returnValue;
+    m_program.substr(returnValue, m_base, m_program.size());
+    return returnValue;
 }
 
 void Parser::addOption(const Switch &sw)
 {
-    bool exists = false;
     if (sw.shortSwitch != 0)
     {
         if (hasSwitch(skString(sw.shortSwitch, 1)))
@@ -206,7 +202,7 @@ void Parser::addOption(const Switch &sw)
 
     if (sw.longSwitch != nullptr)
     {
-        skString lsw = skString(sw.longSwitch);
+        const skString lsw = skString(sw.longSwitch);
 
         m_maxHelp = skMax(m_maxHelp, (int)lsw.size());
 
@@ -226,19 +222,20 @@ void Parser::addOption(const Switch &sw)
         }
     }
 
-    ParseOption *opt = new ParseOption(sw);
+    auto *opt = new ParseOption(sw);
     m_options.push_back(opt);
+
     if (sw.shortSwitch != 0)
         m_switches.insert(skString(sw.shortSwitch, 1), opt);
-    if (sw.longSwitch != 0)
+    if (sw.longSwitch != nullptr)
         m_switches.insert(sw.longSwitch, opt);
-    if (sw.name != 0)
+    if (sw.name != nullptr)
         m_switches.insert(sw.name, opt);
 }
 
 bool Parser::isPresent(const skString &name)
 {
-    SKsize pos = m_switches.find(name);
+    const SKsize pos = m_switches.find(name);
     if (pos != SK_NPOS)
     {
         ParseOption *opt = m_switches.at(pos);
@@ -250,16 +247,15 @@ bool Parser::isPresent(const skString &name)
 
 ParseOption *Parser::getOption(const skString &name)
 {
-    ParseOption *rval = nullptr;
-    SKsize       pos  = m_switches.find(name);
+    ParseOption *ret = nullptr;
+    const SKsize pos = m_switches.find(name);
     if (pos != SK_NPOS)
-        rval = m_switches.at(pos);
-    return rval;
+        ret = m_switches.at(pos);
+    return ret;
 }
 
 void Parser::usage()
 {
-    skLogger *log = skLogger::getSingletonPtr();
     skDebugger::writeColor(CS_DARKYELLOW);
     logInput();
     skDebugger::writeColor(CS_WHITE);
@@ -306,8 +302,6 @@ void Parser::usage()
         for (int i = 0; i < space; i++)
             skLogf(LD_INFO, " ");
 
-
-        
         skDebugger::writeColor(CS_LIGHT_GREY);
 
         if (sw.description != nullptr)

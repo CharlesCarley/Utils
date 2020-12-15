@@ -43,7 +43,7 @@ namespace skCommandLine
 
         void append(const char *arg);
 
-        inline const skString &getValue()
+        inline const skString &getValue() const
         {
             return m_value;
         }

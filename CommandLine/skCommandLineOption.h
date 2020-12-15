@@ -87,17 +87,17 @@ namespace skCommandLine
         {
         }
 
-        inline bool isOptional()
+        inline bool isOptional() const
         {
             return m_switch.optional;
         }
 
-        inline bool isPresent()
+        inline bool isPresent() const
         {
             return m_isPresent;
         }
 
-        inline SKsize getArgCount()
+        inline SKsize getArgCount() const
         {
             return m_value.size();
         }
@@ -107,12 +107,12 @@ namespace skCommandLine
             m_isPresent = true;
         }
 
-        inline const Switch &getSwitch()
+        inline const Switch &getSwitch() const
         {
             return m_switch;
         }
 
-        const Arguments &getValues()
+        const Arguments &getValues() const
         {
             return m_value;
         }
@@ -126,7 +126,7 @@ namespace skCommandLine
 
         inline void setValue(const skString &str)
         {
-            if (m_value.size() > 0)
+            if (!m_value.empty())
                 m_value[0] = str;
         }
 

@@ -28,7 +28,6 @@
 
 #include "Utils/CommandLine/skCommandLineOption.h"
 #include "Utils/CommandLine/skCommandLineScanner.h"
-#include "Utils/CommandLine/skCommandLineToken.h"
 #include "Utils/skArray.h"
 #include "Utils/skMap.h"
 #include "Utils/skString.h"
@@ -54,7 +53,7 @@ namespace skCommandLine
         Options  m_options;
 
         int  getBaseName(const char *input);
-        bool hasSwitch(const skString &sw);
+        bool hasSwitch(const skString &sw) const;
 
     public:
         Parser();
@@ -68,12 +67,12 @@ namespace skCommandLine
             return m_argList;
         }
 
-        skString     getBaseProgram();
-        bool         isPresent(const skString &name);
-        ParseOption *getOption(const skString &name);
-        void         usage();
+        skString      getBaseProgram() const;
+        bool          isPresent(const skString & name);
+        ParseOption * getOption(const skString & name);
+        void          usage();
 
-        const skString &getProgram();
+        const skString &getProgram() const;
 
         void addOption(const Switch &sw);
 

@@ -59,7 +59,7 @@ namespace skCommandLine
             m_value.reserve(64);
         }
 
-        inline const int &getType()
+        inline const int &getType() const
         {
             return m_type;
         }
@@ -69,7 +69,7 @@ namespace skCommandLine
             m_type = type;
         }
 
-        inline const skString &getValue()
+        inline const skString &getValue() const
         {
             return m_value;
         }
@@ -77,10 +77,6 @@ namespace skCommandLine
         void append(char ch)
         {
             m_value.append(ch);
-        }
-        void append(const char *str)
-        {
-            m_value.append(str);
         }
 
         void append(const skString &str)

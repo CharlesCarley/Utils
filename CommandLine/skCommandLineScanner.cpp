@@ -75,7 +75,7 @@ void Scanner::lex(Token &tok)
         char ch = m_value.at(m_pos++);
         if (ch == '-')
         {
-            char nx = m_value.at(m_pos);
+            const char nx = m_value.at(m_pos);
             if (nx >= '0' && nx <= '9')
             {
                 tok.append(ch);
@@ -87,7 +87,7 @@ void Scanner::lex(Token &tok)
         {
         case '-':
         {
-            char nx = m_value.at(m_pos);
+            const char nx = m_value.at(m_pos);
             if (nx == '-')
                 ++m_pos;
             tok.setType(nx == '-' ? (int)TOK_SWITCH_SHORT : (int)TOK_SWITCH_LONG);
