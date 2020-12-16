@@ -28,6 +28,7 @@
 #include <cstdio>
 #include "skFixedString.h"
 #include "skPlatformHeaders.h"
+#include "skStringConverter.h"
 
 namespace skStringUtils
 {
@@ -36,25 +37,25 @@ namespace skStringUtils
         return equals(in, "true") == 0 || equals(in, "yes") == 0 || equals(in, "1") == 0;
     }
 
-    long toLong(const char* in, int base)
+    long toLong(const char* in, long defaultValue, int base)
     {
         if (in && *in)
             return (long)std::strtol(in, nullptr, base);
-        return -1;
+        return defaultValue;
     }
 
-    SKint64 toInt64(const char* in, int base)
+    SKint64 toInt64(const char* in, SKint64 defaultValue, int base)
     {
         if (in && *in)
             return (SKint64)std::strtoll(in, nullptr, base);
-        return -1;
+        return defaultValue;
     }
 
-    int toInt(const char* in, int base)
+    int toInt(const char* in, int defaultValue, int base)
     {
         if (in && *in)
             return (int)std::strtol(in, nullptr, base);
-        return -1;
+        return defaultValue;
     }
 
     float toFloat(const char* in)
@@ -135,7 +136,9 @@ namespace skStringUtils
 }  // namespace skStringUtils
 
 const SKsize   skString::npos  = -1;
-const skString skString::Blank = skString();
+const skString skString::Blank = skStringConverter::BLANK;
+
+////
 
 skString::skString() :
     m_data(0),

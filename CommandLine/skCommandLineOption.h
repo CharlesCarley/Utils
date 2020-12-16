@@ -132,14 +132,18 @@ namespace skCommandLine
                 m_value[0] = str;
         }
 
-        int getInt(SKsize idx = 0, int base = 10)
+        int getInt(SKsize idx = 0, int defaultValue = -1, int base = 10)
         {
-            return skStringConverter::toInt(getValue(idx), base);
+            return skStringConverter::toInt(getValue(idx),
+                                            defaultValue,
+                                            base);
         }
 
-        SKint64 getInt64(SKsize idx = 0, int base = 10)
+        SKint64 getInt64(SKsize idx = 0, SKint64 defaultValue = -1, int base = 10)
         {
-            return skStringConverter::toInt64(getValue(idx), base);
+            return skStringConverter::toInt64(getValue(idx),
+                                              defaultValue,
+                                              base);
         }
 
         inline void setValue(SKsize i, const skString &str)

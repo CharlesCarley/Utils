@@ -62,6 +62,7 @@ namespace skCommandLine
 
         bool initializeSwitches(const Switch *switches, SKsize count);
 
+
     public:
         Parser();
         ~Parser();

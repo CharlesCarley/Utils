@@ -25,12 +25,9 @@
 */
 #include "skStringConverter.h"
 
-
 using namespace skStringUtils;
 
-
 const skString skStringConverter::BLANK = "";
-
 
 void skStringConverter::toString(skString& dest, int v)
 {
@@ -57,19 +54,19 @@ void skStringConverter::toString(skString& dest, bool v)
     dest = skString::format("%s", v ? "true" : "false");
 }
 
-int skStringConverter::toInt(const skString& src, int base)
+int skStringConverter::toInt(const skString& src, int defaultValue, int base)
 {
-    return skStringUtils::toInt(src.c_str(), base);
+    return skStringUtils::toInt(src.c_str(), defaultValue, base);
 }
 
-SKint64 skStringConverter::toInt64(const skString& src, int base)
+SKint64 skStringConverter::toInt64(const skString& src, SKint64 defaultValue, int base)
 {
-    return skStringUtils::toInt64(src.c_str(), base);
+    return skStringUtils::toInt64(src.c_str(), defaultValue, base);
 }
 
-long skStringConverter::toLong(const skString& src, int base)
+long skStringConverter::toLong(const skString& src, long defaultValue, int base)
 {
-    return skStringUtils::toLong(src.c_str(), base);
+    return skStringUtils::toLong(src.c_str(), defaultValue, base);
 }
 
 float skStringConverter::toFloat(const skString& src)
@@ -85,6 +82,6 @@ double skStringConverter::toDouble(const skString& src)
 bool skStringConverter::toBool(const skString& src)
 {
     return equalsn(src.c_str(), "true", 4) == 0 ||
-           equalsn(src.c_str(), "yes",  3) == 0 ||
-           equalsn(src.c_str(), "1",    1) == 0;
+           equalsn(src.c_str(), "yes", 3) == 0 ||
+           equalsn(src.c_str(), "1", 1) == 0;
 }

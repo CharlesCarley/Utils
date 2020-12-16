@@ -39,15 +39,23 @@ namespace skStringUtils
     extern SKsize equals(const char* a, const char* b);
     extern SKsize equalsn(const char* a, const char* b, SKsize n);
 
-    extern bool    toBool(const char* in);
-    extern int     toInt(const char* in, int base = 10);
-    extern long    toLong(const char* in, int base = 10);
-    extern SKint64 toInt64(const char* in, int base = 10);
-    extern float   toFloat(const char* in);
-    extern double  toDouble(const char* in);
+    extern int     toInt(const char* in,
+                         int         defaultValue = -1,
+                         int         base         = 10);
+    extern long    toLong(const char* in,
+                          long        defaultValue = -1,
+                          int         base         = 10);
+    extern SKint64 toInt64(const char* in,
+                           SKint64     defaultValue = -1,
+                           int         base         = 10);
+
+    extern bool   toBool(const char* in);
+    extern float  toFloat(const char* in);
+    extern double toDouble(const char* in);
 
     extern const SKuint8  HexTable[16];
     extern const SKuint16 BinaryTable[9];
+
 };  // namespace skStringUtils
 
 #define sk_strncpy(dest, size, source, count) skStringUtils::copyn(dest, source, size)

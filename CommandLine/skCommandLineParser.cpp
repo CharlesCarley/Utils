@@ -29,6 +29,8 @@
 
 using namespace skCommandLine;
 
+void Parser_logWhiteSpace(int nr);
+
 Parser::Parser() :
     m_maxHelp(0),
     m_required(0),
@@ -223,7 +225,7 @@ SKint32 Parser::getValueInt(const SKuint32 &enumId,
     if (enumId < m_options.size())
     {
         if (m_options[enumId] != nullptr)
-            return m_options[enumId]->getInt(idx, base);
+            return m_options[enumId]->getInt(idx, defaultValue, base);
     }
     return defaultValue;
 }
@@ -236,7 +238,7 @@ SKint64 Parser::getValueInt64(const SKuint32 &enumId,
     if (enumId < m_options.size())
     {
         if (m_options[enumId] != nullptr)
-            return m_options[enumId]->getInt64(idx, base);
+            return m_options[enumId]->getInt64(idx, defaultValue, base);
     }
     return defaultValue;
 }
@@ -253,7 +255,6 @@ const skString &Parser::getValueString(const SKuint32 &enumId,
     return defaultValue;
 }
 
-
 void Parser::usage()
 {
     skDebugger::writeColor(CS_DARKYELLOW);
@@ -265,9 +266,7 @@ void Parser::usage()
     skLogf(LD_INFO, "<!> == required\n\n");
     skLogf(LD_INFO, "    -h, --help");
 
-    for (int i = 0; i < m_maxHelp - 4; i++)
-        skLogf(LD_INFO, " ");
-
+    Parser_logWhiteSpace(m_maxHelp - 4);
     skLogf(LD_INFO, " Display this help message.\n");
 
     Options::Iterator it = m_options.iterator();
@@ -299,13 +298,30 @@ void Parser::usage()
             skLogf(LD_INFO, "--%s", sw.longSwitch);
         }
 
-        for (int i = 0; i < space; i++)
-            skLogf(LD_INFO, " ");
+        Parser_logWhiteSpace(space);
 
         skDebugger::writeColor(CS_LIGHT_GREY);
 
         if (sw.description != nullptr)
-            skLogf(LD_INFO, " %s", sw.description);
+        {
+            skStringArray arr;
+            skString      str(sw.description);
+            str.split(arr, "\n");
+
+            for (SKsize i = 0; i < arr.size(); ++i)
+            {
+                skLogf(LD_INFO, " %s", arr[i].c_str());
+
+                if (i + 1 < arr.size())
+                {
+                    skLogf(LD_INFO, "\n");
+                    Parser_logWhiteSpace(m_maxHelp+10);
+                }
+            }
+
+            if (arr.size() > 1)
+                skLogf(LD_INFO, "\n");
+        }
         skDebugger::writeColor(CS_WHITE);
         skLogf(LD_INFO, "\n");
     }
@@ -385,4 +401,10 @@ bool Parser::initializeSwitches(const Switch *switches, SKsize count)
         }
     }
     return result;
+}
+
+void Parser_logWhiteSpace(int nr)
+{
+    while (nr--)
+        skLogf(LD_INFO, " ");
 }
