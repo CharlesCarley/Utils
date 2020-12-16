@@ -68,7 +68,7 @@ bool Parser::hasSwitch(const skString &sw) const
 int Parser::parse(int           argc,
                   char **       argv,
                   const Switch *switches,
-                  SKsize        count)
+                  SKuint32      count)
 {
     if (!m_program.empty())  // using as a check for multiple calls
         return 0;
@@ -95,7 +95,7 @@ int Parser::parse(int           argc,
 
         if (a.getType() == TOK_ERROR)
         {
-            skLogf(LD_ERROR, "\nunknown error %s\n\n", a.getValue().c_str());
+            skLogf(LD_ERROR, "\nerror %s\n\n", a.getValue().c_str());
             usage();
             return -1;
         }
@@ -122,7 +122,7 @@ int Parser::parse(int           argc,
             const SKsize pos = m_switches.find(a.getValue());
             if (pos == SK_NPOS)
             {
-                skLogf(LD_ERROR, "Unknown option '%s'\n", a.getValue().c_str());
+                skLogf(LD_ERROR, "unknown option '%s'\n", a.getValue().c_str());
                 usage();
                 return -1;
             }
@@ -135,11 +135,12 @@ int Parser::parse(int           argc,
             if (!opt->isOptional())
                 m_used++;
 
-            if (opt->getArgCount() > 0)
+            SKsize count = opt->getArgCount();
+
+            if (count > 0)
             {
-                // parse
                 SKsize i;
-                for (i = 0; i < opt->getArgCount(); ++i)
+                for (i = 0; i < count; ++i)
                 {
                     m_scanner.lex(a);
                     if (a.getValue().empty())
@@ -154,7 +155,7 @@ int Parser::parse(int           argc,
                     opt->setValue(i, a.getValue());
                 }
 
-                if (i != opt->getArgCount())
+                if (i != count)
                 {
                     skLogf(LD_ERROR,
                            "not all arguments converted when parsing switch '%s'\n",
@@ -257,13 +258,14 @@ const skString &Parser::getValueString(const SKuint32 &enumId,
 
 void Parser::usage()
 {
-    skDebugger::writeColor(CS_DARKYELLOW);
     logInput();
-    skDebugger::writeColor(CS_WHITE);
 
     skLogf(LD_INFO, "Usage: %s <options>\n\n", getBaseProgram().c_str());
     skLogf(LD_INFO, "  <options>: ");
-    skLogf(LD_INFO, "<!> == required\n\n");
+    if (m_required > 0)
+        skLogf(LD_INFO, "<!> == required\n\n");
+    else
+        skLogf(LD_INFO, "\n\n");
     skLogf(LD_INFO, "    -h, --help");
 
     Parser_logWhiteSpace(m_maxHelp - 4);
@@ -300,29 +302,23 @@ void Parser::usage()
 
         Parser_logWhiteSpace(space);
 
-        skDebugger::writeColor(CS_LIGHT_GREY);
-
         if (sw.description != nullptr)
         {
             skStringArray arr;
             skString      str(sw.description);
             str.split(arr, "\n");
 
-            for (SKsize i = 0; i < arr.size(); ++i)
+            for (SKuint32 i = 0; i < arr.size(); ++i)
             {
                 skLogf(LD_INFO, " %s", arr[i].c_str());
 
                 if (i + 1 < arr.size())
                 {
                     skLogf(LD_INFO, "\n");
-                    Parser_logWhiteSpace(m_maxHelp+10);
+                    Parser_logWhiteSpace(m_maxHelp + 10);
                 }
             }
-
-            if (arr.size() > 1)
-                skLogf(LD_INFO, "\n");
         }
-        skDebugger::writeColor(CS_WHITE);
         skLogf(LD_INFO, "\n");
     }
 
@@ -373,17 +369,17 @@ bool Parser::initializeOption(ParseOption *opt, const Switch &sw)
     return true;
 }
 
-bool Parser::initializeSwitches(const Switch *switches, SKsize count)
+bool Parser::initializeSwitches(const Switch *switches, SKuint32 count)
 {
-    if (switches == nullptr || count == 0)
+    if (switches == nullptr || count == 0 || count == SK_NPOS32)
         return true;
 
-    count = skMin<SKsize>(count, 0x100);
+    count = skMin<SKuint32>(count, 0x100);
 
     m_options.resize(count);
     bool result = true;
 
-    for (SKsize i = 0; i < count && result; ++i)
+    for (SKuint32 i = 0; i < count && result; ++i)
     {
         if (switches[i].id != i)
         {

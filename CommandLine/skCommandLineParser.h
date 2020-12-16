@@ -60,7 +60,7 @@ namespace skCommandLine
 
         bool initializeOption(ParseOption *opt, const Switch &sw);
 
-        bool initializeSwitches(const Switch *switches, SKsize count);
+        bool initializeSwitches(const Switch *switches, SKuint32 count);
 
 
     public:
@@ -80,7 +80,7 @@ namespace skCommandLine
         int parse(int           argc,
                   char **       argv,
                   const Switch *switches,
-                  SKsize        count);
+                  SKuint32      count);
 
         /// <summary>
         /// Logs the command line verbatim

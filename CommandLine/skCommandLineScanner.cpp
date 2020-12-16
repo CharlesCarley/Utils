@@ -93,6 +93,7 @@ void Scanner::lex(Token &tok)
             tok.setType(nx == '-' ? (int)TOK_SWITCH_SHORT : (int)TOK_SWITCH_LONG);
             return;
         }
+        case '/':
         case digit:
         case uppercase:
         case lowercase:
