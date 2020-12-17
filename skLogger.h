@@ -119,5 +119,7 @@ private:
 };
 
 extern void skLogf(SKint32 detail, const char* format, ...);
+extern void skLogd(SKint32 detail, const char* msg);
+extern void skLogi(const char* msg);
 
 #endif  //_skLogger_h_

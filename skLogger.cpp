@@ -24,6 +24,7 @@
 -------------------------------------------------------------------------------
 */
 #include "Utils/skLogger.h"
+#include "Utils/skString.h"
 #include <cstdarg>
 #include <cstdio>
 #include "Utils/skDebugger.h"
@@ -142,6 +143,22 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
         if (detail <= LD_WARN)
             skDebugger::writeColor(CS_WHITE);
     }
+}
+
+void skLogd(SKint32 detail, const char* msg)
+{
+    SKsize len = skStringUtils::length(msg);
+    if (len > 0)
+    {
+        const skLogger* log = skLogger::getSingletonPtr();
+        if (log)
+            log->logMessage(detail, msg, (SKint32)len);
+    }
+}
+
+void skLogi(const char* msg)
+{
+    skLogd(LD_INFO, msg);
 }
 
 void skLogf(SKint32 detail, const char* format, ...)

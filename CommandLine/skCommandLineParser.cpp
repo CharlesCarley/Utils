@@ -32,7 +32,7 @@ using namespace skCommandLine;
 void Parser_logWhiteSpace(int nr);
 
 Parser::Parser() :
-    m_maxHelp(0),
+    m_maxHelp(4),
     m_required(0),
     m_used(0)
 {
@@ -107,7 +107,7 @@ int Parser::parse(int           argc,
 
             if (a.getType() == TOK_NEXT || a.getType() == TOK_EOS)
             {
-                skLogf(LD_ERROR, "expected a switch value to follow '-'\n");
+                skLogd(LD_ERROR, "expected a switch value to follow '-'\n");
                 usage();
                 return -1;
             }
@@ -180,7 +180,7 @@ int Parser::parse(int           argc,
 
     if (m_used != m_required)
     {
-        skLogf(LD_ERROR, "missing required options.\n");
+        skLogd(LD_ERROR, "missing required options.\n");
         usage();
         return -1;
     }
@@ -261,15 +261,15 @@ void Parser::usage()
     logInput();
 
     skLogf(LD_INFO, "Usage: %s <options>\n\n", getBaseProgram().c_str());
-    skLogf(LD_INFO, "  <options>: ");
+    skLogd(LD_INFO, "  <options>: ");
     if (m_required > 0)
-        skLogf(LD_INFO, "<!> == required\n\n");
+        skLogd(LD_INFO, "<!> == required\n\n");
     else
-        skLogf(LD_INFO, "\n\n");
-    skLogf(LD_INFO, "    -h, --help");
+        skLogd(LD_INFO, "\n\n");
+    skLogd(LD_INFO, "    -h, --help");
 
     Parser_logWhiteSpace(m_maxHelp - 4);
-    skLogf(LD_INFO, " Display this help message.\n");
+    skLogd(LD_INFO, " Display this help message.\n");
 
     Options::Iterator it = m_options.iterator();
     while (it.hasMoreElements())
@@ -278,20 +278,20 @@ void Parser::usage()
         const Switch &sw  = opt->getSwitch();
 
         if (!sw.optional)
-            skLogf(LD_INFO, "!, ");
+            skLogd(LD_INFO, "!, ");
         else
-            skLogf(LD_INFO, "    ");
+            skLogd(LD_INFO, "    ");
 
         if (sw.shortSwitch != 0)
         {
             skLogf(LD_INFO, "-%c", sw.shortSwitch);
             if (sw.longSwitch != nullptr)
-                skLogf(LD_INFO, ", ");
+                skLogd(LD_INFO, ", ");
             else
-                skLogf(LD_INFO, "  ");
+                skLogd(LD_INFO, "  ");
         }
         else
-            skLogf(LD_INFO, "    ");
+            skLogd(LD_INFO, "    ");
 
         int space = m_maxHelp;
         if (sw.longSwitch != nullptr)
@@ -314,23 +314,22 @@ void Parser::usage()
 
                 if (i + 1 < arr.size())
                 {
-                    skLogf(LD_INFO, "\n");
+                    skLogd(LD_INFO, "\n");
                     Parser_logWhiteSpace(m_maxHelp + 10);
                 }
             }
         }
-        skLogf(LD_INFO, "\n");
+        skLogd(LD_INFO, "\n");
     }
 
-    skLogf(LD_INFO, "\n");
+    skLogd(LD_INFO, "\n");
 }
 
 bool Parser::initializeOption(ParseOption *opt, const Switch &sw)
 {
     if (sw.shortSwitch == 0 && sw.longSwitch == nullptr)
     {
-        skLogf(LD_ERROR,
-               "A switch must have at least a long or short name\n");
+        skLogd(LD_ERROR, "A switch must have at least a long or short name\n");
         return false;
     }
 
@@ -356,11 +355,6 @@ bool Parser::initializeOption(ParseOption *opt, const Switch &sw)
         }
     }
 
-    // cross reference short and long switch names.
-    // the option can be accessed by looking up
-    // via the short, long switch or directly by it's
-    // id defined in Switch::id
-
     if (sw.shortSwitch != 0)
         m_switches.insert(skString(sw.shortSwitch, 1), opt);
     if (sw.longSwitch != nullptr)
@@ -383,7 +377,7 @@ bool Parser::initializeSwitches(const Switch *switches, SKuint32 count)
     {
         if (switches[i].id != i)
         {
-            skLogf(LD_ERROR, "Misaligned switch id.\n");
+            skLogd(LD_ERROR, "Misaligned switch id.\n");
             result = false;
         }
         else
@@ -401,6 +395,6 @@ bool Parser::initializeSwitches(const Switch *switches, SKuint32 count)
 
 void Parser_logWhiteSpace(int nr)
 {
-    while (nr--)
+    while (nr-- > 0)
         skLogf(LD_INFO, " ");
 }
