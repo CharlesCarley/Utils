@@ -60,6 +60,7 @@ void Scanner::clear()
 {
     m_value.resize(0);
 }
+
 void Scanner::append(const char *arg)
 {
     m_value.append(arg);
@@ -91,6 +92,23 @@ void Scanner::lex(Token &tok)
             if (nx == '-')
                 ++m_pos;
             tok.setType(nx == '-' ? (int)TOK_SWITCH_SHORT : (int)TOK_SWITCH_LONG);
+            return;
+        }
+        case '"': 
+        case '\'':
+        {
+            // parse a standard string
+            ch = m_value.at(m_pos++);
+            while (ch != 0 && ch != '\'' && ch != '\"')
+            {
+                tok.append(ch);
+                ch = m_value.at(m_pos++);
+            }
+            if (ch == '\'' || ch == '"')
+            {
+                if (!tok.getValue().empty())
+                    tok.setType(TOK_IDENTIFIER);
+            }
             return;
         }
         case '/':

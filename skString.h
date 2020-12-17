@@ -209,7 +209,7 @@ public:
     SK_INLINE char at(SKsize idx) const
     {
         SK_ASSERT(idx != npos);
-        return m_data ? m_data[idx] : '\0';
+        return m_data && idx < m_size ? m_data[idx] : '\0';
     }
 
     SK_INLINE Iterator iterator(void)

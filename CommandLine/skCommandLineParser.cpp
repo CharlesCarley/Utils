@@ -143,6 +143,16 @@ int Parser::parse(int           argc,
                 for (i = 0; i < count; ++i)
                 {
                     m_scanner.lex(a);
+
+                    if (a.getType() != TOK_IDENTIFIER)
+                    {
+                        skLogf(LD_ERROR,
+                               "invalid argument for option '%s'\n",
+                               curSwitch.c_str());
+                        usage();
+                        return -1;
+                    }
+
                     if (a.getValue().empty())
                     {
                         skLogf(LD_ERROR,
@@ -190,7 +200,7 @@ int Parser::parse(int           argc,
 void Parser::logInput()
 {
     skLogf(LD_INFO,
-           "\n ~> %s %s\n\n",
+           "\n ==> %s %s\n\n",
            getBaseProgram().c_str(),
            m_scanner.getValue().c_str());
 }
@@ -261,15 +271,15 @@ void Parser::usage()
     logInput();
 
     skLogf(LD_INFO, "Usage: %s <options>\n\n", getBaseProgram().c_str());
-    skLogd(LD_INFO, "  <options>: ");
+    skLogi("  <options>: ");
     if (m_required > 0)
-        skLogd(LD_INFO, "<!> == required\n\n");
+        skLogi("<!> == required\n\n");
     else
-        skLogd(LD_INFO, "\n\n");
-    skLogd(LD_INFO, "    -h, --help");
+        skLogi("\n\n");
+    skLogi("    -h, --help");
 
     Parser_logWhiteSpace(m_maxHelp - 4);
-    skLogd(LD_INFO, " Display this help message.\n");
+    skLogi(" Display this help message.\n");
 
     Options::Iterator it = m_options.iterator();
     while (it.hasMoreElements())
@@ -278,20 +288,20 @@ void Parser::usage()
         const Switch &sw  = opt->getSwitch();
 
         if (!sw.optional)
-            skLogd(LD_INFO, "!, ");
+            skLogi("!,  ");
         else
-            skLogd(LD_INFO, "    ");
+            skLogi("    ");
 
         if (sw.shortSwitch != 0)
         {
             skLogf(LD_INFO, "-%c", sw.shortSwitch);
             if (sw.longSwitch != nullptr)
-                skLogd(LD_INFO, ", ");
+                skLogi(", ");
             else
-                skLogd(LD_INFO, "  ");
+                skLogi("  ");
         }
         else
-            skLogd(LD_INFO, "    ");
+            skLogi("    ");
 
         int space = m_maxHelp;
         if (sw.longSwitch != nullptr)
@@ -318,6 +328,9 @@ void Parser::usage()
                     Parser_logWhiteSpace(m_maxHelp + 10);
                 }
             }
+
+            if (arr.size() > 1)
+                skLogi("\n");
         }
         skLogd(LD_INFO, "\n");
     }
@@ -396,5 +409,5 @@ bool Parser::initializeSwitches(const Switch *switches, SKuint32 count)
 void Parser_logWhiteSpace(int nr)
 {
     while (nr-- > 0)
-        skLogf(LD_INFO, " ");
+        skLogi(" ");
 }

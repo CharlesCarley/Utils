@@ -26,7 +26,6 @@
 #ifndef _skCommandLineToken_h_
 #define _skCommandLineToken_h_
 
-
 #include "Utils/skString.h"
 
 namespace skCommandLine
@@ -37,10 +36,10 @@ namespace skCommandLine
         TOK_SWITCH_SHORT,
         TOK_SWITCH_LONG,
         TOK_NEXT,
-        TOK_OPTION,
-        TOK_INTEGER,
-        TOK_REAL,
-        TOK_IDENTIFIER,
+        TOK_OPTION,      // delete
+        TOK_INTEGER,     // delete
+        TOK_REAL,        // delete
+        TOK_IDENTIFIER,  // rename to value
         TOK_FILEPATH,
         TOK_EOS,
         TOK_ERROR
@@ -90,7 +89,6 @@ namespace skCommandLine
             m_value.resize(0);
         }
     };
-
 
 }  // namespace skCommandLine
 
