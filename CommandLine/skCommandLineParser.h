@@ -85,7 +85,7 @@ namespace skCommandLine
         /// <summary>
         /// Logs the command line verbatim
         /// </summary>
-        void logInput();
+        void logInput() const;
 
         inline StringArray &getArgList()
         {

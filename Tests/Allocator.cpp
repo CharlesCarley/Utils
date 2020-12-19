@@ -27,20 +27,16 @@
 #include "Utils/skAllocator.h"
 #include "catch/catch.hpp"
 
-
 class Construct
 {
 public:
     static int construct;
     int        test;
-
-
     Construct() :
         test(123)
     {
         construct = 1;
     }
-
 
     ~Construct()
     {
@@ -50,13 +46,10 @@ public:
 
 int Construct::construct = -1;
 
-
 typedef skMallocAllocator<Construct> Malloc;
 typedef skNewAllocator<Construct>    Alloc;
 
 typedef skMallocAllocator<int, SKuint8, 10> IntMalloc;
-
-
 
 TEST_CASE("DefaultAlloc malloc/free")
 {
@@ -74,7 +67,6 @@ TEST_CASE("DefaultAlloc malloc/free")
     EXPECT_EQ(Construct::construct, 0);
 }
 
-
 TEST_CASE("Alloc new/delete")
 {
     Alloc      alloc;
@@ -91,8 +83,6 @@ TEST_CASE("Alloc new/delete")
     EXPECT_EQ(Construct::construct, 0);
 }
 
-
-
 TEST_CASE("IntMalloc limit malloc/free")
 {
     IntMalloc alloc;
@@ -106,7 +96,6 @@ TEST_CASE("IntMalloc limit malloc/free")
         EXPECT_EQ(st, 30);
     }
 }
-
 
 TEST_CASE("IntMalloc array_allocate default constructor")
 {

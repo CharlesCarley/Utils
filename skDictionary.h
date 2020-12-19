@@ -32,13 +32,10 @@
 #include "Utils/skMap.h"
 #include "Utils/skTraits.h"
 
-
-
 template <typename Key, typename Value>
 class skDictionary
 {
 public:
-
     class Pair
     {
     public:
@@ -55,7 +52,7 @@ public:
         Pair(const Key& k, const Value& v, SKhash hk) :
             first(k),
             second(v),
-            hash(hk)
+            hash((SKuint32)hk)
         {
         }
 
@@ -91,7 +88,7 @@ public:
         SKuint32 hash;
     };
 
-    SK_DECLARE_TYPE(Pair);
+    SK_DECLARE_TYPE(Pair)
 
     typedef skDictionary<Key, Value>                   SelfType;
     typedef skPointerIncrementIterator<SelfType>       Iterator;
@@ -103,17 +100,17 @@ public:
 
 private:
     PointerType m_data;
-    SKuint32      m_size, m_capacity;
-    SKuint32*     m_index;
+    SKuint32    m_size, m_capacity;
+    SKuint32*   m_index;
 
     SK_INLINE SKuint32 hash(const Key& key) const
     {
-        return skHash(key) % (m_capacity);
+        return skHash(key) % m_capacity;
     }
 
     SK_INLINE SKuint32 linearProbe(const SKhash& key, SKuint32 i) const
     {
-        return (key + i) % (m_capacity);
+        return (key + i) % m_capacity;
     }
 
     SK_INLINE SKuint32 probe(const SKhash& key, SKuint32 i) const
@@ -123,10 +120,10 @@ private:
 
 public:
     skDictionary() :
-        m_data(0),
+        m_data(nullptr),
         m_size(0),
         m_capacity(0),
-        m_index(0)
+        m_index(nullptr)
     {
     }
 
@@ -151,8 +148,8 @@ public:
             delete[] m_data;
             delete[] m_index;
         }
-        m_index    = 0;
-        m_data     = 0;
+        m_index    = nullptr;
+        m_data     = nullptr;
         m_size     = 0;
         m_capacity = 0;
     }
@@ -232,8 +229,8 @@ public:
             else
             {
                 const SKuint32 idx = m_index[mapA];
-                m_index[mapB]    = idx;
-                m_index[mapA]    = npos;
+                m_index[mapB]      = idx;
+                m_index[mapA]      = npos;
 
                 skSwap(m_data[A], m_data[B]);
             }
@@ -272,22 +269,27 @@ public:
     {
         return m_data;
     }
+
     SK_INLINE const SKuint32* iptr(void) const
     {
         return m_index;
     }
+
     SK_INLINE bool valid(void) const
     {
         return m_data != 0;
     }
+
     SK_INLINE SKuint32 capacity(void) const
     {
         return m_capacity;
     }
+
     SK_INLINE SKuint32 size(void) const
     {
         return m_size;
     }
+
     SK_INLINE bool empty(void) const
     {
         return m_size == 0;
@@ -316,20 +318,20 @@ public:
 private:
     SKuint32 probeKey(const Key& k)
     {
-        SKhash mapping = hash(k);
+        SKhash   mapping = hash(k);
         SKuint32 i       = 0;
         while (m_index[mapping] != npos && i < m_capacity)
             mapping = probe(mapping, i++);
 
         SK_ASSERT(i != m_capacity);
         SK_ASSERT(m_index[mapping] == npos);
-        return mapping;
+        return (SKuint32)mapping;
     }
 
     void rehash(SKuint32 nr)
     {
-        Pair*   data  = new Pair[nr];
-        SKuint32* index = new SKuint32[nr];
+        Pair* data  = new Pair[nr];
+        auto* index = new SKuint32[nr];
         skMemset(index, npos, (nr) * sizeof(SKuint32));
 
         SKuint32 i, mapping, j;

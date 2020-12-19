@@ -24,8 +24,8 @@
 -------------------------------------------------------------------------------
 */
 
-#include "catch/catch.hpp"
 #include "Utils/skDeque.h"
+#include "catch/catch.hpp"
 
 #define TEST_CASE_NAME DequeTest
 #define ARR_SIZE 513
@@ -36,33 +36,31 @@ typedef skDeque<int> IntArray;
 TEST_CASE("DequeTest_dequeCount")
 {
     IntArray lst;
-    int i;
-    for (i = 0; i<ARR_SIZE; ++i)
+    int      i;
+    for (i = 0; i < ARR_SIZE; ++i)
         lst.push_back(i);
 
-    REQUIRE(ARR_SIZE== lst.size());
+    REQUIRE(ARR_SIZE == lst.size());
 
-    for (i = 0; i<ARR_SIZE; ++i)
+    for (i = 0; i < ARR_SIZE; ++i)
     {
         lst.pop_front();
         REQUIRE(ARR_SIZE - (i + 1) == lst.size());
     }
 
-    REQUIRE(0== lst.size());
+    REQUIRE(0 == lst.size());
 }
-
 
 TEST_CASE("DequeTest_DequeRefill")
 {
     IntArray lst;
-    int j;
+    int      j;
     for (j = 0; j < 5; ++j)
     {
         int i;
-        for (i = 0; i<ARR_SIZE; ++i)
+        for (i = 0; i < ARR_SIZE; ++i)
             lst.push_back(i);
         REQUIRE(ARR_SIZE == lst.size());
-
 
         lst.clear();
         REQUIRE(0 == lst.size());
@@ -72,7 +70,7 @@ TEST_CASE("DequeTest_DequeRefill")
 TEST_CASE("DequeTest_DequePushPop")
 {
     IntArray lst;
-    int j;
+    int      j;
     for (j = 0; j < 5; ++j)
     {
         int i;
@@ -88,14 +86,14 @@ TEST_CASE("DequeTest_DequePushPop")
 TEST_CASE("DequeTest_DequePushPopFront")
 {
     IntArray lst;
-    int j;
+    int      j;
     for (j = 0; j < 5; ++j)
     {
         int i;
         for (i = 0; i < ARR_SIZE; ++i)
         {
             lst.push_front(i);
-            REQUIRE(i== lst.front());
+            REQUIRE(i == lst.front());
             lst.pop_front();
         }
         REQUIRE(0 == lst.size());

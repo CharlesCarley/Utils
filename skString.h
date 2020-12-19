@@ -166,6 +166,7 @@ public:
     void      resize(SKsize nr);
     void      assign(const skString& rhs);
     bool      equals(const skString& rhs) const;
+    bool      equals(const char *rhs) const;
 
     static skString format(const char* fmt, ...);
     static void     format(skString& dst, const char* fmt, ...);

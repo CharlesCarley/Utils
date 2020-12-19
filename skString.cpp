@@ -237,6 +237,11 @@ bool skString::equals(const skString& rhs) const
     return !skStringUtils::equals(m_data, rhs.m_data);
 }
 
+bool skString::equals(const char* rhs) const
+{
+    return !skStringUtils::equalsn(m_data, rhs, m_size);
+}
+
 void skString::alloc(const char* str, SKsize len)
 {
     if (!str)

@@ -27,6 +27,7 @@ option(Utils_USE_ITERATOR_DEBUG    "Enable state checks for iterators" OFF)
 option(Utils_USE_COMPILER_CHECKS   "Enable compile time asserts." OFF)
 option(Utils_NO_DEBUGGER           "Send calls to skPrintf to printf vs skDebugger::report" ON)
 option(Utils_BUILD_TESTS           "Build basic tests" OFF)
+option(Utils_AUTO_RUN_TESTS        "Adds a custom target that runs on build" OFF)
 
 configure_file(${Utils_SOURCE_DIR}/CMake/skConfig.h.in  ${Utils_SOURCE_DIR}/Config/skConfig.h)
 
@@ -126,7 +127,6 @@ include_directories(../ .)
 add_library(${TargetName} ${Utils_SRC} ${Utils_HDR} ${Utils_EXT})
 
 if (Utils_BUILD_TESTS)
-
     set(LocalUtils_TargetName ${TargetName})
     subdirs(Tests)
 endif()

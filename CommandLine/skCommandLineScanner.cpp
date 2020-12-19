@@ -91,10 +91,10 @@ void Scanner::lex(Token &tok)
             const char nx = m_value.at(m_pos);
             if (nx == '-')
                 ++m_pos;
-            tok.setType(nx == '-' ? (int)TOK_SWITCH_SHORT : (int)TOK_SWITCH_LONG);
+            tok.setType(nx == '-' ? (int)TOK_SWITCH_LONG : (int)TOK_SWITCH_SHORT);
             return;
         }
-        case '"': 
+        case '"':
         case '\'':
         {
             // parse a standard string
@@ -111,6 +111,7 @@ void Scanner::lex(Token &tok)
             }
             return;
         }
+        case '.':
         case '/':
         case digit:
         case uppercase:

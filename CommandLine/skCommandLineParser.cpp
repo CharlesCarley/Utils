@@ -135,12 +135,11 @@ int Parser::parse(int           argc,
             if (!opt->isOptional())
                 m_used++;
 
-            SKsize count = opt->getArgCount();
-
-            if (count > 0)
+            const SKsize nArgs = opt->getArgCount();
+            if (nArgs > 0)
             {
                 SKsize i;
-                for (i = 0; i < count; ++i)
+                for (i = 0; i < nArgs; ++i)
                 {
                     m_scanner.lex(a);
 
@@ -165,7 +164,7 @@ int Parser::parse(int           argc,
                     opt->setValue(i, a.getValue());
                 }
 
-                if (i != count)
+                if (i != nArgs)
                 {
                     skLogf(LD_ERROR,
                            "not all arguments converted when parsing switch '%s'\n",
@@ -197,7 +196,7 @@ int Parser::parse(int           argc,
     return 0;
 }
 
-void Parser::logInput()
+void Parser::logInput() const
 {
     skLogf(LD_INFO,
            "\n ==> %s %s\n\n",

@@ -23,15 +23,11 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "catch/catch.hpp"
 #include "Utils/skDictionary.h"
 #include "Utils/skString.h"
-#include "Macro.h"
+#include "catch/catch.hpp"
 
-
-#define TEST_CASE_NAME skDictionary
 typedef skDictionary<skString, int> Map;
-
 
 void skDictionary_populate(Map& map)
 {
@@ -49,19 +45,16 @@ TEST_CASE("Dictionary_insert")
     skDictionary_populate(dict);
     REQUIRE(5 == dict.size());
 
-
     dict.insert("Mary", 7);
     dict.insert("Bill", 7);
     REQUIRE(5 == dict.size());
 }
 
-
 TEST_CASE("Dictionary_remove")
 {
     Map dict;
     skDictionary_populate(dict);
-    REQUIRE(5== dict.size());
-
+    REQUIRE(5 == dict.size());
 
     bool val = dict.has_key("Bill");
     REQUIRE(val);
@@ -71,8 +64,6 @@ TEST_CASE("Dictionary_remove")
     REQUIRE(false == val);
     REQUIRE(4 == dict.size());
 }
-
-
 
 TEST_CASE("Dictionary_iterators")
 {
@@ -92,9 +83,8 @@ TEST_CASE("Dictionary_iterators")
     Map::Iterator it = dict.iterator();
     while (it.hasMoreElements())
     {
-        Map::ConstReferenceType val = it.getNext();
-        REQUIRE(i < val.second);
+        Map::ConstReferenceType mval = it.getNext();
+        REQUIRE(i < mval.second);
         ++i;
     }
 }
-

@@ -46,12 +46,11 @@ skLogger::~skLogger()
     m_stream = nullptr;
 }
 
-void skLogger::open(const char* logname)
+void skLogger::open(const char* logName)
 {
     m_flags |= LF_FILE;
-    if (m_stream)
-        delete m_stream;
-    m_stream = new skFileStream(logname, skStream::WRITE);
+    delete m_stream;
+    m_stream = new skFileStream(logName, skStream::WRITE);
 }
 
 void skLogger::writeDetail(SKint32 detail) const
@@ -147,7 +146,7 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
 
 void skLogd(SKint32 detail, const char* msg)
 {
-    SKsize len = skStringUtils::length(msg);
+    const SKsize len = skStringUtils::length(msg);
     if (len > 0)
     {
         const skLogger* log = skLogger::getSingletonPtr();

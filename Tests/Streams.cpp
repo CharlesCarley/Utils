@@ -28,10 +28,14 @@
 #include "Utils/skFileStream.h"
 #include "Utils/skString.h"
 
+#include "TestConfig.h"
+
+#define FileName(x) TestDirectory x
+
 
 TEST_CASE("FileStream OpenRead")
 {
-    skFileStream fs("Tests/TestFiles/Test1.txt", skStream::READ);
+    skFileStream fs(FileName("/TestFiles/Test1.txt"), skStream::READ);
 
     EXPECT_EQ(true, fs.isOpen());
     EXPECT_EQ(true, fs.canRead());
@@ -42,7 +46,7 @@ TEST_CASE("FileStream OpenRead")
 
 TEST_CASE("FileStream OpenWrite")
 {
-    skFileStream fs("Tests/TestFiles/Test2.txt", skStream::WRITE);
+    skFileStream fs(FileName("/TestFiles/Test2.txt"), skStream::WRITE);
 
     EXPECT_EQ(true, fs.isOpen());
     EXPECT_EQ(false, fs.canRead());
@@ -64,7 +68,7 @@ TEST_CASE("FileStream OpenWrite")
 
 TEST_CASE("FileStream WriteF")
 {
-    skFileStream fs("Tests/TestFiles/Test3.txt", skStream::WRITE);
+    skFileStream fs(FileName("/TestFiles/Test3.txt"), skStream::WRITE);
 
     EXPECT_EQ(true, fs.isOpen());
     EXPECT_EQ(false, fs.canRead());
@@ -85,7 +89,7 @@ TEST_CASE("FileStream WriteF")
 
 TEST_CASE("FileStream Test3 - Read")
 {
-    skFileStream fs("Tests/TestFiles/Test3.txt", skStream::READ);
+    skFileStream fs(FileName("/TestFiles/Test3.txt"), skStream::READ);
 
     EXPECT_EQ(true, fs.isOpen());
     EXPECT_EQ(true, fs.canRead());

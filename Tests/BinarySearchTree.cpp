@@ -28,7 +28,6 @@
 #include "Utils/skString.h"
 #include "catch/catch.hpp"
 
-
 #define TEST_CASE_NAME skBinarySearchTree
 typedef skBinarySearchTree<int> SearchTree;
 
@@ -54,8 +53,6 @@ int c1[]   = {36, 20, 65, 75, 85};
 int c2[]   = {32, 60, 40};
 int c3[]   = {30, 70, 50};
 
-
-
 void populate(SearchTree &tree, int initial[], int len)
 {
     for (int i = 0; i < len; ++i)
@@ -69,7 +66,6 @@ void populate(SearchTree &tree, int initial[], int len)
         printf("\n");
     }
 }
-
 
 void remove(SearchTree &tree, int removelist[], int len, int removeListLen)
 {
@@ -99,7 +95,6 @@ void remove(SearchTree &tree, int removelist[], int len, int removeListLen)
     if (DEBUG)
         printf("\n");
 }
-
 
 TEST_CASE("BinarySearchTree_case1_then_1x1")
 {
@@ -143,12 +138,9 @@ TEST_CASE("BinarySearchTree_case1_then_1x1")
 
     remove(tree, list, len, len);
 
-
     EXPECT_EQ(true, tree.left() == 0);
     EXPECT_EQ(true, tree.right() == 0);
 }
-
-
 
 TEST_CASE("BinarySearchTree_case2_then_1x1")
 {
@@ -195,8 +187,6 @@ TEST_CASE("BinarySearchTree_case2_then_1x1")
     EXPECT_EQ(true, tree.right() == 0);
 }
 
-
-
 TEST_CASE("BinarySearchTree_case3_then_1x1")
 {
     // should produce the following output
@@ -215,7 +205,6 @@ TEST_CASE("BinarySearchTree_case3_then_1x1")
     // Removing 65: = 85 75
     // Removing 75: = 85
     // Removing 85: =
-
 
     SearchTree           tree;
     SearchTree::Iterator it;
@@ -245,7 +234,6 @@ TEST_CASE("BinarySearchTree_case3_then_1x1")
     EXPECT_EQ(true, tree.right() == 0);
 }
 
-
 //                       50
 //                     /     \
 //                    /       \
@@ -268,7 +256,6 @@ TEST_CASE("BinarySearchTree_minimum_maximum")
 
     int len = sizeof(list) / sizeof(int);
     populate(tree, list, len);
-
 
     SearchTree::NodePointerType node = tree.root(), L, R;
     EXPECT_EQ(true, node != 0);
@@ -297,7 +284,6 @@ TEST_CASE("BinarySearchTree_minimum_maximum")
     R = tree.maximum(L->right());
     EXPECT_EQ(true, R != 0);
     EXPECT_EQ(36, R->data());
-
 
     node = tree.root();
     R    = node->right();

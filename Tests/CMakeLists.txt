@@ -27,10 +27,27 @@ file(GLOB TST  TestFiles/*.txt)
 file(GLOB HDR  *.h)
 
 
-include_directories(.)
+
+# Configure a config time generated *.h
+# that defines the absolute path to the test directory.
+# This will allow the files to be predictably loaded.
+set(TestDirectory ${Utils_SOURCE_DIR}/Tests)
+configure_file(${Utils_SOURCE_DIR}/CMake/TestConfig.h.in  
+               ${Utils_BINARY_DIR}/TestConfig.h)
+
+include_directories(. ${Utils_BINARY_DIR})
 
 add_executable(${TargetName} catch/catch.hpp ${SRC} ${HDR} ${TST})
 target_link_libraries(${TargetName} ${LocalUtils_TargetName})
+
+if (Utils_AUTO_RUN_TESTS)
+
+    add_custom_command(TARGET 
+        ${TargetName} POST_BUILD
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND  $<TARGET_FILE:${TargetName}>
+    )
+endif()
 
 if (MSVC)
     # Relative to the root directory where make is called

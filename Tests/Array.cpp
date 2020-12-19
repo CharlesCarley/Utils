@@ -27,16 +27,12 @@
 #include "Utils/skArray.h"
 #include "catch/catch.hpp"
 
-
-
 const int MaxSize = 100;
 const int Limit   = 50;
 
 typedef skNewAllocator<int, SKuint8, Limit> TinyAllocator;
 typedef skArray<int>                        IntArray;
 typedef skArray<int, TinyAllocator>         IntArraySmall;
-
-
 
 TEST_CASE("Default Constructor")
 {
@@ -45,7 +41,6 @@ TEST_CASE("Default Constructor")
     REQUIRE(ia.capacity() == 0);
     REQUIRE(ia.ptr() == 0);
 }
-
 
 TEST_CASE("Expanding Capacity")
 {
@@ -69,7 +64,6 @@ TEST_CASE("Controlled Capacity")
     // REQUIRE(ia.capacity() == MaxSize);
     REQUIRE(ia.ptr() != 0);
 }
-
 
 TEST_CASE("Capacity Untouched")
 {
@@ -98,13 +92,10 @@ TEST_CASE("Capacity And Data Reset")
     REQUIRE(ia.ptr() == 0);
 }
 
-
-
 TEST_CASE("Array Copy Constructor")
 {
     IntArray ia;
     ia.reserve(MaxSize);
-
 
     int i;
     for (i = 0; i < MaxSize; ++i)
@@ -125,7 +116,6 @@ TEST_CASE("Array Copy Constructor")
     }
 }
 
-
 TEST_CASE("Array Assignment Operator")
 {
     IntArray ia, ib;
@@ -140,7 +130,6 @@ TEST_CASE("Array Assignment Operator")
     p1 = ia.ptr();
     p2 = ib.ptr();
 
-
     EXPECT_EQ(ia.size(), ib.size());
     //EXPECT_EQ(ia.capacity(), ib.capacity());
 
@@ -149,8 +138,6 @@ TEST_CASE("Array Assignment Operator")
         EXPECT_EQ(p1[i], p2[i]);
     }
 }
-
-
 
 TEST_CASE("Small Array Maxed ")
 {
@@ -161,11 +148,10 @@ TEST_CASE("Small Array Maxed ")
     EXPECT_EQ(ia.capacity(), Limit);
 }
 
-
 TEST_CASE("Push to max")
 {
     IntArraySmall ia;
-    int i;
+    int           i;
 
     try
     {
@@ -180,5 +166,3 @@ TEST_CASE("Push to max")
     EXPECT_EQ(ia.size(), Limit);
     EXPECT_EQ(ia.capacity(), Limit);
 }
-
-
