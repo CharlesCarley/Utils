@@ -729,21 +729,21 @@ void skString::decrypt(const char* password)
     decrypt((const SKbyte*)password, (int)skStringUtils::length(password), UB, sizeof UB / sizeof UB[0]);
 }
 
-int skSprintf(char* dst, int max_size, const char* fmt, ...)
+int skSprintf(char* dst, int maxSize, const char* fmt, ...)
 {
-    if (max_size <= 0 || !dst || !fmt)
+    if (maxSize <= 0 || !dst || !fmt)
         return 0;
 
-    int     size;
+    int size;
     va_list lst;
-    max_size -= 1;
+    maxSize -= 1;
 
     va_start(lst, fmt);
-    size = skp_printf(dst, max_size, fmt, lst);
+    size = skp_printf(dst, maxSize, fmt, lst);
     va_end(lst);
 
     if (size < 0)
-        size = max_size;
+        size = maxSize;
 
     dst[size] = 0;
     return size;

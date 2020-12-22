@@ -269,6 +269,7 @@ SK_INLINE SKhash skHash(const skString& key)
     return skHash(key.c_str());
 }
 
-extern int skSprintf(char* dst, int max_size, const char* fmt, ...);
+
+extern int skSprintf(char* dst, int maxSize, const char* fmt, ...);
 
 #endif  //_skString_h_
