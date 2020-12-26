@@ -141,7 +141,7 @@ const skString skString::Blank = skStringConverter::BLANK;
 ////
 
 skString::skString() :
-    m_data(0),
+    m_data(nullptr),
     m_size(0),
     m_capacity(0)
 {
@@ -192,7 +192,7 @@ void skString::reserve(SKsize nr)
     if (m_capacity < nr)
     {
         auto* ptr = new ValueType[nr + 1];
-
+        memset(ptr, 0, nr + 1);
         if (m_data)
         {
             skMemcpy(ptr, m_data, m_size);
@@ -201,7 +201,6 @@ void skString::reserve(SKsize nr)
 
         m_data         = ptr;
         m_capacity     = nr;
-        m_data[m_size] = 0;
     }
 }
 
@@ -734,7 +733,7 @@ int skSprintf(char* dst, int maxSize, const char* fmt, ...)
     if (maxSize <= 0 || !dst || !fmt)
         return 0;
 
-    int size;
+    int     size;
     va_list lst;
     maxSize -= 1;
 
