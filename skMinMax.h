@@ -38,6 +38,12 @@ void skSwap(T& a, T& b)
 }
 
 template <typename T>
+SK_INLINE T skABS(const T& a)
+{
+    return a < 0 ? -a : a;
+}
+
+template <typename T>
 SK_INLINE T skMin(const T& a, const T& b)
 {
     return a < b ? a : b;
