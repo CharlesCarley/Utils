@@ -37,19 +37,16 @@
 #define WIN32_LEAN_AND_MEAN 1
 #endif
 #include <io.h>
-#include <windows.h>
-
+#include <Windows.h>
 #else
-
 #define __STDC_WANT_LIB_EXT1__ 1
-
 #endif
 
 #include <memory.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #if SK_COMPILER == SK_COMPILER_MSVC
 #define skp_printf(ptr, size, fmt, lst) _vsnprintf_s(ptr, size, _TRUNCATE, fmt, lst)

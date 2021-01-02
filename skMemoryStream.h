@@ -38,11 +38,14 @@ public:
     void open(const skStream& other, int mode);
     void open(const void* data, SKsize sizeInBytes, int mode);
 
+
+    /// <summary>
     // Open the stream from an external data source.
     // The default behavior of this class is to clone the data
-    // into the class's internal storage location of m_data. 
+    // into the class's internal storage location of m_data.
     // Using this method will allow 'm_data' to be stored elsewhere,
     // but provide the same functionality.
+    /// </summary>
     void open(const void* data, SKsize sizeInBytes, SKsize posInData, bool externalData);
 
     void   close(void);
@@ -52,32 +55,32 @@ public:
     bool   seek(SKint64 offset, SKsize dir);
     void   reserve(SKsize nr);
 
-    inline SKsize position(void) const
+    SK_INLINE SKsize position(void) const
     {
         return m_pos;
     }
 
-    inline SKsize size(void) const
+    SKsize size(void) const
     {
         return m_size;
     }
 
-    inline bool isOpen(void) const
+    bool isOpen(void) const
     {
-        return m_data != 0;
+        return m_data != nullptr;
     }
 
-    inline bool eof(void) const
+    bool eof(void) const
     {
         return m_pos == SK_NPOS || m_pos >= m_size;
     }
 
-    inline SKbyte* ptr()
+    SKbyte* ptr()
     {
         return m_data;
     }
 
-    inline const SKbyte* ptr() const
+    const SKbyte* ptr() const
     {
         return m_data;
     }
@@ -96,22 +99,29 @@ public:
     void   readVaryingInt(SKsize& out) const;
     SKsize getVaryingInt() const;
 
-    // Reads up to the size of the destination buffer (destLen)
-    // or a null terminating character.
+    /// <summary>
+    /// Reads up to the size of the destination buffer (destLen)
+    /// or a null terminating character.
+    /// </summary>
+    /// <param name="dest"></param>
+    /// <param name="destLen"></param>
     void readString(SKbyte* dest, SKuint32 destLen) const;
 
-    // This is for use with null terminated string arrays.
-    // Seeks the current position to the next location
-    // after the null terminator, or to the end of the stream,
-    // which ever comes first.
-    // returns zero if an error occurs, and the total number
-    // of bytes scanned on success.
-    // Access to the current string can be obtained by 
-    // calling: 
-    //      char *string1 = stream.addressAtPosition();
-    //      stream.seekString();
-    //      char *string2 = stream.addressAtPosition();
-    //      
+
+    /// This is for use with null terminated string arrays.
+    /// Seeks the current position to the next location
+    /// after the null terminator, or to the end of the stream,
+    /// which ever comes first.
+    /// 
+    /// Access to the current string can be obtained by
+    /// calling:
+    ///      char *string1 = stream.addressAtPosition();
+    ///      stream.seekString();
+    ///      char *string2 = stream.addressAtPosition();
+    ///
+    /// </summary>
+    /// <returns>returns zero if an error occurs or the total number
+    /// of bytes scanned on success.</returns>
     SKsize seekString() const;
 
 private:

@@ -44,7 +44,7 @@ public:
     virtual ~skSingleton()
     {
         SK_ASSERT(m_singleton);
-        m_singleton = 0;
+        m_singleton = nullptr;
     }
 
     SK_INLINE T& getSingleton(void)

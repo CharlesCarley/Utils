@@ -58,17 +58,17 @@ namespace skCommandLine
             m_value.reserve(64);
         }
 
-        inline const int &getType() const
+        const int &getType() const
         {
             return m_type;
         }
 
-        inline void setType(const int &type)
+        void setType(const int &type)
         {
             m_type = type;
         }
 
-        inline const skString &getValue() const
+        const skString &getValue() const
         {
             return m_value;
         }

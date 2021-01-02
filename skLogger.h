@@ -61,7 +61,7 @@ public:
     {
     }
 
-    virtual void messageLogged(int detail, int setflags, const char* logged, int length) = 0;
+    virtual void messageLogged(int detail, int setFlags, const char* logged, int length) = 0;
 };
 
 class skLogger : public skSingleton<skLogger>
@@ -79,27 +79,27 @@ public:
     skLogger();
     ~skLogger();
 
-    inline void setDetail(int val)
+    void setDetail(int val)
     {
         m_detail = val;
     }
 
-    inline int getDetail() const
+    int getDetail() const
     {
         return m_detail;
     }
 
-    inline void setFlags(int val)
+    void setFlags(int val)
     {
         m_flags = val;
     }
 
-    inline int getFlags() const
+    int getFlags() const
     {
         return m_flags;
     }
 
-    inline void clearFlag(int flag)
+    void clearFlag(int flag)
     {
         m_flags &= ~flag;
     }

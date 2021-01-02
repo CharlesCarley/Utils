@@ -31,18 +31,17 @@
 
 #if SK_PLATFORM != SK_PLATFORM_ANDROID
 
-class skValue 
+class skValue
 {
 public:
     typedef std::type_info Info;
 
 protected:
-    class Value 
+    class Value
     {
     public:
-        virtual ~Value()
-        {
-        }
+        virtual ~Value() = default;
+
         virtual const Info& type(void) const  = 0;
         virtual Value*      clone(void) const = 0;
     };
@@ -60,11 +59,12 @@ protected:
         {
         }
 
-        SK_INLINE const Info& type(void) const
+        SK_INLINE const Info& type(void) const override
         {
             return typeid(T);
         }
-        SK_INLINE Value* clone(void) const
+
+        SK_INLINE Value* clone(void) const override
         {
             return new ValueType<T>(m_value);
         }
@@ -74,7 +74,7 @@ protected:
 
     Value* m_data;
 
-    SK_INLINE skValue& swap(skValue& rhs)
+    SK_INLINE skValue& swap(skValue& rhs) noexcept
     {
         skSwap(m_data, rhs.m_data);
         return *this;
@@ -82,12 +82,12 @@ protected:
 
 public:
     skValue() :
-        m_data(0)
+        m_data(nullptr)
     {
     }
 
     skValue(const skValue& v) :
-        m_data(v.m_data ? v.m_data->clone() : 0)
+        m_data(v.m_data ? v.m_data->clone() : nullptr)
     {
     }
 

@@ -79,7 +79,7 @@ public:
     skString();
     skString(const ValueType* str, SKsize len = 0);
     skString(const skString& str);
-    skString(const char ch, SKsize nr);
+    skString(char ch, SKsize nr);
 
     ~skString();
 
@@ -166,7 +166,7 @@ public:
     void      resize(SKsize nr);
     void      assign(const skString& rhs);
     bool      equals(const skString& rhs) const;
-    bool      equals(const char *rhs) const;
+    bool      equals(const char* rhs) const;
 
     static skString format(const char* fmt, ...);
     static void     format(skString& dst, const char* fmt, ...);
@@ -268,7 +268,6 @@ SK_INLINE SKhash skHash(const skString& key)
 {
     return skHash(key.c_str());
 }
-
 
 extern int skSprintf(char* dst, int maxSize, const char* fmt, ...);
 

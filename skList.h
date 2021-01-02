@@ -246,8 +246,8 @@ private:
 
 public:
     skSinglyLinkedList() :
-        m_head(0),
-        m_tail(0),
+        m_head(nullptr),
+        m_tail(nullptr),
         m_size(0)
     {
     }
@@ -260,11 +260,11 @@ public:
     void clear(void)
     {
         Link* node = m_head;
-        while (node != 0)
+        while (node != nullptr)
         {
-            Link* tlink = node->m_next;
+            Link* tLink = node->m_next;
             delete node;
-            node = tlink;
+            node = tLink;
         }
         m_tail = 0;
         m_head = 0;
@@ -327,14 +327,14 @@ public:
                 prev = m_head;
                 next = m_head;
 
-                while (next != 0 && next->m_data <= v)
+                while (next != nullptr && next->m_data <= v)
                 {
                     prev = next;
                     next = next->m_next;
                 }
                 prev->m_next = node;
                 node->m_next = next;
-                if (next == 0)
+                if (next == nullptr)
                     m_tail = prev;
             }
         }
@@ -344,7 +344,7 @@ public:
     ValueType pop_back(void)
     {
         SK_ASSERT(m_head);
-        Link *link = m_head, *prev = 0;
+        Link *link = m_head, *prev = nullptr;
         while (link->m_next != 0)
         {
             prev = link;
@@ -384,7 +384,7 @@ public:
     {
         if (!m_head)
             return;
-        Link *prev = 0, *found = 0;
+        Link *prev = nullptr, *found = nullptr;
 
         find(v, &prev, &found);
         if (found)
@@ -473,7 +473,7 @@ private:
             return;
 
         SK_ASSERT(prev && pos);
-        Link *node = m_head, *last = 0;
+        Link *node = m_head, *last = nullptr;
         while (node)
         {
             if (node->m_data == v)
@@ -562,7 +562,6 @@ public:
 
         if (inFront != nullptr && elem != nullptr)
         {
-
             elem->m_next    = inFront;
             elem->m_prev    = inFront->m_prev;
             inFront->m_prev = elem;
@@ -745,7 +744,6 @@ public:
         while (node)
         {
             LinkPointerType temp = node;
-
             node = node->m_next;
             delete temp;
         }
@@ -900,13 +898,11 @@ private:
     void replicate(const SelfType& rhs)
     {
         clear();
-        ConstIterator iter = rhs.iterator();
-        while (iter.hasMoreElements())
-            push_back(iter.getNext());
+        ConstIterator it = rhs.iterator();
+        while (it.hasMoreElements())
+            push_back(it.getNext());
     }
 };
-
-
 
 template <typename T>
 class skListClass
@@ -932,9 +928,9 @@ public:
     {
     public:
         Link() :
-            m_next(0),
-            m_prev(0),
-            m_data(0)
+            m_next(nullptr),
+            m_prev(nullptr),
+            m_data(nullptr)
         {
         }
 
@@ -1100,8 +1096,6 @@ public:
     }
 
 private:
-
-
     skListClass& operator=(const skListClass&)
     {
         // no assignment

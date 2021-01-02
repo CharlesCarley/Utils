@@ -39,7 +39,7 @@ skStream::~skStream()
 
 SKsize skStream::writef(const char* format, ...)
 {
-    char*        buf = 0;
+    char*        buf = nullptr;
     std::va_list l1;
     int          s1, s2;
     SKsize       bw = 0;

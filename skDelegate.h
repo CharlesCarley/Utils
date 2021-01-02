@@ -28,14 +28,13 @@
 
 #include "Config/skConfig.h"
 
-
 template <typename R, typename A1>
 class skSimpleDelegate
 {
 public:
     skSimpleDelegate() :
-        m_object(0),
-        m_call(0)
+        m_object(nullptr),
+        m_call(nullptr)
     {
     }
 
@@ -89,8 +88,8 @@ class skSimpleDelegate2
 {
 public:
     skSimpleDelegate2() :
-        m_object(0),
-        m_call(0)
+        m_object(nullptr),
+        m_call(nullptr)
     {
     }
 
@@ -111,7 +110,7 @@ public:
 
     SK_INLINE bool isValid(void)
     {
-        return (m_call != 0 && m_object != 0);
+        return (m_call != nullptr && m_object != nullptr);
     }
 
     SK_INLINE R operator()()
