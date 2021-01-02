@@ -26,6 +26,7 @@
 #include "skString.h"
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
 #include "skFixedString.h"
 #include "skPlatformHeaders.h"
 #include "skStringConverter.h"
@@ -199,8 +200,8 @@ void skString::reserve(SKsize nr)
             delete[] m_data;
         }
 
-        m_data         = ptr;
-        m_capacity     = nr;
+        m_data     = ptr;
+        m_capacity = nr;
     }
 }
 
@@ -527,15 +528,15 @@ void skString::toHex(void)
     if (cp == nullptr)
         return;
 
-    int ival, dv, rv;
+    int iVal, dv, rv;
 
     SKsize i, j = m_size;
     for (i = old_size - 1; i != npos; --i)
     {
-        ival = (int)(unsigned char)cp[i];
-        dv   = ival / 16;
-        rv   = ival % 16;
-        if (ival < 256)
+        iVal = (int)(unsigned char)cp[i];
+        dv   = iVal / 16;
+        rv   = iVal % 16;
+        if (iVal < 256)
         {
             dp[--j] = skStringUtils::HexTable[rv];
             dp[--j] = skStringUtils::HexTable[dv];

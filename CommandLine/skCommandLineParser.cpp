@@ -45,7 +45,7 @@ Parser::~Parser()
         delete it.getNext();
 }
 
-int Parser::getBaseName(const char *input) const
+int Parser::getBaseName(const char *input)
 {
     int offs = 0;
     if (input)
