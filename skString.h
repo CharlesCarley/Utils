@@ -29,7 +29,6 @@
 #include "Utils/skAllocator.h"
 #include "Utils/skArray.h"
 #include "Utils/skMap.h"
-#include "Utils/skMemoryUtils.h"
 
 namespace skStringUtils
 {

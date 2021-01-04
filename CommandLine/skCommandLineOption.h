@@ -85,10 +85,6 @@ namespace skCommandLine
                 m_value.resize((SKint32)sw.argCount);
         }
 
-        ~ParseOption()
-        {
-        }
-
         bool isOptional() const
         {
             return m_switch.optional;
