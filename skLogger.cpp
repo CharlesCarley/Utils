@@ -24,12 +24,12 @@
 -------------------------------------------------------------------------------
 */
 #include "Utils/skLogger.h"
-#include "Utils/skString.h"
 #include <cstdarg>
 #include <cstdio>
 #include "Utils/skDebugger.h"
 #include "Utils/skFileStream.h"
 #include "Utils/skPlatformHeaders.h"
+#include "Utils/skString.h"
 #include "Utils/skTimer.h"
 
 skLogger::skLogger() :
@@ -115,6 +115,7 @@ void skLogger::writeMessage(const char* msg, SKint32 len) const
     {
         if (IsDebuggerPresent())
         {
+            // either in the output or immediate window.
             OutputDebugString(msg);
         }
     }
