@@ -417,14 +417,14 @@ SKsize skString::find(char ch) const
     return npos;
 }
 
-SKsize skString::find(const char* ch, SKsize pos) const
+SKsize skString::find(const char* ch, SKsize offs) const
 {
     if (m_data != nullptr)
     {
-        if (pos >= m_size)
+        if (offs >= m_size)
             return npos;
 
-        char* sp  = m_data + pos;
+        char* sp  = m_data + offs;
         char* ptr = strstr(sp, ch);
 
         if (ptr)
@@ -468,12 +468,12 @@ skString& skString::append(const char* rhs, SKsize rhsLen)
     return *this;
 }
 
-SKsize skString::copy(char* arr, SKsize nr, SKsize pos) const
+SKsize skString::copy(char* arr, SKsize nr, SKsize offs) const
 {
-    if (!arr || !m_data || nr + pos > m_size)
+    if (!arr || !m_data || nr + offs > m_size)
         return 0;
 
-    char* src = m_data + pos;
+    char* src = m_data + offs;
 
     SKsize i;
 
