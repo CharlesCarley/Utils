@@ -440,7 +440,8 @@ SKsize skString::find(const char* ch, SKsize pos) const
 
 skString& skString::append(char ch)
 {
-    reserve(m_size + 1);
+    if (m_size + 1 > m_capacity)
+        reserve(m_size + 1);
 
     m_data[m_size]   = ch;
     m_data[++m_size] = 0;
