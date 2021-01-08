@@ -29,7 +29,6 @@
 #include "Utils/skAllocator.h"
 #include "Utils/skArray.h"
 #include "Utils/skMap.h"
-#include "Utils/skMemoryUtils.h"
 
 namespace skStringUtils
 {
@@ -79,7 +78,7 @@ public:
     skString();
     skString(const ValueType* str, SKsize len = 0);
     skString(const skString& str);
-    skString(const char ch, SKsize nr);
+    skString(char ch, SKsize nr);
 
     ~skString();
 
@@ -133,10 +132,12 @@ public:
         return this->append(rhs);
     }
 
-    SK_INLINE char operator[](SKsize idx) const
+    char operator[](const SKsize idx) const
     {
-        SK_ASSERT(idx != npos);
-        return m_data ? m_data[idx] : '\0';
+        SK_ASSERT(idx < m_size);
+        if (idx < m_size)
+            return m_data ? m_data[idx] : '\0';
+        return 0;
     }
 
     skString& operator=(const skString& rhs);
@@ -166,7 +167,7 @@ public:
     void      resize(SKsize nr);
     void      assign(const skString& rhs);
     bool      equals(const skString& rhs) const;
-    bool      equals(const char *rhs) const;
+    bool      equals(const char* rhs) const;
 
     static skString format(const char* fmt, ...);
     static void     format(skString& dst, const char* fmt, ...);
@@ -187,7 +188,7 @@ public:
         return m_data;
     }
 
-    SK_INLINE PointerType ptr(void)
+    SK_INLINE PointerType ptr(void) const
     {
         return m_data;
     }
@@ -207,7 +208,7 @@ public:
         return m_size == 0 || !m_data || m_data[0] == 0;
     }
 
-    SK_INLINE char at(SKsize idx) const
+    SK_INLINE char at(const SKsize idx) const
     {
         SK_ASSERT(idx != npos);
         return m_data && idx < m_size ? m_data[idx] : '\0';
@@ -268,7 +269,6 @@ SK_INLINE SKhash skHash(const skString& key)
 {
     return skHash(key.c_str());
 }
-
 
 extern int skSprintf(char* dst, int maxSize, const char* fmt, ...);
 

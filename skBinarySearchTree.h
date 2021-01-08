@@ -40,14 +40,14 @@ public:
     {
     public:
         Node() :
-            m_left(0),
-            m_right(0)
+            m_left(nullptr),
+            m_right(nullptr)
         {
         }
 
         Node(ConstValueType v) :
-            m_left(0),
-            m_right(0),
+            m_left(nullptr),
+            m_right(nullptr),
             m_data(v)
         {
         }
@@ -61,10 +61,12 @@ public:
         {
             return m_left;
         }
+
         SK_INLINE Node* right(void)
         {
             return m_right;
         }
+
         SK_INLINE ReferenceType data(void)
         {
             return m_data;
@@ -73,7 +75,8 @@ public:
     private:
         friend class skBinarySearchTree;
 
-        Node *    m_left, *m_right;
+        Node*     m_left;
+        Node*     m_right;
         ValueType m_data;
 
         void destruct(void) const
@@ -97,13 +100,13 @@ private:
 
 public:
     skBinarySearchTree() :
-        m_root(0),
+        m_root(nullptr),
         m_size(0)
     {
     }
 
-    skBinarySearchTree(const skBinarySearchTree& o) :
-        m_root(0),
+    skBinarySearchTree(const skBinarySearchTree& rhs) :
+        m_root(nullptr),
         m_size(0)
     {
         SK_ASSERT(0 && "TODO");
@@ -123,7 +126,7 @@ public:
 
     void insert(ConstReferenceType val)
     {
-        if (m_root == 0)
+        if (m_root == nullptr)
             m_root = new Node(val);
         else
             insert_recursive(m_root, val);
@@ -132,19 +135,19 @@ public:
 
     bool find(ConstReferenceType val) const
     {
-        if (m_root == 0)
+        if (m_root == nullptr)
             return false;
 
-        return find_recursive(m_root, val) != 0;
+        return find_recursive(m_root, val) != nullptr;
     }
 
     bool findNonRecursive(ConstReferenceType val) const
     {
-        if (m_root == 0)
+        if (m_root == nullptr)
             return false;
 
         NodePointerType node = m_root;
-        while (node != 0)
+        while (node != nullptr)
         {
             if (node->m_data == val)
                 return true;
@@ -158,11 +161,11 @@ public:
 
     bool findNonRecursive(ReferenceType out, ConstReferenceType val) const
     {
-        if (m_root == 0)
+        if (m_root == nullptr)
             return false;
 
         NodePointerType node = m_root;
-        while (node != 0)
+        while (node != nullptr)
         {
             if (node->m_data == val)
             {
@@ -179,7 +182,7 @@ public:
 
     void erase(ConstReferenceType val)
     {
-        if (m_root == 0)
+        if (m_root == nullptr)
             return;
 
         m_root = erase_recursive(m_root, val);
@@ -192,19 +195,19 @@ public:
         return m_array.iterator();
     }
 
-    Iterator iterator_decending(void)
+    Iterator iterator_descending(void)
     {
         m_array.resize(0);
         populate(m_root, true);
         return m_array.iterator();
     }
 
-    NodePointerType minimum(NodePointerType node = 0)
+    NodePointerType minimum(NodePointerType node = nullptr)
     {
         return minimum_recursive(node ? node : m_root);
     }
 
-    NodePointerType maximum(NodePointerType node = 0)
+    NodePointerType maximum(NodePointerType node = nullptr)
     {
         return maximum_recursive(node ? node : m_root);
     }
@@ -265,7 +268,7 @@ private:
     NodePointerType find_recursive(NodePointerType node, ConstReferenceType val) const
     {
         if (!node)
-            return 0;
+            return nullptr;
 
         if (node->m_data == val)
             return node;
@@ -279,7 +282,7 @@ private:
     NodePointerType erase_recursive(NodePointerType node, ConstReferenceType val)
     {
         if (!node)
-            return 0;
+            return nullptr;
 
         if (node->m_data > val)
             node->m_left = erase_recursive(node->m_left, val);

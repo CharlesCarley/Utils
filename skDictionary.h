@@ -128,10 +128,10 @@ public:
     }
 
     skDictionary(const skDictionary& o) :
-        m_data(0),
+        m_data(nullptr),
         m_size(0),
         m_capacity(0),
-        m_index(0)
+        m_index(nullptr)
     {
         SK_ASSERT(0 && "TODO");
     }
@@ -277,7 +277,7 @@ public:
 
     SK_INLINE bool valid(void) const
     {
-        return m_data != 0;
+        return m_data != nullptr;
     }
 
     SK_INLINE SKuint32 capacity(void) const

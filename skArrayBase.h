@@ -357,7 +357,7 @@ public:
 
     SK_INLINE bool valid(void) const
     {
-        return m_data != 0;
+        return m_data != nullptr;
     }
 
     SK_INLINE SizeType capacity(void) const

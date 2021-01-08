@@ -85,31 +85,27 @@ namespace skCommandLine
                 m_value.resize((SKint32)sw.argCount);
         }
 
-        ~ParseOption()
-        {
-        }
-
-        inline bool isOptional() const
+        bool isOptional() const
         {
             return m_switch.optional;
         }
 
-        inline bool isPresent() const
+        bool isPresent() const
         {
             return m_isPresent;
         }
 
-        inline SKsize getArgCount() const
+        SKsize getArgCount() const
         {
             return m_value.size();
         }
 
-        inline void makePresent()
+        void makePresent()
         {
             m_isPresent = true;
         }
 
-        inline const Switch &getSwitch() const
+        const Switch &getSwitch() const
         {
             return m_switch;
         }
@@ -119,14 +115,14 @@ namespace skCommandLine
             return m_value;
         }
 
-        inline const skString &getValue(SKsize idx = 0)
+        const skString & getValue(const SKsize idx = 0)
         {
             if (idx < m_value.size())
                 return m_value[(SKuint32)idx];
             return skString::Blank;
         }
 
-        inline void setValue(const skString &str)
+        void setValue(const skString &str)
         {
             if (!m_value.empty())
                 m_value[0] = str;
@@ -146,7 +142,7 @@ namespace skCommandLine
                                               base);
         }
 
-        inline void setValue(SKsize i, const skString &str)
+        void setValue(SKsize i, const skString &str)
         {
             if (i < m_value.size())
                 m_value[(SKint32)i] = str;

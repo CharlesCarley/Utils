@@ -204,18 +204,18 @@ public:
     skHashTable() :
         m_size(0),
         m_capacity(0),
-        m_iptr(0),
-        m_nptr(0),
-        m_bptr(0)
+        m_iPtr(nullptr),
+        m_nPtr(nullptr),
+        m_bPtr(nullptr)
     {
     }
 
     skHashTable(SKsize capacity) :
         m_size(0),
         m_capacity(0),
-        m_iptr(0),
-        m_nptr(0),
-        m_bptr(0)
+        m_iPtr(nullptr),
+        m_nPtr(nullptr),
+        m_bPtr(nullptr)
     {
         reserve(capacity);
     }
@@ -223,9 +223,9 @@ public:
     skHashTable(const skHashTable& rhs) :
         m_size(0),
         m_capacity(0),
-        m_iptr(0),
-        m_nptr(0),
-        m_bptr(0)
+        m_iPtr(nullptr),
+        m_nPtr(nullptr),
+        m_bPtr(nullptr)
     {
         copy(rhs);
     }
@@ -244,58 +244,58 @@ public:
 
     void clear(void)
     {
-        m_alloc.array_deallocate(m_bptr, m_capacity);
-        m_ialloc.array_deallocate(m_iptr, m_capacity);
-        m_ialloc.array_deallocate(m_nptr, m_capacity);
+        m_alloc.array_deallocate(m_bPtr, m_capacity);
+        m_iAlloc.array_deallocate(m_iPtr, m_capacity);
+        m_iAlloc.array_deallocate(m_nPtr, m_capacity);
 
-        m_bptr = 0;
-        m_iptr = 0;
-        m_nptr = 0;
+        m_bPtr = 0;
+        m_iPtr = nullptr;
+        m_nPtr = nullptr;
         m_size = m_capacity = 0;
     }
 
     SK_INLINE Value& at(SKsize i)
     {
-        SK_ASSERT(m_bptr && i >= 0 && i < m_size);
-        return m_bptr[i].second;
+        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        return m_bPtr[i].second;
     }
 
     SK_INLINE Value& operator[](SKsize i)
     {
-        SK_ASSERT(m_bptr && i >= 0 && i < m_size);
-        return m_bptr[i].second;
+        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        return m_bPtr[i].second;
     }
 
     SK_INLINE const Value& at(SKsize i) const
     {
-        SK_ASSERT(m_bptr && i >= 0 && i < m_size);
-        return m_bptr[i].second;
+        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        return m_bPtr[i].second;
     }
 
     SK_INLINE const Value& operator[](SKsize i) const
     {
-        SK_ASSERT(m_bptr && i >= 0 && i < m_size);
-        return m_bptr[i].second;
+        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        return m_bPtr[i].second;
     }
 
     SK_INLINE Key& keyAt(SKsize i)
     {
-        SK_ASSERT(m_bptr && i >= 0 && i < m_size);
-        return m_bptr[i].first;
+        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        return m_bPtr[i].first;
     }
 
     SK_INLINE const Key& keyAt(SKsize i) const
     {
-        SK_ASSERT(m_bptr && i >= 0 && i < m_size);
-        return m_bptr[i].first;
+        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        return m_bPtr[i].first;
     }
 
     Value* get(const Key& key)
     {
         SKsize i = find(key);
         if (i == npos)
-            return 0;
-        return &m_bptr[i].second;
+            return nullptr;
+        return &m_bPtr[i].second;
     }
 
     Value* operator[](const Key& key)
@@ -314,11 +314,11 @@ public:
             return npos;
 
         SKhash       hk = skHash(key);
-        const SKhash hr = hk & (m_capacity - 1);
-        SKsize       fh = m_iptr[hr];
+        const SKhash hr = hk & m_capacity - 1;
+        SKsize       fh = m_iPtr[hr];
 
-        while (fh != npos && hk != m_bptr[fh].hash)
-            fh = m_nptr[fh];
+        while (fh != npos && hk != m_bPtr[fh].hash)
+            fh = m_nPtr[fh];
 
         return fh;
     }
@@ -335,11 +335,11 @@ public:
             reserve(m_size == 0 ? 32 : m_size * 2);
 
         SKhash       hk = skHash(key);
-        const SKhash hr = hk & (m_capacity - 1);
+        const SKhash hr = hk & m_capacity - 1;
 
-        m_bptr[m_size] = Pair(key, val, hk);
-        m_nptr[m_size] = m_iptr[hr];
-        m_iptr[hr]     = m_size++;
+        m_bPtr[m_size] = Pair(key, val, hk);
+        m_nPtr[m_size] = m_iPtr[hr];
+        m_iPtr[hr]     = m_size++;
         return true;
     }
 
@@ -350,79 +350,79 @@ public:
 
     void remove(const Key& key)
     {
-        SKhash hash, lhash;
-        SKsize index, pindex, findex;
+        SKhash hash, lHash;
+        SKsize index, pIndex, fIndex;
 
         if (empty())
             return;
 
-        findex = find(key);
-        hash   = skHash(key) & (m_capacity - 1);
+        fIndex = find(key);
+        hash   = skHash(key) & m_capacity - 1;
 
-        index  = m_iptr[hash];
-        pindex = npos;
+        index  = m_iPtr[hash];
+        pIndex = npos;
 
-        while (index != findex)
+        while (index != fIndex)
         {
-            pindex = index;
-            index  = m_nptr[index];
+            pIndex = index;
+            index  = m_nPtr[index];
         }
 
-        if (pindex != npos)
+        if (pIndex != npos)
         {
-            SK_ASSERT(m_nptr[pindex] == findex);
-            m_nptr[pindex] = m_nptr[findex];
+            SK_ASSERT(m_nPtr[pIndex] == fIndex);
+            m_nPtr[pIndex] = m_nPtr[fIndex];
         }
         else
-            m_iptr[hash] = m_nptr[findex];
+            m_iPtr[hash] = m_nPtr[fIndex];
 
-        SKsize lindex = m_size - 1;
-        if (lindex == findex)
+        SKsize lIndex = m_size - 1;
+        if (lIndex == fIndex)
         {
             --m_size;
-            m_bptr[m_size].~Pair();
+            m_bPtr[m_size].~Pair();
             return;
         }
 
-        lhash = m_bptr[lindex].hash & (m_capacity - 1);
-        index = m_iptr[lhash];
+        lHash = m_bPtr[lIndex].hash & m_capacity - 1;
+        index = m_iPtr[lHash];
 
-        pindex = npos;
-        while (index != lindex)
+        pIndex = npos;
+        while (index != lIndex)
         {
-            pindex = index;
-            index  = m_nptr[index];
+            pIndex = index;
+            index  = m_nPtr[index];
         }
 
-        if (pindex != npos)
+        if (pIndex != npos)
         {
-            SK_ASSERT(m_nptr[pindex] == lindex);
-            m_nptr[pindex] = m_nptr[lindex];
+            SK_ASSERT(m_nPtr[pIndex] == lIndex);
+            m_nPtr[pIndex] = m_nPtr[lIndex];
         }
         else
-            m_iptr[lhash] = m_nptr[lindex];
+            m_iPtr[lHash] = m_nPtr[lIndex];
 
-        m_bptr[findex] = m_bptr[lindex];
-        m_nptr[findex] = m_iptr[lhash];
-        m_iptr[lhash]  = findex;
+        m_bPtr[fIndex] = m_bPtr[lIndex];
+        m_nPtr[fIndex] = m_iPtr[lHash];
+        m_iPtr[lHash]  = fIndex;
 
         --m_size;
-        m_bptr[m_size].~Pair();
+        m_bPtr[m_size].~Pair();
     }
 
     SK_INLINE PointerType ptr(void)
     {
-        return m_bptr;
+        return m_bPtr;
     }
 
     SK_INLINE ConstPointerType ptr(void) const
     {
-        return m_bptr;
+        return m_bPtr;
     }
 
     SK_INLINE bool valid(void) const
     {
-        return m_bptr != 0;
+        return m_bPtr != nullptr;
     }
 
     SK_INLINE SKsize size(void) const
@@ -442,22 +442,22 @@ public:
 
     Iterator iterator(void)
     {
-        return m_bptr && m_size > 0 ? Iterator(m_bptr, m_size) : Iterator();
+        return m_bPtr && m_size > 0 ? Iterator(m_bPtr, m_size) : Iterator();
     }
 
     ConstIterator iterator(void) const
     {
-        return m_bptr && m_size > 0 ? ConstIterator(m_bptr, m_size) : ConstIterator();
+        return m_bPtr && m_size > 0 ? ConstIterator(m_bPtr, m_size) : ConstIterator();
     }
 
     ReverseIterator reverseIterator(void)
     {
-        return m_bptr && m_size > 0 ? ReverseIterator(m_bptr, m_size) : ReverseIterator();
+        return m_bPtr && m_size > 0 ? ReverseIterator(m_bPtr, m_size) : ReverseIterator();
     }
 
     ConstReverseIterator reverseIterator(void) const
     {
-        return m_bptr && m_size > 0 ? ConstReverseIterator(m_bptr, m_size) : ConstReverseIterator();
+        return m_bPtr && m_size > 0 ? ConstReverseIterator(m_bPtr, m_size) : ConstReverseIterator();
     }
 
     void reserve(SKsize nr)
@@ -474,7 +474,7 @@ private:
 
         SKsize i = from;
         do
-            m_iptr[i] = m_nptr[i] = npos;
+            m_iPtr[i] = m_nPtr[i] = npos;
         while (++i < to);
     }
 
@@ -493,9 +493,9 @@ private:
 
             for (i = 0; i < m_size; ++i)
             {
-                m_bptr[i] = rhs.m_bptr[i];
-                m_iptr[i] = rhs.m_iptr[i];
-                m_nptr[i] = rhs.m_nptr[i];
+                m_bPtr[i] = rhs.m_bPtr[i];
+                m_iPtr[i] = rhs.m_iPtr[i];
+                m_nPtr[i] = rhs.m_nPtr[i];
             }
         }
     }
@@ -507,30 +507,30 @@ private:
             SK_HASHTABLE_POW2(nr);
         }
 
-        m_bptr = m_alloc.array_reallocate(m_bptr, nr, m_capacity);
-        m_iptr = m_ialloc.array_reallocate(m_iptr, nr, m_capacity);
-        m_nptr = m_ialloc.array_reallocate(m_nptr, nr, m_capacity);
+        m_bPtr = m_alloc.array_reallocate(m_bPtr, nr, m_capacity);
+        m_iPtr = m_iAlloc.array_reallocate(m_iPtr, nr, m_capacity);
+        m_nPtr = m_iAlloc.array_reallocate(m_nPtr, nr, m_capacity);
 
         m_capacity = nr;
-        SK_ASSERT(m_bptr && m_iptr && m_nptr);
+        SK_ASSERT(m_bPtr && m_iPtr && m_nPtr);
 
         SKhash i, h;
         _zeroIndices(0, m_capacity);
 
         for (i = 0; i < m_size; i++)
         {
-            h         = m_bptr[i].hash & (m_capacity - 1);
-            m_nptr[i] = m_iptr[h];
-            m_iptr[h] = i;
+            h         = m_bPtr[i].hash & m_capacity - 1;
+            m_nPtr[i] = m_iPtr[h];
+            m_iPtr[h] = i;
         }
     }
 
     SKsize         m_size, m_capacity;
-    IndexArray     m_iptr;
-    IndexArray     m_nptr;
-    PointerType    m_bptr;
+    IndexArray     m_iPtr;
+    IndexArray     m_nPtr;
+    PointerType    m_bPtr;
     Allocator      m_alloc;
-    IndexAllocator m_ialloc;
+    IndexAllocator m_iAlloc;
 };
 
 template <typename T, typename Allocator = skAllocator<skEntry<T, bool> > >

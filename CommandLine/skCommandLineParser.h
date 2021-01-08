@@ -54,7 +54,7 @@ namespace skCommandLine
         StringArray m_argList;
         Options     m_options;
 
-        int getBaseName(const char *input) const;
+        static int getBaseName(const char *input);
 
         bool hasSwitch(const skString &sw) const;
 
@@ -87,12 +87,12 @@ namespace skCommandLine
         /// </summary>
         void logInput() const;
 
-        inline StringArray &getArgList()
+        StringArray &getArgList()
         {
             return m_argList;
         }
 
-        inline const skString &getProgram() const
+        const skString &getProgram() const
         {
             return m_program;
         }

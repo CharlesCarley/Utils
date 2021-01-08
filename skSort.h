@@ -36,19 +36,21 @@ struct skSort
     typedef typename C::Iterator      Iterator;
     typedef typename C::ReferenceType ReferenceType;
 
-    skSort(Function fnc = 0) :
+    skSort(Function fnc = nullptr) :
         m_sort(fnc)
     {
     }
 
     Function m_sort;
-    void     sort(C& container)
+
+    void sort(C& container)
     {
         SizeType size = container.size();
         if (!m_sort || size < 2)
             return;
 
-        bool   swapped = false;
+        bool swapped = false;
+
         SizeType i;
         do
         {
@@ -84,7 +86,7 @@ private:
     Function m_sort;
 
 public:
-    skQSort(Function fnc = 0) :
+    skQSort(Function fnc = nullptr) :
         m_sort(fnc)
     {
     }

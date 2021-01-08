@@ -26,18 +26,17 @@
 #include "skFileStream.h"
 #include <cstdarg>
 #include <cstdio>
-#include "skMinMax.h"
 #include "skPlatformHeaders.h"
 
 skFileStream::skFileStream() :
-    m_handle(0)
+    m_handle(nullptr)
 {
 }
 
 skFileStream::skFileStream(const char* path, int mode) :
-    m_handle(0)
+    m_handle(nullptr)
 {
-    open(path, mode);
+    skFileStream::open(path, mode);
 }
 
 skFileStream::~skFileStream()
@@ -73,7 +72,7 @@ void skFileStream::close(void)
     if (m_handle)
     {
         fclose(static_cast<FILE*>(m_handle));
-        m_handle = 0;
+        m_handle = nullptr;
     }
     m_mode = SK_NPOS32;
 }
@@ -97,7 +96,7 @@ SKsize skFileStream::read(void* dst, SKsize nr) const
 bool skFileStream::seek(SKint64 offs, SKsize dir)
 {
     bool result = isOpen();
-    if (result && offs < SK_NPOS)
+    if (result)
     {
         long way;
         if (dir == SEEK_END)
@@ -130,8 +129,9 @@ SKsize skFileStream::size(void) const
     SKsize size = SK_NPOS;
     if (isOpen())
     {
-        FILE* fp  = static_cast<FILE*>(m_handle);
-        long  loc = ftell(fp);
+        FILE* fp = static_cast<FILE*>(m_handle);
+
+        const long loc = ftell(fp);
         fseek(fp, 0L, SEEK_END);
         size = (SKsize)ftell(fp);
         fseek(fp, loc, SEEK_SET);

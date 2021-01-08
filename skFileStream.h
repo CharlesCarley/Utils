@@ -46,7 +46,7 @@ public:
     bool   seek(SKint64 offs, SKsize dir);
 
 
-    inline bool isOpen(void) const
+    bool isOpen(void) const
     {
         return m_handle != nullptr;
     }

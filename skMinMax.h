@@ -26,15 +26,13 @@
 #ifndef _skMinMax_h_
 #define _skMinMax_h_
 
-#include <new>
 #include "Config/skConfig.h"
 
 template <typename T>
 void skSwap(T& a, T& b)
 {
     T c(a);
-    a = b;
-    b = c;
+    a = b, b = c;
 }
 
 template <typename T>
@@ -70,7 +68,7 @@ SK_INLINE T skMax3(const T& a, const T& b, const T& c)
 template <typename T>
 SK_INLINE T skClamp(const T& v, const T& a, const T& b)
 {
-    return v < a ? a : v > b ? b : v;
+    return v < a ? a : (v > b ? b : v);
 }
 
 template <typename T>

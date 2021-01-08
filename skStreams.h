@@ -28,7 +28,7 @@
 
 #include "skAllocator.h"
 
-class skStream 
+class skStream
 {
 public:
     enum Mode
@@ -57,34 +57,29 @@ public:
 
     virtual bool seek(SKint64 offset, SKsize dir) = 0;
 
-
     // returns the current position indicator
     virtual SKsize position(void) const = 0;
 
-    // returns the size of the file. 
+    // returns the size of the file.
     // Note that, some streams may not know the total size up front.
     virtual SKsize size(void) const = 0;
 
-
     SKsize writef(const char* format, ...);
-
 
     virtual void reserve(SKsize nr)
     {
         // not all streams need to preallocate memory
     }
 
-
-    inline bool canRead() const
+    bool canRead() const
     {
         return m_mode == READ || m_mode == READ_TEXT;
     }
 
-    inline bool canWrite() const
+    bool canWrite() const
     {
         return m_mode == WRITE || m_mode == WRITE_TEXT;
     }
-
 
 protected:
     SKint32 m_mode;

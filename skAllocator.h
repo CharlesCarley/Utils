@@ -53,29 +53,29 @@ public:
         }
     }
 
-    void construct(PointerType base, ConstReferenceType v)
+    static void construct(PointerType base, ConstReferenceType v)
     {
         new (base) T(v);
     }
 
-    void construct(PointerType base)
+    static void construct(PointerType base)
     {
         new (base) T();
     }
 
     template <typename A0>
-    void construct_arg(PointerType base, const A0& v)
+    static void construct_arg(PointerType base, const A0& v)
     {
         new (base) T(v);
     }
 
-    void destroy(PointerType base)
+    static void destroy(PointerType base)
     {
         if (base)
             base->~T();
     }
 
-    void destroy(PointerType beg, PointerType end)
+    static void destroy(PointerType beg, PointerType end)
     {
         while (beg && beg != end)
         {
@@ -85,7 +85,7 @@ public:
     }
 
 protected:
-    void construct(PointerType beg, ConstPointerType end, ConstReferenceType value)
+    static void construct(PointerType beg, ConstPointerType end, ConstReferenceType value)
     {
         while (beg != end)
         {
@@ -94,7 +94,7 @@ protected:
         }
     }
 
-    void construct(PointerType beg, ConstPointerType end)
+    static void construct(PointerType beg, ConstPointerType end)
     {
         while (beg != end)
         {
@@ -116,7 +116,7 @@ template <typename T, typename SizeType, const SizeType AllocLimit>
 const SizeType skAllocBase<T, SizeType, AllocLimit>::npos = SK_MKNPOS(SizeType);
 
 template <typename T,
-          typename SizeType          = SKsize,
+          typename SizeType         = SKsize,
           const SizeType AllocLimit = SK_MKMX(SizeType)>
 class skMallocAllocator : public skAllocBase<T, SizeType, AllocLimit>
 {
@@ -152,12 +152,12 @@ public:
         skFree(base);
     }
 
-    PointerType allocate_base(void)
+    static PointerType allocate_base(void)
     {
         return static_cast<PointerType>(skMalloc(sizeof(T)));
     }
 
-    void deallocate_base(PointerType& base)
+    static void deallocate_base(PointerType& base)
     {
         skFree(base);
     }
@@ -203,7 +203,7 @@ public:
         skFree(base);
     }
 
-    void array_deallocate(PointerType base)
+    static void array_deallocate(PointerType base)
     {
         skFree(base);
     }
@@ -233,7 +233,7 @@ public:
     {
     }
 
-    PointerType allocate(void)
+    static PointerType allocate(void)
     {
         return new T;
     }
@@ -263,7 +263,7 @@ public:
         return base;
     }
 
-    void array_deallocate(PointerType base, SizeType)
+    static void array_deallocate(PointerType base, SizeType)
     {
         delete[] base;
     }
