@@ -69,12 +69,12 @@ public:
         return *this;
     }
 
-    SK_INLINE bool hasMoreElements(void) const
+    bool hasMoreElements(void) const
     {
         return m_cur != nullptr;
     }
 
-    SK_INLINE void next(void) const
+    void next(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         m_cur = m_cur->getNext();
@@ -96,13 +96,13 @@ public:
         return ret;
     }
 
-    SK_INLINE LinkValueReferenceType peekNext(void)
+    LinkValueReferenceType peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
         return m_cur->getData();
     }
 
-    SK_INLINE LinkValueConstReferenceType peekNext(void) const
+    LinkValueConstReferenceType peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         return m_cur->getData();
@@ -149,12 +149,12 @@ public:
         return *this;
     }
 
-    SK_INLINE bool hasMoreElements(void) const
+    bool hasMoreElements(void) const
     {
         return m_cur != 0;
     }
 
-    SK_INLINE void next(void) const
+    void next(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         m_cur = m_cur->getPrev();
@@ -176,13 +176,13 @@ public:
         return ret;
     }
 
-    SK_INLINE LinkValueReferenceType peekNext(void)
+    LinkValueReferenceType peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
         return m_cur->getData();
     }
 
-    SK_INLINE LinkValueConstReferenceType peekNext(void) const
+    LinkValueConstReferenceType peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         return m_cur->getData();
@@ -220,19 +220,21 @@ public:
         {
         }
 
-        SK_INLINE PointerType getNext(void)
+        PointerType getNext(void)
         {
             return m_next;
         }
 
-        SK_INLINE typename SelfType::ReferenceType getData(void)
+        typename SelfType::ReferenceType getData(void)
         {
             return m_data;
         }
 
     private:
         friend class skSinglyLinkedList;
-        PointerType                  m_next;
+
+        PointerType m_next;
+
         typename SelfType::ValueType m_data;
     };
 
@@ -241,8 +243,9 @@ public:
     typedef ConstReferenceType LinkValueConstReferenceType;
 
 private:
-    Link * m_head, *m_tail;
-    SKsize m_size;
+    Link*    m_head;
+    Link*    m_tail;
+    SKuint32 m_size;
 
 public:
     skSinglyLinkedList() :
@@ -251,6 +254,8 @@ public:
         m_size(0)
     {
     }
+
+
 
     ~skSinglyLinkedList()
     {
@@ -384,6 +389,7 @@ public:
     {
         if (!m_head)
             return;
+
         Link *prev = nullptr, *found = nullptr;
 
         find(v, &prev, &found);
@@ -402,13 +408,13 @@ public:
         }
     }
 
-    SKsize find(ConstValueType v)
+    SKuint32 find(ConstValueType v)
     {
         if (!m_head)
             return -1;
 
-        SKsize foundIndex = 0;
-        Link*  node       = m_head;
+        SKuint32 foundIndex = 0;
+        Link*    node       = m_head;
         while (node)
         {
             if (node->m_data == v)
@@ -419,12 +425,12 @@ public:
         return foundIndex;
     }
 
-    ReferenceType at(SKsize idx)
+    ReferenceType at(const SKuint32 idx)
     {
         SK_ASSERT(idx != -1 && idx < m_size);
 
-        SKsize foundIndex = 0;
-        Link*  node       = m_head;
+        SKuint32 foundIndex = 0;
+        Link*    node       = m_head;
         while (node)
         {
             if (foundIndex == idx)
@@ -436,22 +442,22 @@ public:
         return node->m_data;
     }
 
-    SK_INLINE Link* first(void)
+    Link* first(void)
     {
         return m_head;
     }
 
-    SK_INLINE Link* last(void)
+    Link* last(void)
     {
         return m_tail;
     }
 
-    SK_INLINE SKsize size(void) const
+    SKuint32 size(void) const
     {
         return m_size;
     }
 
-    SK_INLINE bool empty(void) const
+    bool empty(void) const
     {
         return m_size == 0;
     }
@@ -469,10 +475,9 @@ public:
 private:
     void find(ConstValueType v, Link** prev, Link** pos)
     {
-        if (!m_head)
+        if (!m_head || !prev || !pos)
             return;
 
-        SK_ASSERT(prev && pos);
         Link *node = m_head, *last = nullptr;
         while (node)
         {
@@ -591,12 +596,12 @@ public:
             node = node->m_next;
         }
 
-        return 0;
+        return nullptr;
     }
 
-    LinkPointerType link_at(SKsize pos) const
+    LinkPointerType link_at(SKuint32 pos) const
     {
-        SKsize          i    = 0;
+        SKuint32        i    = 0;
         LinkPointerType node = m_first;
 
         while (node)
@@ -632,17 +637,17 @@ public:
         return true;
     }
 
-    SK_INLINE LinkPointerType first(void)
+    LinkPointerType first(void)
     {
         return m_first;
     }
 
-    SK_INLINE LinkPointerType last(void)
+    LinkPointerType last(void)
     {
         return m_last;
     }
 
-    SK_INLINE SKsize size(void) const
+    SKuint32 size(void) const
     {
         return m_size;
     }
@@ -652,7 +657,7 @@ private:
 
     LinkPointerType m_first;
     LinkPointerType m_last;
-    SKsize          m_size;
+    SKuint32        m_size;
 };
 
 template <typename T>
@@ -668,7 +673,7 @@ public:
     typedef const skListIterator<SelfType>  ConstIterator;
     typedef const skListIterator<SelfType>  ConstReverseIterator;
 
-    SK_IMPLEMENT_SORT(T, skList, SKsize)
+    SK_IMPLEMENT_SORT(T, skList, SKuint32)
 
     class Link
     {
@@ -691,17 +696,17 @@ public:
         {
         }
 
-        SK_INLINE ReferenceType getData(void)
+        ReferenceType getData(void)
         {
             return m_data;
         }
 
-        SK_INLINE Link* getNext(void)
+        Link* getNext(void)
         {
             return m_next;
         }
 
-        SK_INLINE Link* getPrev(void)
+        Link* getPrev(void)
         {
             return m_prev;
         }
@@ -743,8 +748,8 @@ public:
         LinkPointerType node = m_list.m_first;
         while (node)
         {
-            LinkPointerType temp = node;
-            node = node->m_next;
+            Link* temp = node;
+            node       = node->m_next;
             delete temp;
         }
 
@@ -771,7 +776,7 @@ public:
         return m_list.find_link(v);
     }
 
-    ReferenceType at(SKsize index)
+    ReferenceType at(SKuint32 index)
     {
         SK_ASSERT(index < m_list.m_size);
         LinkPointerType node = m_list.link_at(index);
@@ -780,7 +785,7 @@ public:
         return node->m_data;
     }
 
-    ConstReferenceType at(SKsize index) const
+    ConstReferenceType at(SKuint32 index) const
     {
         SK_ASSERT(index < m_list.m_size);
         LinkPointerType node = m_list.link_at(index);
@@ -789,7 +794,7 @@ public:
         return node->m_data;
     }
 
-    LinkPointerType link_at(SKsize index)
+    LinkPointerType link_at(SKuint32 index)
     {
         return m_list.link_at(index);
     }
@@ -811,74 +816,74 @@ public:
         }
     }
 
-    SK_INLINE void pop_back(void)
+    void pop_back(void)
     {
         erase(m_list.m_last);
     }
 
-    SK_INLINE void pop_front(void)
+    void pop_front(void)
     {
         erase(m_list.m_first);
     }
 
-    SK_INLINE bool empty(void) const
+    bool empty(void) const
     {
         return m_list.m_size <= 0;
     }
 
-    SK_INLINE SKsize size(void) const
+    SKuint32 size(void) const
     {
         return m_list.m_size;
     }
 
-    SK_INLINE LinkPointerType begin(void)
+    LinkPointerType begin(void)
     {
         return m_list.m_first;
     }
 
-    SK_INLINE LinkPointerType end(void)
+    LinkPointerType end(void)
     {
         return m_list.m_last;
     }
 
-    SK_INLINE ConstPointerType begin(void) const
+    ConstPointerType begin(void) const
     {
         return m_list.m_first;
     }
 
-    SK_INLINE ConstPointerType end(void) const
+    ConstPointerType end(void) const
     {
         return m_list.m_last;
     }
 
-    SK_INLINE ReferenceType front(void)
+    ReferenceType front(void)
     {
         SK_ASSERT(m_list.m_first);
         return m_list.m_first->m_data;
     }
 
-    SK_INLINE ReferenceType back(void)
+    ReferenceType back(void)
     {
         SK_ASSERT(m_list.m_last);
         return m_list.m_last->m_data;
     }
 
-    SK_INLINE Iterator iterator(void)
+    Iterator iterator(void)
     {
         return m_list.m_first ? Iterator(m_list.m_first) : Iterator();
     }
 
-    SK_INLINE ReverseIterator reverseIterator(void)
+    ReverseIterator reverseIterator(void)
     {
         return m_list.m_last ? ReverseIterator(m_list.m_last) : ReverseIterator();
     }
 
-    SK_INLINE ConstIterator iterator(void) const
+    ConstIterator iterator(void) const
     {
         return m_list.m_last ? ConstIterator(m_list.m_last) : ConstIterator();
     }
 
-    SK_INLINE ConstReverseIterator reverseIterator(void) const
+    ConstReverseIterator reverseIterator(void) const
     {
         return m_list.m_last ? ConstReverseIterator(m_list.m_last) : ConstReverseIterator();
     }
@@ -922,7 +927,7 @@ public:
     typedef const skListIterator<skListClass<T> >                  ConstIterator;
     typedef const skListReverseIterator<skListClass<T> >           ConstReverseIterator;
 
-    SK_IMPLEMENT_SORT(T, skListClass, SKsize)
+    SK_IMPLEMENT_SORT(T, skListClass, SKuint32)
 
     class Link
     {
@@ -938,17 +943,17 @@ public:
         {
         }
 
-        SK_INLINE LinkValueReferenceType getData(void)
+        LinkValueReferenceType getData(void)
         {
             return m_data;
         }
 
-        SK_INLINE LinkPointerType getNext(void)
+        LinkPointerType getNext(void)
         {
             return m_next;
         }
 
-        SK_INLINE LinkPointerType getPrev(void)
+        LinkPointerType getPrev(void)
         {
             return m_prev;
         }
@@ -996,7 +1001,7 @@ public:
         }
     }
 
-    LinkPointerType at(SKsize index)
+    LinkPointerType at(SKuint32 index)
     {
         SK_ASSERT(index < m_list.size());
         Link* node = m_list.link_at(index);
@@ -1005,7 +1010,7 @@ public:
         return node->m_data;
     }
 
-    LinkPointerType at(SKsize index) const
+    LinkPointerType at(SKuint32 index) const
     {
         SK_ASSERT(index < m_list.size());
         Link* node = m_list.link_at(index);
@@ -1013,7 +1018,7 @@ public:
         return node->m_data;
     }
 
-    LinkPointerType link_at(SKsize index)
+    LinkPointerType link_at(SKuint32 index)
     {
         return m_list.link_at(index);
     }
@@ -1038,59 +1043,59 @@ public:
         return m_list.size() == 0;
     }
 
-    SK_INLINE SKsize size(void) const
+    SKuint32 size(void) const
     {
         return m_list.size();
     }
 
-    SK_INLINE LinkPointerType begin(void)
+    LinkPointerType begin(void)
     {
         return static_cast<LinkPointerType>(m_list.first());
     }
 
-    SK_INLINE LinkPointerType end(void)
+    LinkPointerType end(void)
     {
         return static_cast<LinkPointerType>(m_list.last());
     }
 
-    SK_INLINE LinkValueConstReferenceType begin(void) const
+    LinkValueConstReferenceType begin(void) const
     {
         return static_cast<const LinkPointerType>(m_list.first());
     }
 
-    SK_INLINE LinkValueConstReferenceType end(void) const
+    LinkValueConstReferenceType end(void) const
     {
         return static_cast<const LinkPointerType>(m_list.last());
     }
 
-    SK_INLINE LinkPointerType front(void)
+    LinkPointerType front(void)
     {
         SK_ASSERT(m_list.first());
         return static_cast<LinkPointerType>(m_list.first()->m_data);
     }
 
-    SK_INLINE LinkPointerType back(void)
+    LinkPointerType back(void)
     {
         SK_ASSERT(m_list.last());
         return static_cast<LinkPointerType>(m_list.last()->m_data);
     }
 
-    SK_INLINE Iterator iterator(void)
+    Iterator iterator(void)
     {
         return m_list.first() ? Iterator(m_list.first()) : Iterator();
     }
 
-    SK_INLINE ReverseIterator reverseIterator(void)
+    ReverseIterator reverseIterator(void)
     {
         return m_list.last() ? ReverseIterator(m_list.last()) : ReverseIterator();
     }
 
-    SK_INLINE ConstIterator iterator(void) const
+    ConstIterator iterator(void) const
     {
         return m_list.first() ? ConstIterator(m_list.first()) : ConstIterator();
     }
 
-    SK_INLINE ConstReverseIterator reverseIterator(void) const
+    ConstReverseIterator reverseIterator(void) const
     {
         return m_list.last() ? ConstReverseIterator(m_list.last()) : ConstReverseIterator();
     }

@@ -38,6 +38,14 @@
 #endif
 #include <io.h>
 #include <Windows.h>
+
+// Used for storing pointers in handles.
+#ifdef _WIN64
+#define GWL_USER GWLP_USERDATA
+#else
+#define GWL_USER GWL_USERDATA
+#endif
+
 #else
 #define __STDC_WANT_LIB_EXT1__ 1
 #endif
