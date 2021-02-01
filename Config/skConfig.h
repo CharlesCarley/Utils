@@ -200,16 +200,17 @@ typedef SKuintPtr SKsize;
 
 #define SK_MKNPOS(x) ((x)-1)
 #define SK_MKMX(x) (SK_MKNPOS(x) - 1)
+#define SK_MKMXH(x) (SK_MKNPOS(x) >> 1)
 
 const SKsize   SK_NPOS    = SK_MKNPOS(SKsize);
-const SKsize   SK_NPOSH   = SK_NPOS / 2;
+const SKsize   SK_NPOSH   = SK_MKMXH(SKsize);
 const SKsize   SK_MAX     = SK_MKMX(SKsize);
 const SKuint16 SK_NPOS16  = SK_MKNPOS(SKuint16);
 const SKuint16 SK_MAX16   = SK_MKMX(SKuint16);
-const SKuint16 SK_NPOS16H = SK_NPOS16 / 2;
+const SKuint16 SK_NPOS16H = SK_MKMXH(SKuint16);
 const SKuint32 SK_NPOS32  = SK_MKNPOS(SKuint32);
 const SKuint32 SK_MAX32   = SK_MKMX(SKuint32);
-const SKuint32 SK_NPOS32H = SK_NPOS32 / 2;
+const SKuint32 SK_NPOS32H = SK_MKMXH(SKuint32);
 
 
 #define SKInitalCap 8
