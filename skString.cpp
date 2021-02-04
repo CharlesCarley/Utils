@@ -192,7 +192,7 @@ void skString::reserve(SKsize nr)
 {
     if (m_capacity < nr)
     {
-        auto* ptr = new ValueType[nr + 1];
+        ValueType* ptr = new ValueType[nr + 1];
         memset(ptr, 0, nr + 1);
         if (m_data)
         {
@@ -677,8 +677,8 @@ void skString::decrypt(const SKbyte* lb, int b1, const SKuint16* ub, int b2)
     skString dest;
     dest.resize(m_size);
 
-    auto* sp = (SKuint16*)m_data;
-    auto* dp = (SKbyte*)dest.ptr();
+    SKuint16* sp = (SKuint16*)m_data;
+    SKbyte*   dp = (SKbyte*)dest.ptr();
 
     r = m_size % 2;
     for (i = 0; i < m_size / 2; ++i)

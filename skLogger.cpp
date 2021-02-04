@@ -84,9 +84,11 @@ void skLogger::writeDetail(SKint32 detail) const
 
 void skLogger::writeTimeStamp() const
 {
-    char       ts[33];
-    const auto br = skMin<SKuint32>(skGetTimeString(ts, 32, "%m:%d:%C:%H:%M:%S:"), 32);
-    ts[br]        = 0;
+    char ts[33];
+
+    const SKuint32 br = skMin<SKuint32>(skGetTimeString(ts, 32, "%m:%d:%C:%H:%M:%S:"), 32);
+
+    ts[br] = 0;
     writeMessage(ts, br);
 }
 
