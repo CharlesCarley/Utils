@@ -134,7 +134,6 @@ public:
 
     char operator[](const SKsize idx) const
     {
-        SK_ASSERT(idx < m_size);
         if (idx < m_size)
             return m_data ? m_data[idx] : '\0';
         return 0;
