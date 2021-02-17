@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Test Project') {
             steps {
-                sh returnStatus: true, script: './Tests/UtilsTests'
+                sh returnStatus: 0, script: './Tests/UtilsTests'
             }
         }
     }
