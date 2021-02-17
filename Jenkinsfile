@@ -1,7 +1,6 @@
 pipeline {
     agent any
     stages {
-
         stage('Build Project') {
             steps {
                 cmake arguments: '-DUtils_BUILD_TESTS=ON', installation: 'InSearchPath'
