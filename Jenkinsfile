@@ -3,9 +3,12 @@ pipeline {
     stages {
         stage('Build Project') {
             steps {
-                cmake arguments: '-DUtils_BUILD_TESTS=ON', installation: 'InSearchPath'
-                cmakeBuild installation: 'InSearchPath', buildDir: 'build'
-                sh label: 'Make', returnStatus: true, script: 'make'
+                sh label: 'CMake', returnStatus: 0, script: '''
+                    mkdir Build
+                    cd Build
+                    cmake .. -DUtils_BUILD_TESTS=ON
+                    make
+                '''
             }
         }
         stage('Test Project') {
