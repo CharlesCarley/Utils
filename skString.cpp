@@ -137,9 +137,8 @@ namespace skStringUtils
 }  // namespace skStringUtils
 
 const SKsize   skString::npos  = -1;
-const skString skString::Blank = skStringConverter::BLANK;
+const skString skString::Blank;
 
-////
 
 skString::skString() :
     m_data(nullptr),

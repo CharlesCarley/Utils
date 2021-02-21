@@ -24,6 +24,7 @@
 -------------------------------------------------------------------------------
 */
 #include "skStringConverter.h"
+#include "skPlatformHeaders.h"
 
 using namespace skStringUtils;
 
@@ -53,6 +54,13 @@ void skStringConverter::toString(skString& dest, bool v)
 {
     dest = skString::format("%s", v ? "true" : "false");
 }
+
+
+void skStringConverter::toString(skString& dest, SKuint64 v)
+{
+    dest = skString::format("%I64d", v);
+}
+
 
 int skStringConverter::toInt(const skString& src, int defaultValue, int base)
 {

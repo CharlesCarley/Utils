@@ -40,7 +40,9 @@ public:
     static void toString(skString& dest, double v);
     static void toString(skString& dest, bool v);
 
-    static int toInt(const skString& src,
+    static void toString(skString& dest, SKuint64 v);
+    
+    static int  toInt(const skString& src,
                      int             defaultValue = -1,
                      int             base         = 10);
 
