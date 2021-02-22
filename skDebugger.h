@@ -28,6 +28,7 @@
 
 
 #include "Utils/Config/skConfig.h"
+#include "Utils/skDisableWarnings.h"
 
 enum skConsoleColorSpace
 {
@@ -60,24 +61,56 @@ public:
         VS_DBG_OUTPUT_PANEL = 1 << 1
     };
 
+    /// <summary>
+    /// Sets the static option flag to control how output is handled
+    /// </summary>
+    /// <param name="flag"><see cref="skDebugger::Flags"/></param>
     static void setPrintFlag(SKuint32 flag);
 
-    // Halts the console and waits for the enter key
-    static void pause(void);
+    /// <summary>
+    /// Halts the console and waits for the enter key
+    /// </summary>
+    static void pause();
 
-    // Clears the console
-    static void clear(void);
+    /// <summary>
+    /// Clears the console window.
+    /// 
+    /// Note: it uses system("clear") and system("cls")
+    /// </summary>
+    static void clear();
 
-    // Sets the foreground and background color of the console
+    /// <summary>
+    /// Sets the foreground and background color of the console
+    /// </summary>
     static void writeColor(skConsoleColorSpace fg, skConsoleColorSpace bg = CS_BLACK);
 
-    static bool isDebugger(void);
-    static void report(const char* msg, ...);
-    static void breakProcess(void);
+    static bool isDebugger();
+    static void breakProcess();
+
+    /// <summary>
+    /// Logs a printf style message to the console
+    /// </summary>
+    static void report(const char* message, ...);
+
+    /// <summary>
+    /// Logs a message to the console
+    /// </summary>
+    static void log(const char* message);
+
+
+    static skConsoleColorSpace getCachedForeground()
+    {
+        return m_cacheFore;
+    }
+
+    static skConsoleColorSpace getCachedBackground()
+    {
+        return m_cacheBack;
+    }
 
 private:
-    static skConsoleColorSpace m_cacheFore, m_cacheBack;
 
+    static skConsoleColorSpace m_cacheFore, m_cacheBack;
 
 #if SK_PLATFORM == SK_PLATFORM_WIN32
     static unsigned char getColor(skConsoleColorSpace fore, skConsoleColorSpace back = CS_BLACK);
@@ -96,6 +129,10 @@ private:
 #define skPrintf skDebugger::report
 #endif
 
+
+
+extern void skSetConsoleFg(int fgColor);
+extern void skSetConsoleBg(int bgColor);
 
 extern void skConsoleClear(void);
 extern void skConsolePause(void);

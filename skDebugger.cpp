@@ -28,6 +28,7 @@
 #include <cstdio>
 #include "Config/skConfig.h"
 #include "skPlatformHeaders.h"
+#include "skDisableWarnings.h"
 
 
 #ifdef SK_DEBUG
@@ -78,17 +79,17 @@ void skDebugger::setPrintFlag(SKuint32 flag)
 }
 
 
-void skDebugger::report(const char* format, ...)
+void skDebugger::report(const char* message, ...)
 {
-    if (format != nullptr)
+    if (message != nullptr)
     {
         va_list l1;
         int     s1, s2;
 
         char* buffer = nullptr;
 
-        va_start(l1, format);
-        s1 = std::vsnprintf(buffer, 0, format, l1);
+        va_start(l1, message);
+        s1 = std::vsnprintf(buffer, 0, message, l1);
         va_end(l1);
 
         if (s1 > 0)
@@ -96,21 +97,33 @@ void skDebugger::report(const char* format, ...)
             buffer = (char*)malloc((SKsize)s1 + 1);
             if (buffer)
             {
-                va_start(l1, format);
-                s2 = std::vsnprintf(buffer, (SKsize)s1+1, format, l1);
+                va_start(l1, message);
+                s2 = std::vsnprintf(buffer, (SKsize)s1 + 1, message, l1);
                 va_end(l1);
-
-#if SK_COMPILER == SK_COMPILER_MSVC
-                if (skPrintFlags & VS_DBG_OUTPUT_PANEL && IsDebuggerPresent())
-                    OutputDebugString(buffer);
-                else
-#endif
-                    fprintf(stdout, "%s", buffer);
+                skDebugger::log(buffer);
                 free(buffer);
             }
         }
     }
 }
+
+
+
+void skDebugger::log(const char* message)
+{
+    if (message != nullptr)
+    {
+#if SK_COMPILER == SK_COMPILER_MSVC
+        if (skPrintFlags & VS_DBG_OUTPUT_PANEL && IsDebuggerPresent())
+            OutputDebugString(message);
+        else
+#endif
+        {
+            fputs(message, stdout);
+        }
+    }
+}
+
 
 
 #if SK_PLATFORM == SK_PLATFORM_WIN32
@@ -294,4 +307,14 @@ void skConsoleClear(void)
 void skConsolePause(void)
 {
     skDebugger::pause();
+}
+
+void skSetConsoleFg(int fgColor)
+{
+    skDebugger::writeColor((skConsoleColorSpace)fgColor, skDebugger::getCachedBackground());
+}
+
+void skSetConsoleBg(int bgColor)
+{
+    skDebugger::writeColor(skDebugger::getCachedForeground(), (skConsoleColorSpace)bgColor);
 }
