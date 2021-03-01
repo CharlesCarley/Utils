@@ -26,7 +26,7 @@
 #ifndef _skMemoryUtils_h_
 #define _skMemoryUtils_h_
 
-#include "Config/skConfig.h"
+#include "Utils/Config/skConfig.h"
 
 extern void* skMalloc(SKsize size);
 extern void* skRealloc(void* ptr, SKsize size);
@@ -38,6 +38,7 @@ extern void  skFree(void* ptr);
 
 #if SK_NO_HEADERS != 1
 
+// #include "Utils/skPlatformHeaders.h"
 #define skMemset(ptr, val, nr) ::memset(ptr, val, nr)
 #define skMemcpy(dst, src, nr) ::memcpy(dst, src, nr)
 #define skMemcmp(cp0, cp1, nr) ::memcmp(cp0, cp1, nr)
