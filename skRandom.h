@@ -32,5 +32,6 @@ extern void     skRandInit(SKuint32 seed = SK_NPOS32);
 extern SKuint32 skRandomUnsignedInt(SKuint32 mod = SK_NPOS32);
 extern double   skUnitRandom(SKuint32 mod = SK_NPOS32);
 extern SKuint32 skRandom(SKuint32 mod);
+extern SKint32  skRandRange(SKint32 minRange, SKint32 maxRange);
 
 #endif  //_skRandom_h_

@@ -45,11 +45,17 @@ SKuint32 skRandomUnsignedInt(SKuint32 mod)
     int r = ::rand();
     if (r < 0)
         r = -r;
-
     if (mod != SK_NPOS32)
         r %= mod;
-
     return (SKuint32)r;
+}
+
+SKint32 skRandRange(SKint32 minRange, SKint32 maxRange)
+{
+    const SKint32 mod = maxRange - minRange;
+    if (mod == 0)
+        return 0;
+    return minRange + rand() % mod;
 }
 
 double skUnitRandom(SKuint32 mod)
