@@ -27,7 +27,7 @@ file(GLOB TST  TestFiles/*.txt)
 file(GLOB HDR  *.h)
 
 if (NOT Utils_LIBRARY)
-    set(Utils_LIBRARY LocalUtils_TargetName)
+    set(Utils_LIBRARY ${LocalUtils_TargetName})
 endif()
 
 # Configure a config time generated *.h
