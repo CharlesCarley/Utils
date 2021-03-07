@@ -24,7 +24,7 @@
 -------------------------------------------------------------------------------
 */
 #include "Macro.h"
-#include "skLogger.h"
+#include "Utils/skLogger.h"
 #include "Utils/CommandLine/skCommandLineParser.h"
 #include "Utils/CommandLine/skCommandLineScanner.h"
 #include "catch/catch.hpp"

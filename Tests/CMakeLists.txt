@@ -26,7 +26,9 @@ file(GLOB SRC  *.cpp)
 file(GLOB TST  TestFiles/*.txt)
 file(GLOB HDR  *.h)
 
-
+if (NOT Utils_LIBRARY)
+    set(Utils_LIBRARY LocalUtils_TargetName)
+endif()
 
 # Configure a config time generated *.h
 # that defines the absolute path to the test directory.
@@ -35,10 +37,12 @@ set(TestDirectory ${Utils_SOURCE_DIR}/Tests)
 configure_file(${Utils_SOURCE_DIR}/CMake/TestConfig.h.in  
                ${Utils_BINARY_DIR}/TestConfig.h)
 
-include_directories(. ${Utils_BINARY_DIR})
+include_directories(. ${Utils_BINARY_DIR} ${Utils_INCLUDE})
 
 add_executable(${TargetName} catch/catch.hpp ${SRC} ${HDR} ${TST})
-target_link_libraries(${TargetName} ${LocalUtils_TargetName})
+target_link_libraries(${TargetName} ${Utils_LIBRARY})
+
+set_target_properties(${TargetName} PROPERTIES FOLDER "Units")
 
 if (Utils_AUTO_RUN_TESTS)
 
