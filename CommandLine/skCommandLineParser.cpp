@@ -45,29 +45,28 @@ Parser::~Parser()
         delete it.getNext();
 }
 
-int Parser::getBaseName(const char *input)
+int Parser::getBaseName(const char* input)
 {
     int offs = 0;
     if (input)
     {
         const int len = (int)skStringUtils::length(input);
 
-        int i;
-        for (i = len - 1; i >= 0 && offs == 0; --i)
+        for (int i = len - 1; i >= 0 && offs == 0; --i)
             if (input[i] == '/' || input[i] == '\\')
                 offs = i + 1;
     }
     return offs;
 }
 
-bool Parser::hasSwitch(const skString &sw) const
+bool Parser::hasSwitch(const skString& sw) const
 {
     return m_switches.find(sw) != SK_NPOS;
 }
 
 int Parser::parse(int           argc,
-                  char **       argv,
-                  const Switch *switches,
+                  char**        argv,
+                  const Switch* switches,
                   SKuint32      count)
 {
     if (!m_program.empty())  // using as a check for multiple calls
@@ -129,7 +128,7 @@ int Parser::parse(int           argc,
 
             curSwitch.assign(a.getValue());
 
-            ParseOption *opt = m_switches.at(pos);
+            ParseOption* opt = m_switches.at(pos);
             opt->makePresent();
 
             if (!opt->isOptional())
@@ -213,21 +212,30 @@ skString Parser::getBaseProgram() const
     return returnValue;
 }
 
-bool Parser::isPresent(const SKuint32 &enumId)
+skString Parser::getProgramDirectory() const
+{
+    skString returnValue;
+    m_program.substr(returnValue,
+                     0,
+                     getBaseName(m_program.c_str()));
+    return returnValue;
+}
+
+bool Parser::isPresent(const SKuint32& enumId)
 {
     if (enumId < m_options.size())
         return m_options[enumId]->isPresent();
     return false;
 }
 
-ParseOption *Parser::getOption(const SKuint32 &enumId)
+ParseOption* Parser::getOption(const SKuint32& enumId)
 {
     if (enumId < m_options.size())
         return m_options[enumId];
     return nullptr;
 }
 
-SKint32 Parser::getValueInt(const SKuint32 &enumId,
+SKint32 Parser::getValueInt(const SKuint32& enumId,
                             SKsize          idx,
                             SKint32         defaultValue,
                             SKint32         base) const
@@ -240,7 +248,7 @@ SKint32 Parser::getValueInt(const SKuint32 &enumId,
     return defaultValue;
 }
 
-SKint64 Parser::getValueInt64(const SKuint32 &enumId,
+SKint64 Parser::getValueInt64(const SKuint32& enumId,
                               SKsize          idx,
                               SKint64         defaultValue,
                               SKint32         base) const
@@ -253,9 +261,9 @@ SKint64 Parser::getValueInt64(const SKuint32 &enumId,
     return defaultValue;
 }
 
-const skString &Parser::getValueString(const SKuint32 &enumId,
+const skString& Parser::getValueString(const SKuint32& enumId,
                                        SKsize          idx,
-                                       const skString &defaultValue) const
+                                       const skString& defaultValue) const
 {
     if (enumId < m_options.size())
     {
@@ -283,8 +291,8 @@ void Parser::usage()
     Options::Iterator it = m_options.iterator();
     while (it.hasMoreElements())
     {
-        ParseOption * opt = it.getNext();
-        const Switch &sw  = opt->getSwitch();
+        ParseOption*  opt = it.getNext();
+        const Switch& sw  = opt->getSwitch();
 
         if (!sw.optional)
             skLogi("!,  ");
@@ -337,7 +345,7 @@ void Parser::usage()
     skLogd(LD_INFO, "\n");
 }
 
-bool Parser::initializeOption(ParseOption *opt, const Switch &sw)
+bool Parser::initializeOption(ParseOption* opt, const Switch& sw)
 {
     if (sw.shortSwitch == 0 && sw.longSwitch == nullptr)
     {
@@ -375,7 +383,7 @@ bool Parser::initializeOption(ParseOption *opt, const Switch &sw)
     return true;
 }
 
-bool Parser::initializeSwitches(const Switch *switches, SKuint32 count)
+bool Parser::initializeSwitches(const Switch* switches, SKuint32 count)
 {
     if (switches == nullptr || count == 0 || count == SK_NPOS32)
         return true;

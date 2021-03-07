@@ -100,6 +100,11 @@ namespace skCommandLine
         /// <returns>The file name of the program from argv[0]</returns>
         skString getBaseProgram() const;
 
+        
+        /// <returns>The directory name of the program from argv[0]</returns>
+        skString getProgramDirectory() const;
+
+
         /// <param name="enumId">The switch id</param>
         /// <returns>true if it is supplied on the command line false otherwise</returns>
         bool isPresent(const SKuint32 &enumId);
