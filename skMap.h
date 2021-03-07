@@ -210,14 +210,14 @@ public:
     {
     }
 
-    skHashTable(SKsize capacity) :
+    skHashTable(SKsize initialCapacity) :
         m_size(0),
         m_capacity(0),
         m_iPtr(nullptr),
         m_nPtr(nullptr),
         m_bPtr(nullptr)
     {
-        reserve(capacity);
+        reserve(initialCapacity);
     }
 
     skHashTable(const skHashTable& rhs) :

@@ -58,6 +58,12 @@ public:
     {
     }
 
+    skArray(const SizeType& initialCapacity) :
+        BaseType(initialCapacity)
+    {
+    }
+
+
     ~skArray()
     {
         clear();

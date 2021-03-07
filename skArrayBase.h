@@ -391,6 +391,14 @@ protected:
         replicate(o);
     }
 
+    skArrayBase(const SizeType& initialCapacity) :
+        m_data(nullptr),
+        m_size(0),
+        m_capacity(0)
+    {
+        reserve(initialCapacity);
+    }
+
     ~skArrayBase()
     {
     }
