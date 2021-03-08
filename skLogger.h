@@ -77,9 +77,10 @@ private:
 
 public:
     skLogger();
-    ~skLogger();
 
-    void setDetail(int val)
+    ~skLogger() override;
+
+    void setDetail(const int val)
     {
         m_detail = val;
     }
@@ -89,7 +90,7 @@ public:
         return m_detail;
     }
 
-    void setFlags(int val)
+    void setFlags(const int val)
     {
         m_flags = val;
     }
@@ -99,7 +100,7 @@ public:
         return m_flags;
     }
 
-    void clearFlag(int flag)
+    void clearFlag(const int flag)
     {
         m_flags &= ~flag;
     }
@@ -110,6 +111,9 @@ public:
     }
 
     void open(const char* logName);
+
+    void close();
+
     void logMessage(SKint32 detail, const char* msg, SKint32 len = 0) const;
 
 private:

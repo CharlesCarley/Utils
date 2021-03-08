@@ -24,41 +24,31 @@
 -------------------------------------------------------------------------------
 */
 #include "Macro.h"
+#include "Utils/skHexPrint.h"
 #include "Utils/skString.h"
 #include "Utils/skStringConverter.h"
-#include "Utils/skHexPrint.h"
 #include "catch/catch.hpp"
-
-#define TEST_CASE_NAME "StringTest"
-
 
 TEST_CASE("StringTest_BasicString")
 {
     skString a = "Hello World";
     skString b = a;
     skString c = b;
-
     EXPECT_EQ(b, a);
     EXPECT_EQ(c, a);
 }
-
-
 
 TEST_CASE("StringTest_FindString")
 {
     skString a   = "Hello World";
     SKsize   pos = a.find("World");
-
     REQUIRE(a.npos != pos);
     REQUIRE(skStringUtils::length("Hello ") == pos);
 }
 
-
-
 TEST_CASE("StringTest_SplitString")
 {
     skString a = "Hello World";
-
 
     skStringArray spl;
     a.split(spl, " ");
@@ -71,8 +61,6 @@ TEST_CASE("StringTest_SplitString")
     REQUIRE(s0eq == true);
     REQUIRE(s1eq == true);
 }
-
-
 
 TEST_CASE("StringTest_FormatString")
 {
@@ -100,17 +88,14 @@ int STR_Less(char a, char b)
     return a < b;
 }
 
-
-
 TEST_CASE("StringTest_SortString")
 {
     skString a = "0123456789abcdefghijklmnopqrstuvwxyz";
     a.sort(STR_Greater);
 
-    SKsize                i = 0, s = a.size() - 1;
+    SKsize                i = 0;
+    const SKsize          s = a.size() - 1;
     skString::PointerType p = a.ptr();
-
-
     while (i < s)
     {
         int sa = p[i];
@@ -122,7 +107,6 @@ TEST_CASE("StringTest_SortString")
         REQUIRE(sa > sb);
         i += 2;
     }
-
 
     a.sort(STR_Less);
     i = 0;
@@ -138,14 +122,11 @@ TEST_CASE("StringTest_SortString")
     }
 }
 
-
-
 TEST_CASE("StringTest_AddString")
 {
     skString a;
 
-    SKsize i;
-    for (i = 0; i < 5; ++i)
+    for (SKsize i = 0; i < 5; ++i)
         a += "Hello ";
 
     skStringArray spl;
@@ -153,8 +134,6 @@ TEST_CASE("StringTest_AddString")
 
     REQUIRE(5 == spl.size());
 }
-
-
 
 TEST_CASE("StringTest_CopyString")
 {
@@ -167,20 +146,16 @@ TEST_CASE("StringTest_CopyString")
     bool eq = skStringUtils::equals(buffer, "String") == 0;
     REQUIRE(eq);
 
-
     skString b;
     len = b.copy(buffer, 6, 5);
     REQUIRE(0 == len);
 
-
     skString c;
-    len = c.copy(NULL, 6, 5);
+    len = c.copy(nullptr, 6, 5);
     REQUIRE(0 == len);
 
-
-    len = a.copy(NULL, a.size() - 1, 1);
+    len = a.copy(nullptr, a.size() - 1, 1);
     REQUIRE(0 == len);
-
 
     skString d  = "Test String...";
     len         = d.copy(buffer, d.size(), 0);
@@ -191,14 +166,12 @@ TEST_CASE("StringTest_CopyString")
     REQUIRE(eq);
 }
 
-
 TEST_CASE("StringTest_SubString")
 {
     // http://www.cplusplus.com/reference/string/string/substr/
 
     skString a = "We think in generalities, but we live in details.";
     skString b, c, d;
-
 
     SKsize loc;
 
@@ -207,16 +180,12 @@ TEST_CASE("StringTest_SubString")
     bool eq = b == "generalities";
     REQUIRE(eq);
 
-
     loc = a.find("live");    // position of "live" in str
     c   = a.substr(loc, 0);  // get from "live" to the end
-
 
     d  = b + skString(" ") + c;
     eq = d == "generalities live in details.";
     REQUIRE(eq);
-
-
 
     a = "Test String...";
     b = a.substr(a.size(), 0);
@@ -226,8 +195,6 @@ TEST_CASE("StringTest_SubString")
     eq = c == "ring...";
     REQUIRE(eq);
 }
-
-
 
 TEST_CASE("StringTest_EraseString")
 {
@@ -248,12 +215,9 @@ TEST_CASE("StringTest_EraseString")
     a.erase(0, a.size());
     REQUIRE(a.empty());
 
-
     skString ee;
     ee.erase(0, 30);
 }
-
-
 
 TEST_CASE("StringTest_NullStringTests")
 {
@@ -266,10 +230,17 @@ TEST_CASE("StringTest_NullStringTests")
     EXPECT_EQ(a.size(), 0);
 
     a      = b;
+    EXPECT_EQ(a.size(), 0);
+    EXPECT_EQ(a.ptr(), nullptr);
+
     char c = a[0];
+    EXPECT_EQ(c, 0);
     char d = b[0];
+    EXPECT_EQ(d, 0);
     char e = a.at(0);
+    EXPECT_EQ(e, 0);
     char f = b.at(0);
+    EXPECT_EQ(f, 0);
 
     a.append(b);
     a = a + b;
@@ -278,12 +249,10 @@ TEST_CASE("StringTest_NullStringTests")
     skString v = "123";
     v += a + b;
 
-
     skStringArray arr;
     a.split(arr, "123");
     EXPECT_EQ(arr.size(), 0);
 }
-
 
 TEST_CASE("StringTest_EncriptDecript")
 {
@@ -301,62 +270,65 @@ TEST_CASE("StringTest_EncriptDecript")
     a.encrypt(lowerBits, 4, upperBits, 4);
     skHexPrint::dumpHex((void*)a.c_str(), 0, a.size());
 
-
-
     a.decrypt(lowerBits, 4, upperBits, 4);
     skHexPrint::dumpHex((void*)a.c_str(), 0, a.size());
 
     REQUIRE(a == "Caesar cipher variation.");
 }
 
-
-
 TEST_CASE("StringTest_BinaryStringRepr")
 {
-    skString a = "Binary", b;
+    skString a = "Binary";
     a.toBinary();
     if (DEBUG)
         printf("%s\n", a.c_str());
-
-    b = a;
+    skString b = a;
     b.fromBinary();
     REQUIRE(b == "Binary");
 }
 
-
 TEST_CASE("StringTest_HexStringRepr")
 {
-    skString a = "Hex string representation", b;
+    skString a = "Hex string representation";
     a.toHex();
     if (DEBUG)
         printf("%s\n", a.c_str());
-    b = a;
+    skString b = a;
     b.fromHex();
     REQUIRE(b == "Hex string representation");
 }
 
+using Convert = skStringConverter;
 
-TEST_CASE("String_Utils bool")
+
+TEST_CASE("StringConverter bool")
 {
     bool test;
-    
-    test = skStringConverter::toBool("Hello World");
+
+    test = Convert::toBool("Hello World");
     EXPECT_EQ(false, test);
 
-
-    test = skStringConverter::toBool("true");
+    test = Convert::toBool("true");
     EXPECT_EQ(true, test);
 
-    test = skStringConverter::toBool("false");
+    test = Convert::toBool("false");
     EXPECT_EQ(false, test);
 
-    test = skStringConverter::toBool("yes");
+    test = Convert::toBool("yes");
     EXPECT_EQ(true, test);
 
-    test = skStringConverter::toBool("no");
+    test = Convert::toBool("no");
     EXPECT_EQ(false, test);
 
-    test = skStringConverter::toBool("1");
+    test = Convert::toBool("1");
     EXPECT_EQ(true, test);
 }
 
+
+TEST_CASE("StringConverter int")
+{
+    int test;
+
+    test = Convert::toInt32("Hello World");
+    EXPECT_EQ(0, test);
+}

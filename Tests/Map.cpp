@@ -185,9 +185,10 @@ TEST_CASE("HashTable_SetIter")
     for (int i = 0; i < 10; ++i)
         map.insert(i);
 
-    int t;
+    SKsize t;
 
-    t                   = 0;
+    t = 0;
+
     IntSet::Iterator it = map.iterator();
     while (it.hasMoreElements())
     {
@@ -196,7 +197,8 @@ TEST_CASE("HashTable_SetIter")
         ++t;
     }
 
-    t                           = map.size() - 1;
+    t = map.size() - 1;
+
     IntSet::ReverseIterator rit = map.reverseIterator();
     while (rit.hasMoreElements())
     {

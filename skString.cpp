@@ -31,114 +31,9 @@
 #include "skPlatformHeaders.h"
 #include "skStringConverter.h"
 
-namespace skStringUtils
-{
-    bool toBool(const char* in)
-    {
-        return equals(in, "true") == 0 || equals(in, "yes") == 0 || equals(in, "1") == 0;
-    }
 
-    long toLong(const char* in, long defaultValue, int base)
-    {
-        if (in && *in)
-            return (long)std::strtol(in, nullptr, base);
-        return defaultValue;
-    }
-
-    SKint64 toInt64(const char* in, SKint64 defaultValue, int base)
-    {
-        if (in && *in)
-            return (SKint64)std::strtoll(in, nullptr, base);
-        return defaultValue;
-    }
-
-    int toInt(const char* in, int defaultValue, int base)
-    {
-        if (in && *in)
-            return (int)std::strtol(in, nullptr, base);
-        return defaultValue;
-    }
-
-    float toFloat(const char* in)
-    {
-        if (in && *in)
-            return (float)atof(in);
-        return 0.f;
-    }
-
-    double toDouble(const char* in)
-    {
-        if (in && *in)
-            return (double)atof(in);
-        return 0.0;
-    }
-
-    SKsize length(const char* in)
-    {
-        return in && *in ? (SKsize)::strlen(in) : 0;
-    }
-
-    void copyn(char* dest, const char* src, SKsize nr)
-    {
-        size_t len = length(src);
-        if (len > nr)
-            len = nr;
-
-        ::strncpy(dest, src, (size_t)len);
-
-        if (len <= nr)
-            dest[len] = 0;
-    }
-
-    void copy(char* out, const char* in)
-    {
-        if (out && in && *in)
-            ::strcpy(out, in);
-    }
-
-    SKsize equalsn(const char* a, const char* b, SKsize max)
-    {
-        if (!a || !b)
-            return 1;
-        if (*a != *b)
-            return 1;
-        return (SKsize)(size_t)strncmp(a, b, (size_t)max);
-    }
-
-    SKsize equals(const char* a, const char* b)
-    {
-        if (!a || !b)
-            return 1;
-        if (*a != *b)
-            return 1;
-        return (SKsize)strcmp(a, b);
-    }
-
-    const SKuint8 HexTable[16] = {
-        '0',
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-        'A',
-        'B',
-        'C',
-        'D',
-        'E',
-        'F',
-    };
-
-    const SKuint16 BinaryTable[9] = {256, 128, 64, 32, 16, 8, 4, 2, 1};
-}  // namespace skStringUtils
-
-const SKsize   skString::npos  = -1;
+const SKsize   skString::npos = -1;
 const skString skString::Blank;
-
 
 skString::skString() :
     m_data(nullptr),
@@ -516,6 +411,8 @@ skString& skString::erase(SKsize pos, SKsize nr)
 
 void skString::toHex(void)
 {
+    static const char* HexTable = "0123456789ABCDEF";
+
     if (m_size == 0)
         return;
 
@@ -528,18 +425,16 @@ void skString::toHex(void)
     if (cp == nullptr)
         return;
 
-    int iVal, dv, rv;
-
-    SKsize i, j = m_size;
-    for (i = old_size - 1; i != npos; --i)
+    SKsize j = m_size;
+    for (SKsize i = old_size - 1; i != npos; --i)
     {
-        iVal = (int)(unsigned char)cp[i];
-        dv   = iVal / 16;
-        rv   = iVal % 16;
+        const int iVal = (int)(unsigned char)cp[i];
+        const int dv   = iVal / 16;
+        const int rv   = iVal % 16;
         if (iVal < 256)
         {
-            dp[--j] = skStringUtils::HexTable[rv];
-            dp[--j] = skStringUtils::HexTable[dv];
+            dp[--j] = HexTable[rv];
+            dp[--j] = HexTable[dv];
         }
     }
 
@@ -553,14 +448,14 @@ void skString::fromHex(void)
     const char* cp = m_data;
     char*       dp = result.ptr();
 
-    int    dv, rv;
-    SKsize i, j = 0;
-    for (i = 0; i < m_size; i += 2)
+    int    rv;
+    SKsize j = 0;
+    for (SKsize i = 0; i < m_size; i += 2)
     {
         const char c0 = cp[i + 0];
         const char c1 = cp[i + 1];
 
-        dv = rv = 0;
+        int dv = rv = 0;
         if (c0 >= '0' && c0 <= '9')
             dv = (int)c0 - '0';
         else if (c0 >= 'A' && c0 <= 'Z')
@@ -577,31 +472,31 @@ void skString::fromHex(void)
     swap(result);
 }
 
+static const SKuint16 BinaryTable[9] = {256, 128, 64, 32, 16, 8, 4, 2, 1};
+
 void skString::toBinary(void)
 {
-    SKsize   i;
     skString s;
-    SKuint16 c, j, counter;
     s.reserve(9 * m_size + 2);
 
-    for (i = 0; i < m_size; ++i)
+    for (SKsize i = 0; i < m_size; ++i)
     {
-        c = (SKuint8)m_data[i];
+        SKuint16 c = (SKuint8)m_data[i];
 
-        if (c < skStringUtils::BinaryTable[0])
+        if (c < BinaryTable[0])
         {
-            char tempBuf[12];
-            counter = 0;
+            char     tempBuf[12]{};
+            SKuint16 counter = 0;
 
             if (i != 0)
                 tempBuf[counter++] = 0x20;
 
-            for (j = 0; j < 9; ++j)
+            for (unsigned short j : BinaryTable)
             {
-                if (c >= skStringUtils::BinaryTable[j])
+                if (c >= j)
                 {
                     tempBuf[counter++] = 0x31;
-                    c -= skStringUtils::BinaryTable[j];
+                    c -= j;
                 }
                 else
                     tempBuf[counter++] = 0x30;
@@ -617,7 +512,6 @@ void skString::toBinary(void)
 void skString::fromBinary(void)
 {
     skString s;
-    SKuint16 c, j;
 
     skStringArray sa;
     split(sa, " ");
@@ -626,14 +520,15 @@ void skString::fromBinary(void)
     while (it.hasMoreElements())
     {
         const skString& cs = it.getNext();
-        c                  = 0;
-        for (j = 8; j > 0; j--)
+        SKuint16        c  = 0;
+        for (SKuint16 j = 8; j > 0; j--)
         {
             if (j < cs.size() && cs[j] == 0x31)
-                c += skStringUtils::BinaryTable[j];
+                c += BinaryTable[j];
         }
         s.append((SKbyte)c);
     }
+
     this->operator=(s);
 }
 
@@ -734,12 +629,10 @@ int skSprintf(char* dst, int maxSize, const char* fmt, ...)
     if (maxSize <= 0 || !dst || !fmt)
         return 0;
 
-    int     size;
     va_list lst;
     maxSize -= 1;
-
     va_start(lst, fmt);
-    size = skp_printf(dst, maxSize, fmt, lst);
+    int size = skp_printf(dst, maxSize, fmt, lst);
     va_end(lst);
 
     if (size < 0)

@@ -42,15 +42,22 @@ skLogger::skLogger() :
 
 skLogger::~skLogger()
 {
-    delete m_stream;
-    m_stream = nullptr;
+    close();
 }
 
 void skLogger::open(const char* logName)
 {
     m_flags |= LF_FILE;
     delete m_stream;
+
     m_stream = new skFileStream(logName, skStream::WRITE);
+}
+
+void skLogger::close()
+{
+    delete m_stream;
+    m_stream = nullptr;
+    m_flags &= ~LF_FILE;
 }
 
 void skLogger::writeDetail(SKint32 detail) const
@@ -84,11 +91,9 @@ void skLogger::writeDetail(SKint32 detail) const
 
 void skLogger::writeTimeStamp() const
 {
-    char ts[33];
-
+    char           ts[33];
     const SKuint32 br = skMin<SKuint32>(skGetTimeString(ts, 32, "%m:%d:%C:%H:%M:%S:"), 32);
-
-    ts[br] = 0;
+    ts[br]            = 0;
     writeMessage(ts, br);
 }
 
@@ -171,11 +176,9 @@ void skLogf(SKint32 detail, const char* format, ...)
         if (format && log->getDetail() >= detail)
         {
             va_list l1;
-            int     size;
-
-            char* buffer = nullptr;
+            char*   buffer = nullptr;
             va_start(l1, format);
-            size = std::vsnprintf(buffer, 0, format, l1);
+            int size = std::vsnprintf(buffer, 0, format, l1);
             va_end(l1);
 
             if (size > 0)

@@ -28,36 +28,10 @@
 
 #include "Utils/skAllocator.h"
 #include "Utils/skArray.h"
+#include "Utils/skChar.h"
 #include "Utils/skMap.h"
 
-namespace skStringUtils
-{
-    extern SKsize length(const char* in);
-    extern void   copy(char* dest, const char* src);
-    extern void   copyn(char* dest, const char* src, SKsize n);
-    extern SKsize equals(const char* a, const char* b);
-    extern SKsize equalsn(const char* a, const char* b, SKsize n);
-
-    extern int     toInt(const char* in,
-                         int         defaultValue = -1,
-                         int         base         = 10);
-    extern long    toLong(const char* in,
-                          long        defaultValue = -1,
-                          int         base         = 10);
-    extern SKint64 toInt64(const char* in,
-                           SKint64     defaultValue = -1,
-                           int         base         = 10);
-
-    extern bool   toBool(const char* in);
-    extern float  toFloat(const char* in);
-    extern double toDouble(const char* in);
-
-    extern const SKuint8  HexTable[16];
-    extern const SKuint16 BinaryTable[9];
-
-};  // namespace skStringUtils
-
-#define sk_strncpy(dest, size, source, count) skStringUtils::copyn(dest, source, size)
+using skStringUtils = skChar;
 
 class skString
 {
@@ -82,52 +56,52 @@ public:
 
     ~skString();
 
-    SK_INLINE bool operator==(const skString& rhs) const
+    bool operator==(const skString& rhs) const
     {
         return !skStringUtils::equals(m_data, rhs.m_data);
     }
 
-    SK_INLINE bool operator!=(const skString& rhs) const
+    bool operator!=(const skString& rhs) const
     {
         return skStringUtils::equals(m_data, rhs.m_data) != 0;
     }
 
-    SK_INLINE bool operator==(const ValueType* rhs) const
+    bool operator==(const ValueType* rhs) const
     {
         return !skStringUtils::equals(m_data, rhs);
     }
 
-    SK_INLINE bool operator!=(const ValueType* rhs) const
+    bool operator!=(const ValueType* rhs) const
     {
         return skStringUtils::equals(m_data, rhs) != 0;
     }
 
-    SK_INLINE skString operator+(const char ch) const
+    skString operator+(const char ch) const
     {
         return skString(*this).append(ch);
     }
 
-    SK_INLINE skString operator+(const ValueType* rhs) const
+    skString operator+(const ValueType* rhs) const
     {
         return skString(*this).append(rhs);
     }
 
-    SK_INLINE skString operator+(const skString& rhs) const
+    skString operator+(const skString& rhs) const
     {
         return skString(*this).append(rhs);
     }
 
-    SK_INLINE skString& operator+=(const char* rhs)
+    skString& operator+=(const char* rhs)
     {
         return append(rhs);
     }
 
-    SK_INLINE skString& operator+=(char rhs)
+    skString& operator+=(char rhs)
     {
         return append(rhs);
     }
 
-    SK_INLINE skString& operator+=(const skString& rhs)
+    skString& operator+=(const skString& rhs)
     {
         return this->append(rhs);
     }
@@ -182,75 +156,106 @@ public:
         return append(rhs.c_str(), rhs.size());
     }
 
-    SK_INLINE ConstPointerType c_str(void) const
+    ConstPointerType c_str(void) const
     {
         return m_data;
     }
 
-    SK_INLINE PointerType ptr(void) const
+    PointerType ptr(void) const
     {
         return m_data;
     }
 
-    SK_INLINE SKsize size(void) const
+    SKsize size(void) const
     {
         return m_size;
     }
 
-    SK_INLINE SKsize capacity(void) const
+    SKsize capacity(void) const
     {
         return m_capacity;
     }
 
-    SK_INLINE bool empty(void) const
+    bool empty(void) const
     {
         return m_size == 0 || !m_data || m_data[0] == 0;
     }
 
-    SK_INLINE char at(const SKsize idx) const
+    char at(const SKsize idx) const
     {
         SK_ASSERT(idx != npos);
         return m_data && idx < m_size ? m_data[idx] : '\0';
     }
 
-    SK_INLINE Iterator iterator(void)
+    Iterator iterator(void)
     {
         return m_data && m_size > 0 ? Iterator(m_data, m_size) : Iterator();
     }
 
-    SK_INLINE ConstIterator iterator(void) const
+    ConstIterator iterator(void) const
     {
         return m_data && m_size > 0 ? ConstIterator(m_data, m_size) : ConstIterator();
     }
 
-    SK_INLINE ReverseIterator reverseIterator(void)
+    ReverseIterator reverseIterator(void)
     {
         return m_data && m_size > 0 ? ReverseIterator(m_data, m_size) : ReverseIterator();
     }
 
-    SK_INLINE ConstReverseIterator reverseIterator(void) const
+    ConstReverseIterator reverseIterator(void) const
     {
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
     }
 
     bool toBoolean(void) const
     {
-        return skStringUtils::toBool(m_data);
+        return skChar::toBool(m_data);
     }
 
+    [[deprecated]]
     SKint32 toInteger(void) const
     {
-        return skStringUtils::toInt(m_data);
+        return skChar::toInt32(m_data);
     }
 
-    float toFloat(void) const
+    SKint16 toInt16(SKint16 def=-1) const
     {
-        return skStringUtils::toFloat(m_data);
+        return skChar::toInt16(m_data, def);
     }
 
-    double toDouble(void) const
+    SKint32 toInt32(SKint32 def = -1) const
     {
-        return skStringUtils::toDouble(m_data);
+        return skChar::toInt32(m_data, def);
+    }
+
+    SKint64 toInt64(SKint64 def = -1) const
+    {
+        return skChar::toInt64(m_data, def);
+    }
+
+    SKuint16 toUint16(SKuint16 def = SK_NPOS16) const
+    {
+        return skChar::toUint16(m_data, def);
+    }
+
+    SKuint32 toUint32(SKuint32 def = SK_NPOS32) const
+    {
+        return skChar::toUint32(m_data, def);
+    }
+
+    SKuint64 toUint64(SKuint64 def = (SKuint64)-1) const
+    {
+        return skChar::toUint64(m_data, def);
+    }
+
+    float toFloat(float def = 0.f) const
+    {
+        return skChar::toFloat(m_data, def);
+    }
+
+    double toDouble(double def=0.0) const
+    {
+        return skChar::toDouble(m_data, def);
     }
 
 protected:
@@ -264,7 +269,7 @@ protected:
 
 typedef skArray<skString> skStringArray;
 
-SK_INLINE SKhash skHash(const skString& key)
+inline SKhash skHash(const skString& key)
 {
     return skHash(key.c_str());
 }

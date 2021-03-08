@@ -26,37 +26,10 @@
 #ifndef _skStringConverter_h_
 #define _skStringConverter_h_
 
-#include "skString.h"
+#include "Utils/skString.h"
+#include "Utils/skChar.h"
 
-class skStringConverter
-{
-public:
-    static const skString BLANK;
+using skStringConverter = skChar;
 
-public:
-    static void toString(skString& dest, int v);
-    static void toString(skString& dest, long v);
-    static void toString(skString& dest, float v);
-    static void toString(skString& dest, double v);
-    static void toString(skString& dest, bool v);
-
-    static void toString(skString& dest, SKuint64 v);
-    
-    static int  toInt(const skString& src,
-                     int             defaultValue = -1,
-                     int             base         = 10);
-
-    static SKint64 toInt64(const skString& src,
-                           SKint64         defaultValue = -1,
-                           int             base         = 10);
-
-    static long toLong(const skString& src,
-                       long            defaultValue = -1,
-                       int             base         = 10);
-
-    static float  toFloat(const skString& src);
-    static double toDouble(const skString& src);
-    static bool   toBool(const skString& src);
-};
 
 #endif  //_skStringConverter_h_

@@ -26,7 +26,7 @@
 #ifndef _skFixedString_h_
 #define _skFixedString_h_
 
-#include <string.h>
+#include <cstring>
 #include "Utils/Config/skConfig.h"
 #include "Utils/skArray.h"
 #include "Utils/skHash.h"

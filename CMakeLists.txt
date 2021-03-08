@@ -65,6 +65,7 @@ set(Utils_EXT
 
 set(Utils_SRC
     skAssert.cpp
+    skChar.cpp
     skHexPrint.cpp
     skDebugger.cpp
     skFileStream.cpp
@@ -73,7 +74,6 @@ set(Utils_SRC
     skMemoryStream.cpp
     skMemoryUtils.cpp
     skString.cpp
-    skStringConverter.cpp
     skStreams.cpp
     skRandom.cpp
     skTimer.cpp
@@ -83,6 +83,7 @@ set(Utils_SRC
 
 set(Utils_HDR
     skAllocator.h
+    skChar.h
     skHexPrint.h
     skArrayBase.h
     skArray.h

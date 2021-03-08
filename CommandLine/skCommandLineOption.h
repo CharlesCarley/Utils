@@ -48,10 +48,10 @@ namespace skCommandLine
 
         // Long switch (--[.]+)
         // A value of null means unused
-        const char *longSwitch;
+        const char* longSwitch;
 
         /// A brief description for the -h, --help builtin option
-        const char *description;
+        const char* description;
 
         /// Means it's an optional switch
         bool optional;
@@ -77,7 +77,7 @@ namespace skCommandLine
         {
         }
 
-        ParseOption(const Switch &sw) :
+        ParseOption(const Switch& sw) :
             m_switch(sw),
             m_isPresent(false)
         {
@@ -105,24 +105,24 @@ namespace skCommandLine
             m_isPresent = true;
         }
 
-        const Switch &getSwitch() const
+        const Switch& getSwitch() const
         {
             return m_switch;
         }
 
-        const Arguments &getValues() const
+        const Arguments& getValues() const
         {
             return m_value;
         }
 
-        const skString & getValue(const SKsize idx = 0)
+        const skString& getValue(const SKsize idx = 0)
         {
             if (idx < m_value.size())
                 return m_value[(SKuint32)idx];
             return skString::Blank;
         }
 
-        void setValue(const skString &str)
+        void setValue(const skString& str)
         {
             if (!m_value.empty())
                 m_value[0] = str;
@@ -130,9 +130,9 @@ namespace skCommandLine
 
         int getInt(SKsize idx = 0, int defaultValue = -1, int base = 10)
         {
-            return skStringConverter::toInt(getValue(idx),
-                                            defaultValue,
-                                            base);
+            return skStringConverter::toInt32(getValue(idx),
+                                              defaultValue,
+                                              base);
         }
 
         SKint64 getInt64(SKsize idx = 0, SKint64 defaultValue = -1, int base = 10)
@@ -142,7 +142,7 @@ namespace skCommandLine
                                               base);
         }
 
-        void setValue(SKsize i, const skString &str)
+        void setValue(SKsize i, const skString& str)
         {
             if (i < m_value.size())
                 m_value[(SKint32)i] = str;
