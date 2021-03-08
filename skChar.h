@@ -33,8 +33,7 @@ class skString;
 class skChar
 {
 public:
-    typedef skFixedString<32> StrBuffer;
-
+    
     static SKsize length(const char* in);
 
     static void copy(char* dest, const char* src);
