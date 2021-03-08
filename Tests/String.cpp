@@ -28,6 +28,9 @@
 #include "Utils/skString.h"
 #include "Utils/skStringConverter.h"
 #include "catch/catch.hpp"
+#include <limits>
+
+
 
 TEST_CASE("StringTest_BasicString")
 {
@@ -331,16 +334,16 @@ TEST_CASE("StringConverter int16")
     EXPECT_EQ(0, test);
 
     test = Convert::toInt16("-32768");
-    EXPECT_EQ(INT16_MIN, test);
+    EXPECT_EQ(std::numeric_limits<SKint16>::min(), test);
 
     test = Convert::toInt16("3276999");
-    EXPECT_EQ(INT16_MAX, test);
+    EXPECT_EQ(std::numeric_limits<SKint16>::max(), test);
 
     test = Convert::toInt16("-987532767");
-    EXPECT_EQ(INT16_MIN, test);
+    EXPECT_EQ(std::numeric_limits<SKint16>::min(), test);
 
     test = Convert::toInt16("-2147483648087655446879898769876576");
-    EXPECT_EQ(INT16_MIN, test);
+    EXPECT_EQ(std::numeric_limits<SKint16>::min(), test);
 }
 
 
@@ -377,17 +380,17 @@ TEST_CASE("StringConverter int32")
     EXPECT_EQ(0, test);
 
     test = Convert::toInt32("-2147483648");
-    EXPECT_EQ(INT_MIN, test);
+    EXPECT_EQ(std::numeric_limits<int>::min(), test);
 
     test = Convert::toInt32("2147483647");
-    EXPECT_EQ(INT_MAX, test);
+    EXPECT_EQ(std::numeric_limits<int>::max(), test);
 
 
     test = Convert::toInt32("2147483648087655446879898769876576");
-    EXPECT_EQ(INT_MAX, test);
+    EXPECT_EQ(std::numeric_limits<int>::max(), test);
 
     test = Convert::toInt32("-2147483648087655446879898769876576");
-    EXPECT_EQ(INT_MIN, test);
+    EXPECT_EQ(std::numeric_limits<int>::min(), test);
 }
 
 
@@ -417,17 +420,17 @@ TEST_CASE("StringConverter int64")
     EXPECT_EQ(0, test);
 
     test = Convert::toInt64("-18446744073709551616");
-    EXPECT_EQ(INT64_MIN, test);
+    EXPECT_EQ(std::numeric_limits<SKint64>::min(), test);
 
     test = Convert::toInt64("18446744073709551617");
-    EXPECT_EQ(INT64_MAX, test);
+    EXPECT_EQ(std::numeric_limits<SKint64>::max(), test);
 
 
     test = Convert::toInt64("2147483648087655446879898769876576");
-    EXPECT_EQ(INT64_MAX, test);
+    EXPECT_EQ(std::numeric_limits<SKint64>::max(), test);
 
     test = Convert::toInt64("-2147483648087655446879898769876576");
-    EXPECT_EQ(INT64_MIN, test);
+    EXPECT_EQ(std::numeric_limits<SKint64>::min(), test);
 }
 
 
