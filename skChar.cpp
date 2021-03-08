@@ -26,6 +26,7 @@
 #include "Utils/skChar.h"
 #include <cstdio>
 #include <cstdlib>
+#include <limits>
 #include <cstring>
 #include "skString.h"
 
@@ -76,14 +77,28 @@ SKsize skChar::equalsn(const char* a, const char* b, const SKsize max)
 SKint16 skChar::toInt16(const char* in, SKint16 def, int base)
 {
     if (in && *in)
-        return (SKint16)std::strtol(in, nullptr, base);
+    {
+        const long long v = std::strtoll(in, nullptr, base);
+        if (v > std::numeric_limits<SKint16>::max())
+            return std::numeric_limits<SKint16>::max();
+        if (v < std::numeric_limits<SKint16>::min())
+            return std::numeric_limits<SKint16>::min();
+        return (SKint16)v;
+    }
     return def;
 }
 
 SKint32 skChar::toInt32(const char* in, SKint32 def, int base)
 {
     if (in && *in)
-        return (SKint32)std::strtol(in, nullptr, base);
+    {
+        const long long v = std::strtoll(in, nullptr, base);
+        if (v > std::numeric_limits<SKint32>::max())
+            return std::numeric_limits<SKint32>::max();
+        if (v < std::numeric_limits<SKint32>::min())
+            return std::numeric_limits<SKint32>::min();
+        return (SKint32)v;
+    }
     return def;
 }
 
@@ -97,14 +112,24 @@ SKint64 skChar::toInt64(const char* in, SKint64 def, int base)
 SKuint16 skChar::toUint16(const char* in, SKuint16 def, int base)
 {
     if (in && *in)
-        return (SKuint16)std::strtoul(in, nullptr, base);
+    {
+        const unsigned long long v = std::strtoull(in, nullptr, base);
+        if (v > std::numeric_limits<SKuint16>::max())
+            return std::numeric_limits<SKuint16>::max();
+        return (SKuint16)v;
+    }
     return def;
 }
 
 SKuint32 skChar::toUint32(const char* in, SKuint32 def, int base)
 {
     if (in && *in)
-        return (SKuint32)std::strtoul(in, nullptr, base);
+    {
+        const unsigned long long v = std::strtoull(in, nullptr, base);
+        if (v > std::numeric_limits<SKuint32>::max())
+            return std::numeric_limits<SKuint32>::max();
+        return (SKuint32)v;
+    }
     return def;
 }
 
@@ -221,19 +246,19 @@ void skChar::toString(skString& dest, bool v)
 
 void skChar::toString(skString& dest, SKint16 v)
 {
-    dest.reserve(16);
+    dest.reserve(8);
     snprintf(dest.ptr(), dest.capacity(), "%d", v);
 }
 
 void skChar::toString(skString& dest, SKint32 v)
 {
-    dest.reserve(24);
+    dest.reserve(16);
     snprintf(dest.ptr(), dest.capacity(), "%d", v);
 }
 
 void skChar::toString(skString& dest, SKint64 v)
 {
-    dest.reserve(32);
+    dest.reserve(24);
     snprintf(dest.ptr(), dest.capacity(), "%lld", v);
 }
 

@@ -324,11 +324,133 @@ TEST_CASE("StringConverter bool")
     EXPECT_EQ(true, test);
 }
 
+TEST_CASE("StringConverter int16")
+{
+    SKint16 test;
+    test = Convert::toInt16("Hello World");
+    EXPECT_EQ(0, test);
 
-TEST_CASE("StringConverter int")
+    test = Convert::toInt16("-32768");
+    EXPECT_EQ(INT16_MIN, test);
+
+    test = Convert::toInt16("3276999");
+    EXPECT_EQ(INT16_MAX, test);
+
+    test = Convert::toInt16("-987532767");
+    EXPECT_EQ(INT16_MIN, test);
+
+    test = Convert::toInt16("-2147483648087655446879898769876576");
+    EXPECT_EQ(INT16_MIN, test);
+}
+
+
+
+
+TEST_CASE("StringConverter uint16")
+{
+    SKuint16 test;
+    test = Convert::toUint16("Hello World");
+    EXPECT_EQ(0, test);
+
+    test = Convert::toUint16("-65536");
+    EXPECT_EQ(0xFFFF, test);
+
+    test = Convert::toUint16("65536");
+    EXPECT_EQ(0xFFFF, test);
+
+    test = Convert::toUint16("-987532767");
+    EXPECT_EQ(0xFFFF, test);
+
+    test = Convert::toUint16("2147483648087655446879898769876576");
+    EXPECT_EQ(0xFFFF, test);
+
+
+    test = Convert::toUint16("65534");
+    EXPECT_EQ(0xFFFE, test);
+}
+
+
+TEST_CASE("StringConverter int32")
 {
     int test;
-
     test = Convert::toInt32("Hello World");
     EXPECT_EQ(0, test);
+
+    test = Convert::toInt32("-2147483648");
+    EXPECT_EQ(INT_MIN, test);
+
+    test = Convert::toInt32("2147483647");
+    EXPECT_EQ(INT_MAX, test);
+
+
+    test = Convert::toInt32("2147483648087655446879898769876576");
+    EXPECT_EQ(INT_MAX, test);
+
+    test = Convert::toInt32("-2147483648087655446879898769876576");
+    EXPECT_EQ(INT_MIN, test);
+}
+
+
+TEST_CASE("StringConverter uint32")
+{
+    SKuint32 test;
+    test = Convert::toUint32("Hello World");
+    EXPECT_EQ(0, test);
+
+    test = Convert::toUint32("-4294967294");
+    EXPECT_EQ(0xFFFFFFFF, test);
+
+    test = Convert::toUint32("4294967294");
+    EXPECT_EQ(0xFFFFFFFE, test);
+
+    test = Convert::toUint32("2147483648087655446879898769876576");
+    EXPECT_EQ(0xFFFFFFFF, test);
+
+    test = Convert::toUint32("-2147483648087655446879898769876576");
+    EXPECT_EQ(0xFFFFFFFF, test);
+}
+
+TEST_CASE("StringConverter int64")
+{
+    SKint64 test;
+    test = Convert::toInt32("Hello World");
+    EXPECT_EQ(0, test);
+
+    test = Convert::toInt64("-18446744073709551616");
+    EXPECT_EQ(INT64_MIN, test);
+
+    test = Convert::toInt64("18446744073709551617");
+    EXPECT_EQ(INT64_MAX, test);
+
+
+    test = Convert::toInt64("2147483648087655446879898769876576");
+    EXPECT_EQ(INT64_MAX, test);
+
+    test = Convert::toInt64("-2147483648087655446879898769876576");
+    EXPECT_EQ(INT64_MIN, test);
+}
+
+
+
+
+TEST_CASE("StringConverter uint64")
+{
+    SKuint64 test;
+    test = Convert::toUint64("Hello World");
+    EXPECT_EQ(0, test);
+
+    test = Convert::toUint64("-18446744073709551616");
+    EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
+
+    test = Convert::toUint64("18446744073709551616");
+    EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
+
+    test = Convert::toUint64("18446744073709551614");
+    EXPECT_EQ(0xFFFFFFFFFFFFFFFE, test);
+
+    test = Convert::toUint64("2147483648087655446879898769876576");
+    EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
+
+    test = Convert::toUint64("-2147483648087655446879898769876576");
+    EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
 }
