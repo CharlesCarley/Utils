@@ -27,7 +27,6 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
-#include "skFixedString.h"
 #include "skPlatformHeaders.h"
 #include "skStringConverter.h"
 
@@ -257,6 +256,7 @@ void skString::split(skArray<skString>& dst, const char* op) const
 
 skString skString::format(const char* fmt, ...)
 {
+    skString dest;
     char    buf[1025];
     va_list lst;
     va_start(lst, fmt);
@@ -284,6 +284,7 @@ void skString::format(skString& dst, const char* fmt, ...)
             va_end(lst);
 
             dst.reserve((SKsize)size + 1);
+            dst.resize((SKsize)size);
         }
 
         if (size > 0)

@@ -26,8 +26,8 @@
 #include "Utils/skChar.h"
 #include <cstdio>
 #include <cstdlib>
-#include <limits>
 #include <cstring>
+#include <limits>
 #include "skString.h"
 
 SKsize skChar::length(const char* in)
@@ -143,7 +143,7 @@ SKuint64 skChar::toUint64(const char* in, SKuint64 def, int base)
 SKint16 skChar::toInt16(const skString& in, SKint16 def, int base)
 {
     return toInt16(in.c_str(), def, base);
-} 
+}
 
 SKint32 skChar::toInt32(const skString& in, SKint32 def, int base)
 {
@@ -169,7 +169,6 @@ SKuint64 skChar::toUint64(const skString& in, SKuint64 def, int base)
 {
     return toUint64(in.c_str(), def, base);
 }
-
 
 bool skChar::toBool(const char* in)
 {
@@ -204,7 +203,6 @@ double skChar::toDouble(const char* in, const double& def)
     return def;
 }
 
-
 bool skChar::toBool(const skString& in)
 {
     return toBool(in.c_str());
@@ -220,18 +218,21 @@ double skChar::toDouble(const skString& in, const double& def)
     return toDouble(in.c_str(), def);
 }
 
-
 void skChar::toString(skString& dest, float v)
 {
     const double d = (double)v;
     dest.reserve(32);
-    snprintf(dest.ptr(), dest.capacity(), "%f", d);
+    const int size = snprintf(dest.ptr(), dest.capacity(), "%f", d);
+    if (size < (int)dest.capacity() && size > 0)
+        dest.resize(size);
 }
 
 void skChar::toString(skString& dest, double v)
 {
     dest.reserve(32);
-    snprintf(dest.ptr(), dest.capacity(), "%f", v);
+    const int size = snprintf(dest.ptr(), dest.capacity(), "%f", v);
+    if (size < (int)dest.capacity() && size > 0)
+        dest.resize(size);
 }
 
 void skChar::toString(skString& dest, bool v)
@@ -246,36 +247,48 @@ void skChar::toString(skString& dest, bool v)
 
 void skChar::toString(skString& dest, SKint16 v)
 {
-    dest.reserve(8);
-    snprintf(dest.ptr(), dest.capacity(), "%d", v);
+    dest.reserve(7);
+    const int size = snprintf(dest.ptr(), dest.capacity(), "%d", v);
+    if (size < (int)dest.capacity() && size > 0)
+        dest.resize(size);
 }
 
 void skChar::toString(skString& dest, SKint32 v)
 {
-    dest.reserve(16);
-    snprintf(dest.ptr(), dest.capacity(), "%d", v);
+    dest.reserve(12);
+    const int size = snprintf(dest.ptr(), dest.capacity(), "%d", v);
+    if (size < (int)dest.capacity() && size > 0)
+        dest.resize(size);
 }
 
 void skChar::toString(skString& dest, SKint64 v)
 {
-    dest.reserve(24);
-    snprintf(dest.ptr(), dest.capacity(), "%lld", v);
+    dest.reserve(21);
+    const int size = snprintf(dest.ptr(), dest.capacity(), "%lld", v);
+    if (size < (int)dest.capacity() && size > 0)
+        dest.resize(size);
 }
 
 void skChar::toString(skString& dest, SKuint16 v)
 {
     dest.reserve(16);
-    snprintf(dest.ptr(), dest.capacity(), "%u", v);
+    const int size = snprintf(dest.ptr(), dest.capacity(), "%u", v);
+    if (size < (int)dest.capacity() && size > 0)
+        dest.resize(size);
 }
 
 void skChar::toString(skString& dest, SKuint32 v)
 {
     dest.reserve(24);
-    snprintf(dest.ptr(), dest.capacity(), "%u", v);
+    const int size = snprintf(dest.ptr(), dest.capacity(), "%u", v);
+    if (size < (int)dest.capacity() && size > 0)
+        dest.resize(size);
 }
 
 void skChar::toString(skString& dest, SKuint64 v)
 {
     dest.reserve(32);
-    snprintf(dest.ptr(), dest.capacity(), "%llu", v);
+    const int size = snprintf(dest.ptr(), dest.capacity(), "%llu", v);
+    if (size < (int)dest.capacity() && size > 0)
+        dest.resize(size);
 }

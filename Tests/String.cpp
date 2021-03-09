@@ -23,14 +23,12 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#include <limits>
 #include "Macro.h"
 #include "Utils/skHexPrint.h"
 #include "Utils/skString.h"
 #include "Utils/skStringConverter.h"
 #include "catch/catch.hpp"
-#include <limits>
-
-
 
 TEST_CASE("StringTest_BasicString")
 {
@@ -65,9 +63,28 @@ TEST_CASE("StringTest_SplitString")
     REQUIRE(s1eq == true);
 }
 
-TEST_CASE("StringTest_FormatString")
+TEST_CASE("StringTest FormatString1")
 {
-    skString a = skString::format("%s %s", "Hello", "World");
+    const skString a = skString::format("%s %s", "Hello", "World");
+    REQUIRE(a.size() == 11);
+
+    skStringArray spl;
+    a.split(spl, " ");
+
+    REQUIRE(2 == spl.size());
+
+    bool s0eq = spl[0] == skString("Hello");
+    bool s1eq = spl[1] == skString("World");
+
+    REQUIRE(s0eq == true);
+    REQUIRE(s1eq == true);
+}
+
+TEST_CASE("StringTest FormatString2")
+{
+    skString a;
+    skString::format(a, "%s %s", "Hello", "World");
+    REQUIRE(a.size() == 11);
 
     skStringArray spl;
     a.split(spl, " ");
@@ -232,7 +249,7 @@ TEST_CASE("StringTest_NullStringTests")
     a = a.substr(0, 8);
     EXPECT_EQ(a.size(), 0);
 
-    a      = b;
+    a = b;
     EXPECT_EQ(a.size(), 0);
     EXPECT_EQ(a.ptr(), nullptr);
 
@@ -303,7 +320,6 @@ TEST_CASE("StringTest_HexStringRepr")
 
 using Convert = skStringConverter;
 
-
 TEST_CASE("StringConverter bool")
 {
     bool test;
@@ -346,9 +362,6 @@ TEST_CASE("StringConverter int16")
     EXPECT_EQ(std::numeric_limits<SKint16>::min(), test);
 }
 
-
-
-
 TEST_CASE("StringConverter uint16")
 {
     SKuint16 test;
@@ -367,11 +380,9 @@ TEST_CASE("StringConverter uint16")
     test = Convert::toUint16("2147483648087655446879898769876576");
     EXPECT_EQ(0xFFFF, test);
 
-
     test = Convert::toUint16("65534");
     EXPECT_EQ(0xFFFE, test);
 }
-
 
 TEST_CASE("StringConverter int32")
 {
@@ -385,14 +396,12 @@ TEST_CASE("StringConverter int32")
     test = Convert::toInt32("2147483647");
     EXPECT_EQ(std::numeric_limits<int>::max(), test);
 
-
     test = Convert::toInt32("2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<int>::max(), test);
 
     test = Convert::toInt32("-2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<int>::min(), test);
 }
-
 
 TEST_CASE("StringConverter uint32")
 {
@@ -425,16 +434,12 @@ TEST_CASE("StringConverter int64")
     test = Convert::toInt64("18446744073709551617");
     EXPECT_EQ(std::numeric_limits<SKint64>::max(), test);
 
-
     test = Convert::toInt64("2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<SKint64>::max(), test);
 
     test = Convert::toInt64("-2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<SKint64>::min(), test);
 }
-
-
-
 
 TEST_CASE("StringConverter uint64")
 {
@@ -456,4 +461,113 @@ TEST_CASE("StringConverter uint64")
 
     test = Convert::toUint64("-2147483648087655446879898769876576");
     EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
+}
+
+TEST_CASE("StringConverter toInt16")
+{
+    {
+        const skString iString = "123";
+        SKint16        v       = iString.toInt16();
+        EXPECT_EQ(123, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(3, r.size());
+        EXPECT_TRUE(skChar::equalsn("123", r.c_str(), 3) == 0);
+    }
+
+    {
+        const skString iString = "9985287698765975976";
+        SKint16        v       = iString.toInt16();
+        EXPECT_EQ(32767, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(5, r.size());
+        EXPECT_TRUE(skChar::equalsn("32767", r.c_str(), 5) == 0);
+    }
+
+    {
+        const skString iString = "-9985287698765975976";
+        SKint16        v       = iString.toInt16();
+        EXPECT_EQ(-32767-1, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(6, r.size());
+        EXPECT_TRUE(skChar::equalsn("-32768", r.c_str(), 6) == 0);
+    }
+}
+
+TEST_CASE("StringConverter toInt32")
+{
+    {
+        const skString iString = "123";
+        SKint32        v       = iString.toInt32();
+        EXPECT_EQ(123, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(3, r.size());
+        EXPECT_TRUE(skChar::equalsn("123", r.c_str(), 3) == 0);
+    }
+
+    {
+        const skString iString = "9985287698765975976";
+        SKint32        v       = iString.toInt32();
+        EXPECT_EQ(2147483647, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(10, r.size());
+        EXPECT_TRUE(skChar::equalsn("2147483647", r.c_str(), 5) == 0);
+    }
+
+    {
+        const skString iString = "-9985287698765975976";
+        SKint32        v       = iString.toInt32();
+        EXPECT_EQ(-2147483647-1, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(11, r.size());
+        EXPECT_TRUE(skChar::equalsn("-2147483648", r.c_str(), 11) == 0);
+    }
+}
+
+
+TEST_CASE("StringConverter toInt64")
+{
+    {
+        const skString iString = "123";
+        SKint64        v       = iString.toInt64();
+        EXPECT_EQ(123, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(3, r.size());
+        EXPECT_TRUE(skChar::equalsn("123", r.c_str(), 3) == 0);
+    }
+
+    {
+        const skString iString = "9985287698765975988875454545476";
+        SKint64        v       = iString.toInt64();
+        EXPECT_EQ(9223372036854775807, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(19, r.size());
+        EXPECT_TRUE(skChar::equalsn("9223372036854775807", r.c_str(), 19) == 0);
+    }
+
+    {
+        const skString iString = "-9985287698765975988875454545476";
+        SKint64        v       = iString.toInt64();
+        EXPECT_EQ(-9223372036854775807-1, v);
+
+        skString r;
+        skChar::toString(r, v);
+        EXPECT_EQ(20, r.size());
+        EXPECT_TRUE(skChar::equalsn("-9223372036854775808", r.c_str(), 20) == 0);
+    }
 }
