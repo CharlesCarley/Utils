@@ -69,6 +69,7 @@ int Parser::parse(int           argc,
                   const Switch* switches,
                   SKuint32      count)
 {
+
     if (!m_program.empty())  // using as a check for multiple calls
         return 0;
 
@@ -275,6 +276,11 @@ const skString& Parser::getValueString(const SKuint32& enumId,
 
 void Parser::usage()
 {
+    skLogger& logger = skLogger::getSingleton();
+
+    SKuint32 old = logger.getFlags();
+    logger.setFlags(LF_STDOUT);
+
     logInput();
 
     skLogf(LD_INFO, "Usage: %s <options>\n\n", getBaseProgram().c_str());
@@ -343,6 +349,8 @@ void Parser::usage()
     }
 
     skLogd(LD_INFO, "\n");
+
+    logger.setFlags(old);
 }
 
 bool Parser::initializeOption(ParseOption* opt, const Switch& sw)
