@@ -50,7 +50,7 @@ int Parser::getBaseName(const char* input)
     int offs = 0;
     if (input)
     {
-        const int len = (int)skStringUtils::length(input);
+        const int len = (int)skChar::length(input);
 
         for (int i = len - 1; i >= 0 && offs == 0; --i)
             if (input[i] == '/' || input[i] == '\\')
@@ -319,7 +319,7 @@ void Parser::usage()
         int space = m_maxHelp;
         if (sw.longSwitch != nullptr)
         {
-            space -= (int)skStringUtils::length(sw.longSwitch);
+            space -= (int)skChar::length(sw.longSwitch);
             skLogf(LD_INFO, "--%s", sw.longSwitch);
         }
 

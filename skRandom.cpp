@@ -24,15 +24,15 @@
 -------------------------------------------------------------------------------
 */
 #include "skRandom.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include "skTimer.h"
 
 void skRandInit(SKuint32 seed)
 {
     if (seed != SK_NPOS32)
-        ::srand(seed);
+        srand(seed);
     else
-        ::srand(skGetTickCount() % (SK_NPOS32 - 1));
+        srand(skGetTickCount() % (SK_NPOS32 - 1));
 }
 
 SKuint32 skRandom(SKuint32 mod)
@@ -42,7 +42,7 @@ SKuint32 skRandom(SKuint32 mod)
 
 SKuint32 skRandomUnsignedInt(SKuint32 mod)
 {
-    int r = ::rand();
+    int r = rand();
     if (r < 0)
         r = -r;
     if (mod != SK_NPOS32)

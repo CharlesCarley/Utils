@@ -45,6 +45,7 @@ private:
     skString m_dest;
 
     void   reserve(SKsize len);
+
     SKsize getNextCapacity(SKsize len) const;
 
     SKsize writeToBuffer(const void* source, SKsize len);
@@ -59,6 +60,17 @@ public:
     {
         setStrategy(ALLOC_N_BYTE_BLOCK, m_nByteBlock);
     }
+
+    explicit skStringBuilder(SKsize nBytes) :
+        m_buffer(nullptr),
+        m_size(0),
+        m_capacity(0),
+        m_nByteBlock(),
+        m_strategy()
+    {
+        setStrategy(ALLOC_N_BYTE_BLOCK, nBytes);
+    }
+
 
     skStringBuilder(SKuint8 strategy, SKsize nBytes) :
         m_buffer(nullptr),
@@ -105,6 +117,9 @@ public:
     }
 
     void clear();
+
+
+    void write(const skStringBuilder& oth);
 
     void write(const skString& str);
 

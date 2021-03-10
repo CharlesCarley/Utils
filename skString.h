@@ -31,7 +31,7 @@
 #include "Utils/skChar.h"
 #include "Utils/skMap.h"
 
-using skStringUtils = skChar;
+using skChar = skChar;
 
 class skString
 {
@@ -72,22 +72,22 @@ public:
 
     bool operator==(const skString& rhs) const
     {
-        return !skStringUtils::equals(m_data, rhs.m_data);
+        return !skChar::equals(m_data, rhs.m_data);
     }
 
     bool operator!=(const skString& rhs) const
     {
-        return skStringUtils::equals(m_data, rhs.m_data) != 0;
+        return skChar::equals(m_data, rhs.m_data) != 0;
     }
 
     bool operator==(const ValueType* rhs) const
     {
-        return !skStringUtils::equals(m_data, rhs);
+        return !skChar::equals(m_data, rhs);
     }
 
     bool operator!=(const ValueType* rhs) const
     {
-        return skStringUtils::equals(m_data, rhs) != 0;
+        return skChar::equals(m_data, rhs) != 0;
     }
 
     skString operator+(const char ch) const

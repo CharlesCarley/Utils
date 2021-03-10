@@ -154,7 +154,7 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
 
 void skLogd(SKint32 detail, const char* msg)
 {
-    const SKsize len = skStringUtils::length(msg);
+    const SKsize len = skChar::length(msg);
     if (len > 0)
     {
         const skLogger* log = skLogger::getSingletonPtr();

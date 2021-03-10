@@ -29,6 +29,7 @@
 #include "Utils/skString.h"
 #include "Utils/skChar.h"
 
+#pragma message ("Replace with skStringConverter with skChar")
 using skStringConverter = skChar;
 
 

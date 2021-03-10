@@ -83,6 +83,12 @@ SKsize skStringBuilder::writeToBuffer(const void* source, SKsize len)
     return SK_NPOS;
 }
 
+void skStringBuilder::write(const skStringBuilder& oth)
+{
+    if (oth.size() > 0)
+        writeToBuffer(oth.m_buffer, oth.size());
+}
+
 void skStringBuilder::write(const skString& str)
 {
     if (!str.empty())
