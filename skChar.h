@@ -26,7 +26,7 @@
 #ifndef __skChar_h__
 #define __skChar_h__
 
-#include "Utils/skFixedString.h"
+#include "Utils/Config/skConfig.h"
 
 class skString;
 
