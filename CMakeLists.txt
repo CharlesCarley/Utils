@@ -74,6 +74,7 @@ set(Utils_SRC
     skMemoryStream.cpp
     skMemoryUtils.cpp
     skString.cpp
+    skStringBuilder.cpp
     skStreams.cpp
     skRandom.cpp
     skTimer.cpp
@@ -111,6 +112,7 @@ set(Utils_HDR
     skStack.h
     skStreams.h
     skString.h
+    skStringBuilder.h
     skStringConverter.h
     skTimer.h
     skTraits.h

@@ -45,7 +45,7 @@ public:
         {
         }
 
-        Node(ConstValueType v) :
+        explicit Node(ConstValueType v) :
             m_left(nullptr),
             m_right(nullptr),
             m_data(v)
@@ -57,17 +57,17 @@ public:
             destruct();
         }
 
-        SK_INLINE Node* left(void)
+        Node* left(void)
         {
             return m_left;
         }
 
-        SK_INLINE Node* right(void)
+        Node* right(void)
         {
             return m_right;
         }
 
-        SK_INLINE ReferenceType data(void)
+        ReferenceType data(void)
         {
             return m_data;
         }
@@ -79,12 +79,13 @@ public:
         Node*     m_right;
         ValueType m_data;
 
-        void destruct(void) const
+        void destruct(void)
         {
-            if (m_left)
-                delete m_left;
-            if (m_right)
-                delete m_right;
+            delete m_left;
+            m_left = nullptr;
+
+            delete m_right;
+            m_right = nullptr;
         }
     };
 
@@ -120,7 +121,7 @@ public:
     void clear(void)
     {
         delete m_root;
-        m_root = 0;
+        m_root = nullptr;
         m_array.clear();
     }
 
@@ -212,22 +213,22 @@ public:
         return maximum_recursive(node ? node : m_root);
     }
 
-    SK_INLINE NodePointerType root(void)
+    NodePointerType root(void)
     {
         return m_root;
     }
 
-    SK_INLINE NodePointerType left(void)
+    NodePointerType left(void)
     {
-        return m_root ? m_root->m_left : 0;
+        return m_root ? m_root->m_left : nullptr;
     }
 
-    SK_INLINE NodePointerType right(void)
+    NodePointerType right(void)
     {
-        return m_root ? m_root->m_right : 0;
+        return m_root ? m_root->m_right : nullptr;
     }
 
-    SK_INLINE SKsize size(void) const
+    SKsize size(void) const
     {
         return m_size;
     }
@@ -297,16 +298,16 @@ private:
     {
         SK_ASSERT(node);
 
-        if (node->m_left == 0 && node->m_right == 0)
+        if (node->m_left == nullptr && node->m_right == nullptr)
         {
             --m_size;
             delete node;
-            node = 0;
+            node = nullptr;
         }
-        else if (node->m_left == 0 || node->m_right == 0)
+        else if (node->m_left == nullptr || node->m_right == nullptr)
         {
-            NodePointerType local = node->m_left == 0 ? node->m_right : node->m_left;
-            node->m_left = node->m_right = 0;
+            NodePointerType local = node->m_left == nullptr ? node->m_right : node->m_left;
+            node->m_left = node->m_right = nullptr;
 
             --m_size;
             delete node;

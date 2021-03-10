@@ -143,7 +143,7 @@ public:
 
     void substr(skString& dest, SKsize pos, SKsize nr = 0) const;
 
-    void swap(skString& rhs);
+    void swap(skString& rhs) noexcept;
 
     SKsize copy(char* arr, SKsize nr, SKsize offs = 0) const;
 

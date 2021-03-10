@@ -54,12 +54,8 @@ enum LogFlag
 class skLogListener
 {
 public:
-    skLogListener()
-    {
-    }
-    virtual ~skLogListener()
-    {
-    }
+    skLogListener()          = default;
+    virtual ~skLogListener() = default;
 
     virtual void messageLogged(int detail, int setFlags, const char* logged, int length) = 0;
 };
@@ -70,7 +66,7 @@ public:
     SK_DECLARE_SINGLETON(skLogger)
 
 private:
-    skStream*      m_stream;    // Open ors LF_FILE
+    skStream*      m_stream;    // Open ors(|=) LF_FILE
     int            m_flags;     // Default: LF_ALL
     int            m_detail;    // Default: LD_VERBOSE
     skLogListener* m_listener;  // just one.
@@ -118,7 +114,9 @@ public:
 
 private:
     void writeDetail(SKint32 detail) const;
+
     void writeTimeStamp() const;
+
     void writeMessage(const char* msg, SKint32 len = 0) const;
 };
 

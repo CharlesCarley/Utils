@@ -26,9 +26,9 @@
 #ifndef _skFixedString_h_
 #define _skFixedString_h_
 
-#include <cstring>
 #include "Utils/Config/skConfig.h"
 #include "Utils/skArray.h"
+#include "Utils/skChar.h"
 #include "Utils/skHash.h"
 
 template <const SKuint16 L>
@@ -119,8 +119,8 @@ public:
 
     void append(const char* str)
     {
-        const int len = (int)strlen(str);
-        int a   = 0;
+        const SKuint16 len = skClamp<SKuint16>(skChar::length(str), 0, SK_MAX16);
+        SKuint16       a   = 0;
         while (a < len)
             push_back(str[a++]);
     }
@@ -174,60 +174,61 @@ public:
         return *this;
     }
 
-    SK_INLINE const char* c_str(void) const
+    const char* c_str(void) const
     {
         return m_buffer;
     }
 
-    SK_INLINE char* ptr(void)
+    char* ptr(void)
     {
         return m_buffer;
     }
 
-    SK_INLINE const char* ptr(void) const
+    const char* ptr(void) const
     {
         return m_buffer;
     }
 
-    SK_INLINE void clear(void)
+    void clear(void)
     {
         m_buffer[0] = 0;
         m_size      = 0;
     }
 
-    SK_INLINE bool empty(void) const
+    bool empty(void) const
     {
         return m_size == 0;
     }
 
-    SK_INLINE SKuint16 size(void) const
+    SKuint16 size(void) const
     {
         return m_size;
     }
-    SK_INLINE SKuint16 capacity(void) const
+
+    static SKuint16 capacity(void)
     {
         return L;
     }
 
-    SK_INLINE char operator[](SKuint16 i) const
+    char operator[](SKuint16 i) const
     {
         SK_ASSERT(i < m_size && i < L);
         return m_buffer[i];
     }
 
-    SK_INLINE char at(SKuint16 i) const
+    char at(SKuint16 i) const
     {
         SK_ASSERT(i < m_size && i < L);
         return m_buffer[i];
     }
 
-    SK_INLINE char& operator[](SKuint16 i)
+    char& operator[](SKuint16 i)
     {
         SK_ASSERT(i < m_size && i < L);
         return m_buffer[i];
     }
 
-    SK_INLINE char* at(SKuint16 i)
+    char* at(SKuint16 i)
     {
         SK_ASSERT(i < m_size && i < L);
         return m_buffer[i];
@@ -245,11 +246,12 @@ public:
         return m_hash;
     }
 
-    SK_INLINE bool operator==(const skFixedString& str) const
+    bool operator==(const skFixedString& str) const
     {
         return hash() == str.hash();
     }
-    SK_INLINE bool operator!=(const skFixedString& str) const
+
+    bool operator!=(const skFixedString& str) const
     {
         return hash() != str.hash();
     }
@@ -262,8 +264,9 @@ private:
     void copy(const char* src, SKuint16 size, SKuint16 other = SK_NPOS16)
     {
         const SKuint16 val = skMin(size, skMin(L, other));
-        m_size             = 0;
-        m_hash             = -1;
+
+        m_size = 0;
+        m_hash = -1;
 
         while (m_size < val && src[m_size])
         {

@@ -30,63 +30,65 @@
 
 class skUserObject
 {
+private:
+    SKuintPtr m_object;
+
 public:
-    skUserObject() : m_object(0)
+    skUserObject() :
+        m_object(0)
     {
     }
+
     ~skUserObject()
     {
         SK_ASSERT(!m_object && "Object not unbound");
     }
 
-    SK_INLINE void bind(SKuintPtr obj)
+    void bind(const SKuintPtr obj)
     {
         SK_ASSERT(obj && !m_object);
         m_object = obj;
     }
 
-    SK_INLINE void bind(void* obj)
+    void bind(void* obj)
     {
         bind(reinterpret_cast<SKuintPtr>(obj));
     }
 
-    SK_INLINE void unbind(SKuintPtr obj)
+    void unbind(const SKuintPtr obj)
     {
         if (obj == 0 || m_object == obj)
             m_object = 0;
     }
 
-    SK_INLINE void unbind(void* obj)
+    void unbind(void* obj)
     {
         unbind(reinterpret_cast<SKuintPtr>(obj));
     }
 
     template <typename T>
-    SK_INLINE T* cast(void)
+    T* cast(void)
     {
         SK_ASSERT(m_object);
         return reinterpret_cast<T*>(m_object);
     }
 
     template <typename T>
-    SK_INLINE const T* cast(void) const
+    const T* cast(void) const
     {
         SK_ASSERT(m_object);
         return reinterpret_cast<const T*>(m_object);
     }
 
-    SK_INLINE SKuintPtr get(void)
+    SKuintPtr get(void) const
     {
         return m_object;
     }
 
-    SK_INLINE bool bound(void)
+    bool bound(void) const
     {
         return m_object != 0;
     }
-
-private:
-    SKuintPtr m_object;
 };
 
 #endif  //_skUserObject_h_

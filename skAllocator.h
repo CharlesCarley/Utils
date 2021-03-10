@@ -221,17 +221,13 @@ public:
     typedef skNewAllocator<T, SizeType, alloc_limit> SelfType;
 
 public:
-    explicit skNewAllocator()
-    {
-    }
+    explicit skNewAllocator() = default;
 
     explicit skNewAllocator(const SelfType&)
     {
     }
 
-    ~skNewAllocator()
-    {
-    }
+    ~skNewAllocator() = default;
 
     static PointerType allocate(void)
     {

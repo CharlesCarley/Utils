@@ -40,7 +40,7 @@ protected:
     mutable PointerType m_beg;
     mutable PointerType m_end;
 
-    void swap(skPointerIncrementIterator& rhs)
+    void swap(skPointerIncrementIterator& rhs) noexcept
     {
         skSwap(m_beg, rhs.m_beg);
         skSwap(m_end, rhs.m_end);
@@ -71,9 +71,7 @@ public:
     {
     }
 
-    ~skPointerIncrementIterator()
-    {
-    }
+    ~skPointerIncrementIterator() = default;
 
     skPointerIncrementIterator& operator=(const skPointerIncrementIterator& rhs)
     {
@@ -82,36 +80,36 @@ public:
         return *this;
     }
 
-    SK_INLINE bool hasMoreElements(void) const
+    bool hasMoreElements(void) const
     {
         return m_beg < m_end;
     }
 
-    SK_INLINE ReferenceType getNext(void)
+    ReferenceType getNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
         return *m_beg++;
     }
 
-    SK_INLINE ConstReferenceType getNext(void) const
+    ConstReferenceType getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         return *m_beg++;
     }
 
-    SK_INLINE void next(void) const
+    void next(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         ++m_beg;
     }
 
-    SK_INLINE ReferenceType peekNext(void)
+    ReferenceType peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
         return *m_beg;
     }
 
-    SK_INLINE ConstReferenceType peekNext(void) const
+    ConstReferenceType peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         return *m_beg;
@@ -128,7 +126,7 @@ protected:
     mutable PointerType m_beg;
     mutable PointerType m_end;
 
-    void swap(skPointerDecrementIterator& rhs)
+    void swap(skPointerDecrementIterator& rhs) noexcept
     {
         skSwap(m_beg, rhs.m_beg);
         skSwap(m_end, rhs.m_end);
@@ -159,9 +157,7 @@ public:
     {
     }
 
-    ~skPointerDecrementIterator()
-    {
-    }
+    ~skPointerDecrementIterator() = default;
 
     skPointerDecrementIterator& operator=(const skPointerDecrementIterator& rhs)
     {
@@ -170,36 +166,36 @@ public:
         return *this;
     }
 
-    SK_INLINE bool hasMoreElements(void) const
+    bool hasMoreElements(void) const
     {
         return m_beg && m_beg >= m_end;
     }
 
-    SK_INLINE ReferenceType getNext(void)
+    ReferenceType getNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
         return *m_beg--;
     }
 
-    SK_INLINE ConstReferenceType getNext(void) const
+    ConstReferenceType getNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         return *m_beg--;
     }
 
-    SK_INLINE void next(void) const
+    void next(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         --m_beg;
     }
 
-    SK_INLINE ReferenceType peekNext(void)
+    ReferenceType peekNext(void)
     {
         SK_ITER_DEBUG(hasMoreElements());
         return *m_beg;
     }
 
-    SK_INLINE ConstReferenceType peekNext(void) const
+    ConstReferenceType peekNext(void) const
     {
         SK_ITER_DEBUG(hasMoreElements());
         return *m_beg;
@@ -275,7 +271,7 @@ public:
     {
         // Do not call this with a type T that has
         // cleanup code in ~T(). This is intended
-        // for atomic and simple class types.
+        // for atomic and simple class types. 
         if (nr > m_size)
             reserve(nr);
         m_size = nr;
@@ -345,32 +341,32 @@ public:
         m_size = writeDataCount;
     }
 
-    SK_INLINE ConstPointerType ptr(void) const
+    ConstPointerType ptr(void) const
     {
         return m_data;
     }
 
-    SK_INLINE PointerType ptr(void)
+    PointerType ptr(void)
     {
         return m_data;
     }
 
-    SK_INLINE bool valid(void) const
+    bool valid(void) const
     {
         return m_data != nullptr;
     }
 
-    SK_INLINE SizeType capacity(void) const
+    SizeType capacity(void) const
     {
         return m_capacity;
     }
 
-    SK_INLINE SizeType size(void) const
+    SizeType size(void) const
     {
         return m_size;
     }
 
-    SK_INLINE bool empty(void) const
+    bool empty(void) const
     {
         return m_size == 0;
     }
@@ -391,7 +387,7 @@ protected:
         replicate(o);
     }
 
-    skArrayBase(const SizeType& initialCapacity) :
+    explicit skArrayBase(const SizeType& initialCapacity) :
         m_data(nullptr),
         m_size(0),
         m_capacity(0)
@@ -399,9 +395,7 @@ protected:
         reserve(initialCapacity);
     }
 
-    ~skArrayBase()
-    {
-    }
+    ~skArrayBase() = default;
 
     void replicate(const skArrayBase& rhs)
     {

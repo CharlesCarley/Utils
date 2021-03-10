@@ -45,7 +45,6 @@ public:
     const SKuint16 limit = L;
     const SKuint16 npos  = SK_NPOS16;
 
-
 public:
     skFixedArray() :
         m_size(0)
@@ -60,37 +59,34 @@ public:
 
         if (rhs.size())
         {
-            SKuint16         i;
             const SKuint16   os = rhs.size();
             ConstPointerType cp = rhs.ptr();
-            for (i = 0; i < L && i < os; ++i, ++m_size)
+            for (SKuint16 i = 0; i < L && i < os; ++i, ++m_size)
                 m_data[i] = cp[i];
         }
     }
 
     template <const SKuint16 R>
-    skFixedArray(const skFixedArray<T, R>& rhs) :
+    explicit skFixedArray(const skFixedArray<T, R>& rhs) :
         m_size(0)
     {
         m_data[0] = 0;
 
         if (rhs.size())
         {
-            SKuint16         i;
             const SKuint16   os = rhs.size();
             ConstPointerType cp = rhs.ptr();
-            for (i = 0; i < L && i < os; ++i, ++m_size)
+            for (SKuint16 i = 0; i < L && i < os; ++i, ++m_size)
                 m_data[i] = cp[i];
         }
     }
 
-    skFixedArray(ConstPointerType rhs) :
+    explicit skFixedArray(ConstPointerType rhs) :
         m_size(0)
     {
         if (rhs)
         {
-            SKuint16 i;
-            for (i = 0; i < L && rhs[i]; ++i, ++m_size)
+            for (SKuint16 i = 0; i < L && rhs[i]; ++i, ++m_size)
                 m_data[i] = rhs[i];
         }
     }
@@ -100,8 +96,7 @@ public:
     {
         if (rhs)
         {
-            SKuint16 i;
-            for (i = 0; i < L && i < size && rhs[i]; ++i, ++m_size)
+            for (SKuint16 i = 0; i < L && i < size && rhs[i]; ++i, ++m_size)
                 m_data[i] = rhs[i];
         }
     }
@@ -136,8 +131,7 @@ public:
 
     SKuint16 find(ConstReferenceType v)
     {
-        SKuint16 i;
-        for (i = 0; i < m_size; i++)
+        for (SKuint16 i = 0; i < m_size; i++)
         {
             if (m_data[i] == v)
                 return i;
@@ -158,25 +152,25 @@ public:
         }
     }
 
-    SK_INLINE ReferenceType front(void)
+    ReferenceType front(void)
     {
         SK_ASSERT(m_size > 0);
         return m_data[0];
     }
 
-    SK_INLINE ReferenceType back(void)
+    ReferenceType back(void)
     {
         SK_ASSERT(m_size > 0);
         return m_data[m_size - 1];
     }
 
-    SK_INLINE ConstReferenceType front(void) const
+    ConstReferenceType front(void) const
     {
         SK_ASSERT(m_size > 0);
         return m_data[0];
     }
 
-    SK_INLINE ConstReferenceType back(void) const
+    ConstReferenceType back(void) const
     {
         SK_ASSERT(m_size > 0);
         return m_data[m_size - 1];
@@ -188,8 +182,7 @@ public:
         {
             if (ns < m_size)
             {
-                SKuint16 i;
-                for (i = ns; i < m_size; i++)
+                for (SKuint16 i = ns; i < m_size; i++)
                     m_data[i].~T();
             }
             m_size = ns;
@@ -200,9 +193,8 @@ public:
     {
         if (this != &rhs && rhs.m_size > 0)
         {
-            SKuint16 i;
             m_size = 0;
-            for (i = 0; i < rhs.m_size && i < L; ++i, ++m_size)
+            for (SKuint16 i = 0; i < rhs.m_size && i < L; ++i, ++m_size)
                 m_data[i] = rhs.m_data[i];
         }
         return *this;
@@ -210,8 +202,7 @@ public:
 
     void clear(void)
     {
-        SKuint16 i;
-        for (i = 0; i < m_size; i++)
+        for (SKuint16 i = 0; i < m_size; i++)
             m_data[i].~T();
         m_size = 0;
     }
@@ -221,65 +212,69 @@ public:
         skFill<T>(m_data, v, L);
     }
 
-    SK_INLINE PointerType ptr(void)
+    PointerType ptr(void)
     {
         return &m_data[0];
     }
-    SK_INLINE ConstPointerType ptr(void) const
+
+    ConstPointerType ptr(void) const
     {
         return &m_data[0];
     }
-    SK_INLINE bool empty(void) const
+
+    bool empty(void) const
     {
         return m_size == 0;
     }
-    SK_INLINE SKuint16 size(void) const
+
+    SKuint16 size(void) const
     {
         return m_size;
     }
-    SK_INLINE SKuint16 capacity(void) const
+
+    static SKuint16 capacity(void)
     {
         return L;
     }
 
-    SK_INLINE ConstReferenceType operator[](SKuint16 i) const
+    ConstReferenceType operator[](SKuint16 i) const
     {
         SK_ASSERT(i < m_size && i < L);
         return m_data[i];
     }
 
-    SK_INLINE ConstReferenceType at(SKuint16 i) const
+    ConstReferenceType at(SKuint16 i) const
     {
         return (*this)[i];
     }
 
-    SK_INLINE ReferenceType operator[](SKuint16 i)
+    ReferenceType operator[](SKuint16 i)
     {
         SK_ASSERT(i < m_size && i < L);
         return m_data[i];
     }
 
-    SK_INLINE ReferenceType at(SKuint16 i)
+    ReferenceType at(SKuint16 i)
     {
         return (*this)[i];
     }
 
-    SK_INLINE Iterator iterator(void)
+    Iterator iterator(void)
     {
         return m_size > 0 ? Iterator((PointerType)ptr(), m_size) : Iterator();
     }
 
-    SK_INLINE ConstIterator iterator(void) const
+    ConstIterator iterator(void) const
     {
         return m_size > 0 ? ConstIterator((PointerType)ptr(), m_size) : ConstIterator();
     }
 
-    SK_INLINE ReverseIterator reverseIterator(void)
+    ReverseIterator reverseIterator(void)
     {
         return m_size > 0 ? ReverseIterator((PointerType)ptr(), m_size) : ReverseIterator();
     }
 
-    SK_INLINE ConstReverseIterator reverseIterator(void) const
+    ConstReverseIterator reverseIterator(void) const
     {
         return m_size > 0 ? ConstReverseIterator((PointerType)ptr(), m_size) : ConstReverseIterator();
     }

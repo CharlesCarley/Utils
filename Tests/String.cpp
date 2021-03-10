@@ -26,7 +26,7 @@
 #include <limits>
 #include "Macro.h"
 #include "Utils/skString.h"
-#include "Utils/skStringConverter.h"
+#include "Utils/skStringBuilder.h"
 #include "catch/catch.hpp"
 
 TEST_FUNCTION(StringTest, BasicString)
@@ -599,4 +599,56 @@ TEST_FUNCTION(StringConverter, toInt64)
         EXPECT_EQ(20, r.size());
         EXPECT_TRUE(skChar::equalsn("-9223372036854775808", r.c_str(), 20) == 0);
     }
+}
+
+TEST_FUNCTION(StringBuilder, Test1)
+{
+    skStringBuilder sb(ALLOC_N_BYTE_BLOCK, 0);
+
+    EXPECT_EQ(16, sb.capacity());
+    EXPECT_EQ(0, sb.size());
+
+    sb.write('0');
+    sb.write('x');
+    sb.write(0);
+    sb.write(123);
+    sb.write(456);
+    sb.write("AAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBAAAAAAAAAAAA");
+
+    EXPECT_EQ(88, sb.capacity());
+    EXPECT_EQ(64, sb.size());
+
+    sb.write(789);
+
+    skString str;
+    sb.toString(str);
+    EXPECT_TRUE(str.equals("0x0123456AAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBAAAAAAAAAAAA789"));
+    if (DEBUG)
+        printf("STR (%s)\n", str.c_str());
+}
+
+TEST_FUNCTION(StringBuilder, Test2)
+{
+    skStringBuilder sb(ALLOC_MUL2, 0);
+
+    EXPECT_EQ(8, sb.capacity());
+    EXPECT_EQ(0, sb.size());
+
+    sb.write('0');
+    sb.write('x');
+    sb.write(0);
+    sb.write(123);
+    sb.write(456);
+    sb.write("AAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBAAAAAAAAAAAA");
+
+    EXPECT_EQ(114, sb.capacity());
+    EXPECT_EQ(64, sb.size());
+
+    sb.write(789);
+
+    skString str;
+    sb.toString(str);
+    EXPECT_TRUE(str.equals("0x0123456AAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBAAAAAAAAAAAA789"));
+    if (DEBUG)
+        printf("STR (%s)\n", str.c_str());
 }

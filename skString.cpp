@@ -187,7 +187,7 @@ skString& skString::operator=(const skString& rhs)
     return *this;
 }
 
-void skString::swap(skString& rhs)
+void skString::swap(skString& rhs) noexcept
 {
     skSwap(m_data, rhs.m_data);
     skSwap(m_size, rhs.m_size);
