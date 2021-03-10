@@ -25,34 +25,46 @@
 */
 #include <limits>
 #include "Macro.h"
-#include "Utils/skHexPrint.h"
 #include "Utils/skString.h"
 #include "Utils/skStringConverter.h"
 #include "catch/catch.hpp"
 
-TEST_CASE("StringTest_BasicString")
+TEST_FUNCTION(StringTest, BasicString)
 {
+    // const char* assignment
     skString a = "Hello World";
+    EXPECT_EQ(11, a.size());
+    EXPECT_EQ(12, a.capacity());
+
     skString b = a;
+    EXPECT_EQ(11, b.size());
+    EXPECT_EQ(12, b.capacity());
+    EXPECT_TRUE(skChar::equals(b.c_str(), a.c_str()) == 0);
+
     skString c = b;
+    EXPECT_EQ(11, c.size());
+    EXPECT_EQ(12, c.capacity());
+    EXPECT_TRUE(skChar::equals(c.c_str(), a.c_str()) == 0);
+
     EXPECT_EQ(b, a);
     EXPECT_EQ(c, a);
 }
 
-TEST_CASE("StringTest_FindString")
+TEST_FUNCTION(StringTest, FindString)
 {
     skString a   = "Hello World";
-    SKsize   pos = a.find("World");
-    REQUIRE(a.npos != pos);
-    REQUIRE(skStringUtils::length("Hello ") == pos);
+    SKsize   pos = a.find("W");
+
+    EXPECT_NE(a.npos, pos);
+    EXPECT_TRUE(skChar::length("Hello ") == pos);
 }
 
-TEST_CASE("StringTest_SplitString")
+TEST_FUNCTION(StringTest, SplitString)
 {
-    skString a = "Hello World";
+    const skString a = "Hello World";
 
     skStringArray spl;
-    a.split(spl, " ");
+    a.split(spl, ' ');
 
     REQUIRE(2 == spl.size());
 
@@ -63,10 +75,48 @@ TEST_CASE("StringTest_SplitString")
     REQUIRE(s1eq == true);
 }
 
-TEST_CASE("StringTest FormatString1")
+TEST_FUNCTION(StringTest, SubStringEdges)
+{
+    {
+        const skString a = "Hello World";
+        const skString r = a.substr(0, SK_NPOS);
+
+        EXPECT_EQ(0, r.size());
+        EXPECT_EQ(0, r.capacity());
+        EXPECT_EQ(nullptr, r.ptr());
+    }
+    {
+        const skString a = "Hello World";
+        const skString r = a.substr(a.size(), a.size());
+
+        EXPECT_EQ(0, r.size());
+        EXPECT_EQ(0, r.capacity());
+        EXPECT_EQ(nullptr, r.ptr());
+    }
+    {
+        const skString a = "Hello World";
+        const skString r = a.substr(a.size(), a.size());
+
+        EXPECT_EQ(0, r.size());
+        EXPECT_EQ(0, r.capacity());
+        EXPECT_EQ(nullptr, r.ptr());
+    }
+
+    {
+        const skString a = "Hello World";
+        const skString r = a.substr(10, a.size());
+
+        EXPECT_EQ(1, r.size());
+        EXPECT_EQ(2, r.capacity());
+        EXPECT_EQ('d', r.at(0));
+    }
+}
+
+TEST_FUNCTION(StringTest, FormatString1)
 {
     const skString a = skString::format("%s %s", "Hello", "World");
-    REQUIRE(a.size() == 11);
+    EXPECT_EQ(11, a.size());
+    EXPECT_EQ(12, a.capacity());
 
     skStringArray spl;
     a.split(spl, " ");
@@ -80,7 +130,7 @@ TEST_CASE("StringTest FormatString1")
     REQUIRE(s1eq == true);
 }
 
-TEST_CASE("StringTest FormatString2")
+TEST_FUNCTION(StringTest, FormatString2)
 {
     skString a;
     skString::format(a, "%s %s", "Hello", "World");
@@ -108,14 +158,15 @@ int STR_Less(char a, char b)
     return a < b;
 }
 
-TEST_CASE("StringTest_SortString")
+TEST_FUNCTION(StringTest, SortString)
 {
     skString a = "0123456789abcdefghijklmnopqrstuvwxyz";
     a.sort(STR_Greater);
 
-    SKsize                i = 0;
-    const SKsize          s = a.size() - 1;
-    skString::PointerType p = a.ptr();
+    SKsize       i = 0;
+    const SKsize s = a.size() - 1;
+
+    const skString::PointerType p = a.ptr();
     while (i < s)
     {
         int sa = p[i];
@@ -142,20 +193,26 @@ TEST_CASE("StringTest_SortString")
     }
 }
 
-TEST_CASE("StringTest_AddString")
+TEST_FUNCTION(StringTest, AddString)
 {
     skString a;
-
     for (SKsize i = 0; i < 5; ++i)
+    {
         a += "Hello ";
 
+        const SKsize len = (i + 1) * 6;
+        const SKsize cap = len + 1;
+        EXPECT_EQ(len, a.size());
+        EXPECT_EQ(cap, a.capacity());
+    }
+
     skStringArray spl;
-    a.split(spl, " ");
+    a.split(spl, ' ');
 
     REQUIRE(5 == spl.size());
 }
 
-TEST_CASE("StringTest_CopyString")
+TEST_FUNCTION(StringTest, CopyString)
 {
     skString a = skString("Test String...");
 
@@ -163,7 +220,7 @@ TEST_CASE("StringTest_CopyString")
     SKsize len  = a.copy(buffer, 6, 5);
     buffer[len] = 0;
 
-    bool eq = skStringUtils::equals(buffer, "String") == 0;
+    bool eq = skChar::equals(buffer, "String") == 0;
     REQUIRE(eq);
 
     skString b;
@@ -182,29 +239,26 @@ TEST_CASE("StringTest_CopyString")
     buffer[len] = 0;
     REQUIRE(d.size() == len);
 
-    eq = skStringUtils::equals(buffer, "Test String...") == 0;
+    eq = skChar::equals(buffer, "Test String...") == 0;
     REQUIRE(eq);
 }
 
-TEST_CASE("StringTest_SubString")
+TEST_FUNCTION(StringTest, SubString)
 {
     // http://www.cplusplus.com/reference/string/string/substr/
 
     skString a = "We think in generalities, but we live in details.";
-    skString b, c, d;
 
-    SKsize loc;
-
-    b = a.substr(12, 12);  // "generalities"
+    skString b = a.substr(12, 12);  // "generalities"
 
     bool eq = b == "generalities";
     REQUIRE(eq);
 
-    loc = a.find("live");    // position of "live" in str
-    c   = a.substr(loc, 0);  // get from "live" to the end
+    const SKsize loc = a.find("live");    // position of "live" in str
+    skString     c   = a.substr(loc, 0);  // get from "live" to the end
 
-    d  = b + skString(" ") + c;
-    eq = d == "generalities live in details.";
+    const skString d = b + skString(" ") + c;
+    eq               = d == "generalities live in details.";
     REQUIRE(eq);
 
     a = "Test String...";
@@ -216,7 +270,7 @@ TEST_CASE("StringTest_SubString")
     REQUIRE(eq);
 }
 
-TEST_CASE("StringTest_EraseString")
+TEST_FUNCTION(StringTest, EraseString)
 {
     skString a = "This is an example phrase.";
     a.erase(10, 8);
@@ -239,7 +293,7 @@ TEST_CASE("StringTest_EraseString")
     ee.erase(0, 30);
 }
 
-TEST_CASE("StringTest_NullStringTests")
+TEST_FUNCTION(StringTest, NullStringTests)
 {
     skString a, b;
     a.erase(10, 8);
@@ -274,29 +328,7 @@ TEST_CASE("StringTest_NullStringTests")
     EXPECT_EQ(arr.size(), 0);
 }
 
-TEST_CASE("StringTest_EncriptDecript")
-{
-    skString a = "Caesar cipher variation.";
-    int      i;
-
-    SKbyte   lowerBits[4] = {};
-    SKuint16 upperBits[4] = {};
-
-    for (i = 0; i < 4; ++i)
-        lowerBits[i] = (SKbyte)rand() % 128;
-    for (i = 0; i < 4; ++i)
-        upperBits[i] = (SKuint16)rand() % 65536;
-
-    a.encrypt(lowerBits, 4, upperBits, 4);
-    skHexPrint::dumpHex((void*)a.c_str(), 0, a.size());
-
-    a.decrypt(lowerBits, 4, upperBits, 4);
-    skHexPrint::dumpHex((void*)a.c_str(), 0, a.size());
-
-    REQUIRE(a == "Caesar cipher variation.");
-}
-
-TEST_CASE("StringTest_BinaryStringRepr")
+TEST_FUNCTION(StringTest, BinaryStringRepr)
 {
     skString a = "Binary";
     a.toBinary();
@@ -307,7 +339,7 @@ TEST_CASE("StringTest_BinaryStringRepr")
     REQUIRE(b == "Binary");
 }
 
-TEST_CASE("StringTest_HexStringRepr")
+TEST_FUNCTION(StringTest, HexStringRepr)
 {
     skString a = "Hex string representation";
     a.toHex();
@@ -318,152 +350,150 @@ TEST_CASE("StringTest_HexStringRepr")
     REQUIRE(b == "Hex string representation");
 }
 
-using Convert = skStringConverter;
-
-TEST_CASE("StringConverter bool")
+TEST_FUNCTION(StringConverter, Bool)
 {
     bool test;
 
-    test = Convert::toBool("Hello World");
+    test = skChar::toBool("Hello World");
     EXPECT_EQ(false, test);
 
-    test = Convert::toBool("true");
+    test = skChar::toBool("true");
     EXPECT_EQ(true, test);
 
-    test = Convert::toBool("false");
+    test = skChar::toBool("false");
     EXPECT_EQ(false, test);
 
-    test = Convert::toBool("yes");
+    test = skChar::toBool("yes");
     EXPECT_EQ(true, test);
 
-    test = Convert::toBool("no");
+    test = skChar::toBool("no");
     EXPECT_EQ(false, test);
 
-    test = Convert::toBool("1");
+    test = skChar::toBool("1");
     EXPECT_EQ(true, test);
 }
 
-TEST_CASE("StringConverter int16")
+TEST_FUNCTION(StringConverter, int16)
 {
     SKint16 test;
-    test = Convert::toInt16("Hello World");
+    test = skChar::toInt16("Hello World");
     EXPECT_EQ(0, test);
 
-    test = Convert::toInt16("-32768");
+    test = skChar::toInt16("-32768");
     EXPECT_EQ(std::numeric_limits<SKint16>::min(), test);
 
-    test = Convert::toInt16("3276999");
+    test = skChar::toInt16("3276999");
     EXPECT_EQ(std::numeric_limits<SKint16>::max(), test);
 
-    test = Convert::toInt16("-987532767");
+    test = skChar::toInt16("-987532767");
     EXPECT_EQ(std::numeric_limits<SKint16>::min(), test);
 
-    test = Convert::toInt16("-2147483648087655446879898769876576");
+    test = skChar::toInt16("-2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<SKint16>::min(), test);
 }
 
-TEST_CASE("StringConverter uint16")
+TEST_FUNCTION(StringConverter, uint16)
 {
     SKuint16 test;
-    test = Convert::toUint16("Hello World");
+    test = skChar::toUint16("Hello World");
     EXPECT_EQ(0, test);
 
-    test = Convert::toUint16("-65536");
+    test = skChar::toUint16("-65536");
     EXPECT_EQ(0xFFFF, test);
 
-    test = Convert::toUint16("65536");
+    test = skChar::toUint16("65536");
     EXPECT_EQ(0xFFFF, test);
 
-    test = Convert::toUint16("-987532767");
+    test = skChar::toUint16("-987532767");
     EXPECT_EQ(0xFFFF, test);
 
-    test = Convert::toUint16("2147483648087655446879898769876576");
+    test = skChar::toUint16("2147483648087655446879898769876576");
     EXPECT_EQ(0xFFFF, test);
 
-    test = Convert::toUint16("65534");
+    test = skChar::toUint16("65534");
     EXPECT_EQ(0xFFFE, test);
 }
 
-TEST_CASE("StringConverter int32")
+TEST_FUNCTION(StringConverter, int32)
 {
     int test;
-    test = Convert::toInt32("Hello World");
+    test = skChar::toInt32("Hello World");
     EXPECT_EQ(0, test);
 
-    test = Convert::toInt32("-2147483648");
+    test = skChar::toInt32("-2147483648");
     EXPECT_EQ(std::numeric_limits<int>::min(), test);
 
-    test = Convert::toInt32("2147483647");
+    test = skChar::toInt32("2147483647");
     EXPECT_EQ(std::numeric_limits<int>::max(), test);
 
-    test = Convert::toInt32("2147483648087655446879898769876576");
+    test = skChar::toInt32("2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<int>::max(), test);
 
-    test = Convert::toInt32("-2147483648087655446879898769876576");
+    test = skChar::toInt32("-2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<int>::min(), test);
 }
 
-TEST_CASE("StringConverter uint32")
+TEST_FUNCTION(StringConverter, uint32)
 {
     SKuint32 test;
-    test = Convert::toUint32("Hello World");
+    test = skChar::toUint32("Hello World");
     EXPECT_EQ(0, test);
 
-    test = Convert::toUint32("-4294967294");
+    test = skChar::toUint32("-4294967294");
     EXPECT_EQ(0xFFFFFFFF, test);
 
-    test = Convert::toUint32("4294967294");
+    test = skChar::toUint32("4294967294");
     EXPECT_EQ(0xFFFFFFFE, test);
 
-    test = Convert::toUint32("2147483648087655446879898769876576");
+    test = skChar::toUint32("2147483648087655446879898769876576");
     EXPECT_EQ(0xFFFFFFFF, test);
 
-    test = Convert::toUint32("-2147483648087655446879898769876576");
+    test = skChar::toUint32("-2147483648087655446879898769876576");
     EXPECT_EQ(0xFFFFFFFF, test);
 }
 
-TEST_CASE("StringConverter int64")
+TEST_FUNCTION(StringConverter, int64)
 {
     SKint64 test;
-    test = Convert::toInt32("Hello World");
+    test = skChar::toInt32("Hello World");
     EXPECT_EQ(0, test);
 
-    test = Convert::toInt64("-18446744073709551616");
+    test = skChar::toInt64("-18446744073709551616");
     EXPECT_EQ(std::numeric_limits<SKint64>::min(), test);
 
-    test = Convert::toInt64("18446744073709551617");
+    test = skChar::toInt64("18446744073709551617");
     EXPECT_EQ(std::numeric_limits<SKint64>::max(), test);
 
-    test = Convert::toInt64("2147483648087655446879898769876576");
+    test = skChar::toInt64("2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<SKint64>::max(), test);
 
-    test = Convert::toInt64("-2147483648087655446879898769876576");
+    test = skChar::toInt64("-2147483648087655446879898769876576");
     EXPECT_EQ(std::numeric_limits<SKint64>::min(), test);
 }
 
-TEST_CASE("StringConverter uint64")
+TEST_FUNCTION(StringConverter, uint64)
 {
     SKuint64 test;
-    test = Convert::toUint64("Hello World");
+    test = skChar::toUint64("Hello World");
     EXPECT_EQ(0, test);
 
-    test = Convert::toUint64("-18446744073709551616");
+    test = skChar::toUint64("-18446744073709551616");
     EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
 
-    test = Convert::toUint64("18446744073709551616");
+    test = skChar::toUint64("18446744073709551616");
     EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
 
-    test = Convert::toUint64("18446744073709551614");
+    test = skChar::toUint64("18446744073709551614");
     EXPECT_EQ(0xFFFFFFFFFFFFFFFE, test);
 
-    test = Convert::toUint64("2147483648087655446879898769876576");
+    test = skChar::toUint64("2147483648087655446879898769876576");
     EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
 
-    test = Convert::toUint64("-2147483648087655446879898769876576");
+    test = skChar::toUint64("-2147483648087655446879898769876576");
     EXPECT_EQ(0xFFFFFFFFFFFFFFFF, test);
 }
 
-TEST_CASE("StringConverter toInt16")
+TEST_FUNCTION(StringConverter, toInt16)
 {
     {
         const skString iString = "123";
@@ -490,7 +520,7 @@ TEST_CASE("StringConverter toInt16")
     {
         const skString iString = "-9985287698765975976";
         SKint16        v       = iString.toInt16();
-        EXPECT_EQ(-32767-1, v);
+        EXPECT_EQ(-32767 - 1, v);
 
         skString r;
         skChar::toString(r, v);
@@ -499,7 +529,7 @@ TEST_CASE("StringConverter toInt16")
     }
 }
 
-TEST_CASE("StringConverter toInt32")
+TEST_FUNCTION(StringConverter, toInt32)
 {
     {
         const skString iString = "123";
@@ -526,7 +556,7 @@ TEST_CASE("StringConverter toInt32")
     {
         const skString iString = "-9985287698765975976";
         SKint32        v       = iString.toInt32();
-        EXPECT_EQ(-2147483647-1, v);
+        EXPECT_EQ(-2147483647 - 1, v);
 
         skString r;
         skChar::toString(r, v);
@@ -535,8 +565,7 @@ TEST_CASE("StringConverter toInt32")
     }
 }
 
-
-TEST_CASE("StringConverter toInt64")
+TEST_FUNCTION(StringConverter, toInt64)
 {
     {
         const skString iString = "123";
@@ -563,7 +592,7 @@ TEST_CASE("StringConverter toInt64")
     {
         const skString iString = "-9985287698765975988875454545476";
         SKint64        v       = iString.toInt64();
-        EXPECT_EQ(-9223372036854775807-1, v);
+        EXPECT_EQ(-9223372036854775807 - 1, v);
 
         skString r;
         skChar::toString(r, v);

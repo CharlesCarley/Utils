@@ -45,11 +45,25 @@ public:
 
     SK_IMPLEMENT_SORT(ValueType, skString, SKsize)
 
-    static const SKsize   npos;
+    static const SKsize npos;
+
+    [[deprecated("Avoid at exit deconstruction calls.")]]
     static const skString Blank;
+
+protected:
+    PointerType m_data;
+    SKsize      m_size;
+    SKsize      m_capacity;
+
+    void alloc(const char* str, SKsize len);
+
+    void alloc(char p, SKsize len);
+
+    void alloc(SKsize len, const void* p);
 
 public:
     skString();
+
     skString(const ValueType* str, SKsize len = 0);
     skString(const skString& str);
     skString(char ch, SKsize nr);
@@ -115,37 +129,52 @@ public:
 
     skString& operator=(const skString& rhs);
 
-    SKsize    find(char ch) const;
-    SKsize    find(const char* ch, SKsize offs = 0) const;
+    SKsize find(char ch) const;
+
+    SKsize find(const char* ch, SKsize offs = 0) const;
+
     skString& erase(SKsize pos, SKsize nr = 0);
+
     skString& append(char ch);
+
     skString& append(const char* rhs, SKsize rhsLen = 0);
-    skString  substr(SKsize pos, SKsize nr) const;
-    void      substr(skString& dest, SKsize pos, SKsize nr = 0) const;
-    void      swap(skString& rhs);
-    SKsize    copy(char* arr, SKsize nr, SKsize offs = 0) const;
-    void      split(skArray<skString>& dst, const char* op) const;
-    void      toBinary(void);
-    void      fromBinary(void);
-    void      toHex(void);
-    void      fromHex(void);
-    void      encrypt(const SKbyte* lb, int b1, const SKuint16* ub, int b2);
-    void      decrypt(const SKbyte* lb, int b1, const SKuint16* ub, int b2);
-    void      encrypt(const char* password);
-    void      decrypt(const char* password);
-    void      encrypt(void);
-    void      decrypt(void);
-    void      clear(void);
-    void      reserve(SKsize nr);
-    void      resize(SKsize nr);
-    void      assign(const skString& rhs);
-    bool      equals(const skString& rhs) const;
-    bool      equals(const char* rhs) const;
+
+    skString substr(SKsize pos, SKsize nr) const;
+
+    void substr(skString& dest, SKsize pos, SKsize nr = 0) const;
+
+    void swap(skString& rhs);
+
+    SKsize copy(char* arr, SKsize nr, SKsize offs = 0) const;
+
+    void split(skArray<skString>& dst, const char* op) const;
+
+    void split(skArray<skString>& dst, char op) const;
+
+    void toBinary();
+
+    void fromBinary();
+
+    void toHex();
+
+    void fromHex();
+
+    void clear();
+
+    void reserve(SKsize nr);
+
+    void resize(SKsize nr);
+
+    void assign(const skString& rhs);
+
+    bool equals(const skString& rhs) const;
+
+    bool equals(const char* rhs) const;
 
     static skString format(const char* fmt, ...);
     static void     format(skString& dst, const char* fmt, ...);
 
-    skString& asHex(void)
+    skString& asHex()
     {
         this->toHex();
         return *this;
@@ -156,27 +185,27 @@ public:
         return append(rhs.c_str(), rhs.size());
     }
 
-    ConstPointerType c_str(void) const
+    ConstPointerType c_str() const
     {
         return m_data;
     }
 
-    PointerType ptr(void) const
+    PointerType ptr() const
     {
         return m_data;
     }
 
-    SKsize size(void) const
+    SKsize size() const
     {
         return m_size;
     }
 
-    SKsize capacity(void) const
+    SKsize capacity() const
     {
         return m_capacity;
     }
 
-    bool empty(void) const
+    bool empty() const
     {
         return m_size == 0 || !m_data || m_data[0] == 0;
     }
@@ -187,38 +216,37 @@ public:
         return m_data && idx < m_size ? m_data[idx] : '\0';
     }
 
-    Iterator iterator(void)
+    Iterator iterator()
     {
         return m_data && m_size > 0 ? Iterator(m_data, m_size) : Iterator();
     }
 
-    ConstIterator iterator(void) const
+    ConstIterator iterator() const
     {
         return m_data && m_size > 0 ? ConstIterator(m_data, m_size) : ConstIterator();
     }
 
-    ReverseIterator reverseIterator(void)
+    ReverseIterator reverseIterator()
     {
         return m_data && m_size > 0 ? ReverseIterator(m_data, m_size) : ReverseIterator();
     }
 
-    ConstReverseIterator reverseIterator(void) const
+    ConstReverseIterator reverseIterator() const
     {
         return m_data && m_size > 0 ? ConstReverseIterator(m_data, m_size) : ConstReverseIterator();
     }
 
-    bool toBoolean(void) const
+    bool toBoolean() const
     {
         return skChar::toBool(m_data);
     }
 
-    [[deprecated]]
-    SKint32 toInteger(void) const
+    [[deprecated]] SKint32 toInteger() const
     {
         return skChar::toInt32(m_data);
     }
 
-    SKint16 toInt16(SKint16 def=-1) const
+    SKint16 toInt16(SKint16 def = -1) const
     {
         return skChar::toInt16(m_data, def);
     }
@@ -253,18 +281,10 @@ public:
         return skChar::toFloat(m_data, def);
     }
 
-    double toDouble(double def=0.0) const
+    double toDouble(double def = 0.0) const
     {
         return skChar::toDouble(m_data, def);
     }
-
-protected:
-    PointerType m_data;
-    SKsize      m_size, m_capacity;
-
-    void alloc(const char* str, SKsize len);
-    void alloc(char p, SKsize len);
-    void alloc(SKsize len, const void* p);
 };
 
 typedef skArray<skString> skStringArray;

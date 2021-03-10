@@ -46,6 +46,8 @@ void skChar::copyn(char* dest, const char* src, SKsize max)
     if (dest && src && *src)
     {
         SKsize len = length(src);
+
+        // restrict it to max
         if (len > max)
             len = max;
 
