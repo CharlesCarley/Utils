@@ -112,6 +112,8 @@ public:
 
     void logMessage(SKint32 detail, const char* msg, SKint32 len = 0) const;
 
+    static void logStandard(SKint32 detail, const char* msg);
+
 private:
     void writeDetail(SKint32 detail) const;
 

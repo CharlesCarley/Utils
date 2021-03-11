@@ -152,6 +152,20 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
     }
 }
 
+void skLogger::logStandard(SKint32 detail, const char* msg)
+{
+    if (!msg)
+        return;
+
+    if (detail == LD_WARN)
+        skDebugger::writeColor(CS_YELLOW);
+    if (detail <= LD_ERROR)
+        skDebugger::writeColor(CS_RED);
+
+    skDebugger::log(msg);
+    skDebugger::writeColor(CS_WHITE);
+}
+
 void skLogd(SKint32 detail, const char* msg)
 {
     const SKsize len = skChar::length(msg);
@@ -160,6 +174,8 @@ void skLogd(SKint32 detail, const char* msg)
         const skLogger* log = skLogger::getSingletonPtr();
         if (log)
             log->logMessage(detail, msg, (SKint32)len);
+        else
+            skLogger::logStandard(detail, msg);
     }
 }
 
@@ -171,36 +187,42 @@ void skLogi(const char* msg)
 void skLogf(SKint32 detail, const char* format, ...)
 {
     const skLogger* log = skLogger::getSingletonPtr();
-    if (log)
+
+    bool doFormat = log != nullptr && log->getDetail() >= detail;
+    if (!doFormat && !log)
+        doFormat = true;
+
+    if (format && doFormat)
     {
-        if (format && log->getDetail() >= detail)
+        va_list l1;
+        char*   buffer = nullptr;
+        va_start(l1, format);
+        int size = std::vsnprintf(buffer, 0, format, l1);
+        va_end(l1);
+
+        if (size > 0)
         {
-            va_list l1;
-            char*   buffer = nullptr;
-            va_start(l1, format);
-            int size = std::vsnprintf(buffer, 0, format, l1);
-            va_end(l1);
+            size   = skMin(size, 4095);
+            buffer = (char*)::malloc((SKsize)size + 1);
 
-            if (size > 0)
+            if (buffer)
             {
-                size   = skMin(size, 4095);
-                buffer = (char*)::malloc((SKsize)size + 1);
+                va_start(l1, format);
+                size = std::vsnprintf(buffer, (SKsize)size + 1, format, l1);
+                va_end(l1);
 
-                if (buffer)
-                {
-                    va_start(l1, format);
-                    size = std::vsnprintf(buffer, (SKsize)size + 1, format, l1);
-                    va_end(l1);
-
+                if (log)
                     log->logMessage(detail, buffer, size);
-                    ::free(buffer);
-                }
                 else
-                    printf("Failed to allocate buffer\n");
+                    skLogger::logStandard(detail, buffer);
+
+                ::free(buffer);
             }
             else
-                printf("Error: Log string length is < 0\n");
+                printf("Failed to allocate buffer\n");
         }
+        else
+            printf("Error: Log string length is < 0\n");
     }
 }
 
