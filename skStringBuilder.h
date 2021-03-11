@@ -44,7 +44,7 @@ private:
     SKuint8  m_strategy;
     skString m_dest;
 
-    void   reserve(SKsize len);
+    void reserve(SKsize len);
 
     SKsize getNextCapacity(SKsize len) const;
 
@@ -70,7 +70,6 @@ public:
     {
         setStrategy(ALLOC_N_BYTE_BLOCK, nBytes);
     }
-
 
     skStringBuilder(SKuint8 strategy, SKsize nBytes) :
         m_buffer(nullptr),
@@ -117,7 +116,6 @@ public:
     }
 
     void clear();
-
 
     void write(const skStringBuilder& oth);
 
