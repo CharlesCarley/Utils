@@ -31,7 +31,7 @@
 #include "Utils/skChar.h"
 #include "Utils/skMap.h"
 
-using skChar = skChar;
+using skStringConverter = skChar;
 
 class skString
 {
@@ -47,8 +47,7 @@ public:
 
     static const SKsize npos;
 
-    [[deprecated("Avoid at exit deconstruction calls.")]]
-    static const skString Blank;
+    [[deprecated("Avoid at exit deconstruction calls.")]] static const skString Blank;
 
 protected:
     PointerType m_data;

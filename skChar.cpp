@@ -294,3 +294,66 @@ void skChar::toString(skString& dest, SKuint64 v)
     if (size < (int)dest.capacity() && size > 0)
         dest.resize(size);
 }
+
+skString skChar::toString(float v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}
+
+skString skChar::toString(double v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}
+
+skString skChar::toString(bool v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}
+
+skString skChar::toString(SKint16 v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}
+
+skString skChar::toString(SKint32 v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}
+
+skString skChar::toString(SKint64 v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}
+
+skString skChar::toString(SKuint16 v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}
+
+skString skChar::toString(SKuint32 v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}
+
+skString skChar::toString(SKuint64 v)
+{
+    skString copyOnReturn;
+    toString(copyOnReturn, v);
+    return copyOnReturn;
+}

@@ -33,7 +33,6 @@ class skString;
 class skChar
 {
 public:
-    
     static SKsize length(const char* in);
 
     static void copy(char* dest, const char* src);
@@ -44,8 +43,7 @@ public:
 
     static SKsize equalsn(const char* a, const char* b, SKsize max);
 
-    [[deprecated]]
-    static SKint32 toInt(const char* in, SKint32 def = -1, int base = 10)
+    [[deprecated]] static SKint32 toInt(const char* in, SKint32 def = -1, int base = 10)
     {
         return toInt32(in, def, base);
     }
@@ -108,6 +106,24 @@ public:
     static void toString(skString& dest, SKuint32 v);
 
     static void toString(skString& dest, SKuint64 v);
+
+    static skString toString(float v);
+
+    static skString toString(double v);
+
+    static skString toString(bool v);
+
+    static skString toString(SKint16 v);
+
+    static skString toString(SKint32 v);
+
+    static skString toString(SKint64 v);
+
+    static skString toString(SKuint16 v);
+
+    static skString toString(SKuint32 v);
+
+    static skString toString(SKuint64 v);
 };
 
 #endif  //__skChar_h__
