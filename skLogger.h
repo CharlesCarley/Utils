@@ -43,12 +43,13 @@ enum skLogDetail
 
 enum LogFlag
 {
-    LF_STDOUT    = 1 << 0,
-    LF_VS_DEBUG  = 1 << 1,
-    LF_FILE      = 1 << 2,
-    LF_TIMESTAMP = 1 << 3,
-    LF_DETAIL    = 1 << 4,
-    LF_ALL       = LF_STDOUT | LF_VS_DEBUG | LF_TIMESTAMP | LF_DETAIL,
+    LF_STDOUT        = 1 << 0,
+    LF_VS_DEBUG      = 1 << 1,
+    LF_FILE          = 1 << 2,
+    LF_TIMESTAMP     = 1 << 3,
+    LF_DETAIL        = 1 << 4,
+    LF_DISABLE_COLOR = 1 << 5,
+    LF_ALL           = LF_STDOUT | LF_VS_DEBUG | LF_TIMESTAMP | LF_DETAIL,
 };
 
 class skLogListener
@@ -74,6 +75,8 @@ private:
 public:
     skLogger();
 
+    skLogger(const int flags);
+
     ~skLogger() override;
 
     void setDetail(const int val)
@@ -86,10 +89,7 @@ public:
         return m_detail;
     }
 
-    void setFlags(const int val)
-    {
-        m_flags = val;
-    }
+    void setFlags(const int val);
 
     int getFlags() const
     {

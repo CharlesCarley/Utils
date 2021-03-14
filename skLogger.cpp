@@ -23,11 +23,11 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "Utils/skLogger.h"
 #include <cstdarg>
 #include <cstdio>
 #include "Utils/skDebugger.h"
 #include "Utils/skFileStream.h"
+#include "Utils/skLogger.h"
 #include "Utils/skPlatformHeaders.h"
 #include "Utils/skString.h"
 #include "Utils/skTimer.h"
@@ -40,9 +40,25 @@ skLogger::skLogger() :
 {
 }
 
+skLogger::skLogger(const int flags) :
+    m_stream(nullptr),
+    m_flags(0),
+    m_detail(LD_VERBOSE),
+    m_listener(nullptr)
+{
+    setFlags(flags);
+}
+
 skLogger::~skLogger()
 {
     close();
+}
+
+void skLogger::setFlags(const int val)
+{
+    m_flags = val;
+    if (m_flags & LF_DISABLE_COLOR)
+        skDebugger::setPrintFlag(skDebugger::DISABLE_COLOR);
 }
 
 void skLogger::open(const char* logName)
