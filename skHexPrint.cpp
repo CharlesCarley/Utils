@@ -56,7 +56,7 @@ namespace skHexPrint
 
         cmp.i = mark;
 
-        if (!cp || offs == SK_NPOS32 || max == (SKuint64)-1)
+        if (!cp || offs == SK_NPOS32 || max == (SK_NPOS - 1))
             return;
 
         for (j = 0; j < 16; ++j)
@@ -127,8 +127,6 @@ namespace skHexPrint
         writeColor(CS_WHITE);
     }
 
-
-    
     void writeHex(const char* cp,
                   SKsize      offs,
                   SKsize      max,
@@ -137,7 +135,7 @@ namespace skHexPrint
         SKuint8 c1;
         SKsize  j, n = 0;
 
-        if (!cp || offs == SK_NPOS32 || max == (SKuint64)-1)
+        if (!cp || offs == SK_NPOS32 || max == (SK_NPOS - 1))
             return;
 
         for (j = 0; j < 16; ++j)

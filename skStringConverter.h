@@ -26,11 +26,10 @@
 #ifndef _skStringConverter_h_
 #define _skStringConverter_h_
 
-#include "Utils/skString.h"
 #include "Utils/skChar.h"
+#include "Utils/skString.h"
 
-#pragma message ("Replace with skStringConverter with skChar")
+//#pragma message ("Replace with skStringConverter with skChar")
 using skStringConverter = skChar;
-
 
 #endif  //_skStringConverter_h_

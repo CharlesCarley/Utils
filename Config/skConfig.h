@@ -87,28 +87,33 @@
 #define SK_PLATFORM_APPLE 3
 #define SK_PLATFORM_CYGWIN 4
 #define SK_PLATFORM_ANDROID 5
+#define SK_PLATFORM_EMSCRIPTEN 6
 
 #if defined Utils_BLD_ANDROID
+
 #define SID_ANDROID
-#define SK_PLATFORM SK_PLATFORM_ANDROID
-#define SK_SUB_PLATFORM SK_PLATFORM_LINUX
+    #define SK_PLATFORM SK_PLATFORM_ANDROID
+    #define SK_SUB_PLATFORM SK_PLATFORM_LINUX
 #else
-#if defined(_WIN32) || defined(__CYGWIN__)
-#define SK_PLATFORM SK_PLATFORM_WIN32
-#ifdef __CYGWIN__
-#define SK_SUB_PLATFORM SK_PLATFORM_CYGWIN
-#else
-#define SK_SUB_PLATFORM SK_PLATFORM_WIN32
-#endif
-#elif defined(__APPLE__)
-#define SK_PLATFORM SK_PLATFORM_APPLE
-#define SK_SUB_PLATFORM SK_PLATFORM_APPLE
-#elif defined(__linux__) || defined(__unix__)
-#define SK_PLATFORM SK_PLATFORM_LINUX
-#define SK_SUB_PLATFORM SK_PLATFORM_LINUX
-#else
-#error Unknown platform
-#endif
+    #if defined(__EMSCRIPTEN__)
+        #define SK_PLATFORM SK_PLATFORM_EMSCRIPTEN
+        #define SK_SUB_PLATFORM SK_PLATFORM_LINUX
+    #elif defined(_WIN32) || defined(__CYGWIN__)
+        #define SK_PLATFORM SK_PLATFORM_WIN32
+        #if defined(__CYGWIN__)
+            #define SK_SUB_PLATFORM SK_PLATFORM_CYGWIN
+        #else
+            #define SK_SUB_PLATFORM SK_PLATFORM_WIN32
+        #endif
+    #elif defined(__APPLE__)
+        #define SK_PLATFORM SK_PLATFORM_APPLE
+        #define SK_SUB_PLATFORM SK_PLATFORM_APPLE
+    #elif defined(__linux__) || defined(__unix__)
+        #define SK_PLATFORM SK_PLATFORM_LINUX
+        #define SK_SUB_PLATFORM SK_PLATFORM_LINUX
+    #else
+        #error Unknown platform
+    #endif
 #endif
 
 #define SK_COMPILER_MSVC 0
