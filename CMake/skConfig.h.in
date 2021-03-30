@@ -43,7 +43,6 @@
 #define SK_ITERATOR_DEBUG 1
 #endif
 
-
 #if defined(Utils_USE_DEBUG_ASSERT) && (defined(DEBUG) || defined(_DEBUG))
 #include "Utils/skAssert.h"
 #define SK_DEBUG 1
@@ -58,7 +57,7 @@
         {                    \
             int x;           \
         };                   \
-        XYZ *x;              \
+        XYZ* x;              \
         x->x;                \
     }
 #else
@@ -69,18 +68,16 @@
         {                    \
             int x;           \
         };                   \
-        XYZ *x;              \
+        XYZ* x;              \
         x->x;                \
     }
 #endif
-
 
 #ifdef Utils_USE_COMPILER_CHECKS
 #define SK_ASSERTCOMP(x, n) typedef bool x[(n) ? 1 : -1];
 #else
 #define SK_ASSERTCOMP(x, n)
 #endif
-
 
 #define SK_PLATFORM_WIN32 0
 #define SK_PLATFORM_LINUX 2
@@ -89,31 +86,27 @@
 #define SK_PLATFORM_ANDROID 5
 #define SK_PLATFORM_EMSCRIPTEN 6
 
-#if defined Utils_BLD_ANDROID
-
-#define SID_ANDROID
-    #define SK_PLATFORM SK_PLATFORM_ANDROID
-    #define SK_SUB_PLATFORM SK_PLATFORM_LINUX
+#if defined(Utils_BLD_ANDROID)
+#define SK_PLATFORM SK_PLATFORM_ANDROID
+#define SK_SUB_PLATFORM SK_PLATFORM_LINUX
+#elif defined(__EMSCRIPTEN__)
+#define SK_PLATFORM SK_PLATFORM_EMSCRIPTEN
+#define SK_SUB_PLATFORM SK_PLATFORM_LINUX
+#elif defined(_WIN32) || defined(__CYGWIN__)
+#define SK_PLATFORM SK_PLATFORM_WIN32
+#if defined(__CYGWIN__)
+#define SK_SUB_PLATFORM SK_PLATFORM_CYGWIN
 #else
-    #if defined(__EMSCRIPTEN__)
-        #define SK_PLATFORM SK_PLATFORM_EMSCRIPTEN
-        #define SK_SUB_PLATFORM SK_PLATFORM_LINUX
-    #elif defined(_WIN32) || defined(__CYGWIN__)
-        #define SK_PLATFORM SK_PLATFORM_WIN32
-        #if defined(__CYGWIN__)
-            #define SK_SUB_PLATFORM SK_PLATFORM_CYGWIN
-        #else
-            #define SK_SUB_PLATFORM SK_PLATFORM_WIN32
-        #endif
-    #elif defined(__APPLE__)
-        #define SK_PLATFORM SK_PLATFORM_APPLE
-        #define SK_SUB_PLATFORM SK_PLATFORM_APPLE
-    #elif defined(__linux__) || defined(__unix__)
-        #define SK_PLATFORM SK_PLATFORM_LINUX
-        #define SK_SUB_PLATFORM SK_PLATFORM_LINUX
-    #else
-        #error Unknown platform
-    #endif
+#define SK_SUB_PLATFORM SK_PLATFORM_WIN32
+#endif
+#elif defined(__APPLE__)
+#define SK_PLATFORM SK_PLATFORM_APPLE
+#define SK_SUB_PLATFORM SK_PLATFORM_APPLE
+#elif defined(__linux__) || defined(__unix__)
+#define SK_PLATFORM SK_PLATFORM_LINUX
+#define SK_SUB_PLATFORM SK_PLATFORM_LINUX
+#else
+#error Unknown platform
 #endif
 
 #define SK_COMPILER_MSVC 0
@@ -158,7 +151,6 @@
 #define SK_ARCH SK_ARCH_32
 #endif
 
-
 #if SK_PLATFORM == SK_PLATFORM_WIN32
 #if defined(__MINGW32__) || \
     defined(__CYGWIN__) ||  \
@@ -170,7 +162,6 @@
 #else
 #define SK_INLINE inline
 #endif
-
 
 // Integer types
 typedef long           SKlong;
@@ -217,9 +208,7 @@ const SKuint32 SK_NPOS32  = SK_MKNPOS(SKuint32);
 const SKuint32 SK_MAX32   = SK_MKMX(SKuint32);
 const SKuint32 SK_NPOS32H = SK_MKMXH(SKuint32);
 
-
 #define SKInitalCap 8
-
 
 #if SK_ITERATOR_DEBUG == 1
 #define SK_ITER_DEBUG(x) SK_ASSERT(x)
