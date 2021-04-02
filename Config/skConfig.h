@@ -111,8 +111,11 @@
 
 #define SK_COMPILER_MSVC 0
 #define SK_COMPILER_GNU 1
+#define SK_COMPILER_EMSCRIPTEN 2
 
-#if defined(_MSC_VER)
+#if defined(__EMSCRIPTEN__)
+#define SK_COMPILER SK_COMPILER_EMSCRIPTEN
+#elif defined(_MSC_VER)
 #define SK_COMPILER SK_COMPILER_MSVC
 #elif defined(__GNUC__)
 #define SK_COMPILER SK_COMPILER_GNU
