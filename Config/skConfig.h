@@ -178,12 +178,12 @@ typedef unsigned char  SKuint8;
 typedef unsigned char  SKubyte;
 typedef char           SKbyte;
 
-#if SK_COMPILER == SK_COMPILER_GNU
-typedef long long          SKint64;
-typedef unsigned long long SKuint64;
-#else
+#if SK_COMPILER == SK_COMPILER_MSVC
 typedef __int64          SKint64;
 typedef unsigned __int64 SKuint64;
+#else
+typedef long long          SKint64;
+typedef unsigned long long SKuint64;
 #endif
 
 #if SK_ARCH == SK_ARCH_64
