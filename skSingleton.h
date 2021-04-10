@@ -32,13 +32,13 @@ template <typename T>
 class skSingleton
 {
 protected:
-    static T* m_singleton;
+    static skSingleton* m_singleton;
 
 public:
     skSingleton()
     {
         SK_ASSERT(!m_singleton);
-        m_singleton = static_cast<T*>(this);
+        m_singleton = this;
     }
 
     virtual ~skSingleton()
@@ -46,34 +46,23 @@ public:
         SK_ASSERT(m_singleton);
         m_singleton = nullptr;
     }
-
-    SK_INLINE T& getSingleton(void)
-    {
-        SK_ASSERT(m_singleton);
-        return *m_singleton;
-    }
-
-    SK_INLINE T* getSingletonPtr(void)
-    {
-        return m_singleton;
-    }
 };
 
 #define SK_DECLARE_SINGLETON(cls)   \
     static cls& getSingleton(void); \
     static cls* getSingletonPtr(void);
 
-#define SK_IMPLEMENT_SINGLETON(cls)         \
-    template <>                             \
-    cls* skSingleton<cls>::m_singleton = 0; \
-    cls& cls::getSingleton(void)            \
-    {                                       \
-        SK_ASSERT(m_singleton);             \
-        return *m_singleton;                \
-    }                                       \
-    cls* cls::getSingletonPtr(void)         \
-    {                                       \
-        return m_singleton;                 \
+#define SK_IMPLEMENT_SINGLETON(cls)                 \
+    template <>                                     \
+    skSingleton<cls>* skSingleton<cls>::m_singleton = 0; \
+    cls&         cls::getSingleton(void)            \
+    {                                               \
+        SK_ASSERT(m_singleton);                     \
+        return *dynamic_cast<cls*>(m_singleton);    \
+    }                                               \
+    cls* cls::getSingletonPtr(void)                 \
+    {                                               \
+        return dynamic_cast<cls*>(m_singleton);     \
     }
 
 #endif  //_skSingleton_h_
