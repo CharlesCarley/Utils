@@ -74,7 +74,7 @@ SK_INLINE T skClamp(const T& v, const T& a, const T& b)
 template <typename T>
 void skFill(T* dst, T* src, const SKsize nr)
 {
-    if (nr > 0 && nr != -1)
+    if (nr > 0 && nr != SK_NPOS)
     {
         SKsize i = 0;
         do

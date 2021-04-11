@@ -242,7 +242,8 @@ const SKuint32 SK_NPOS32H = SK_MKMXH(SKuint32);
         if (!(X))          \
             return VALUE;  \
     }
-
+    
+#define SK_VOID
 #define SK_SBUF_SIZE 1024
 
 #endif  //_skConfig_h_
