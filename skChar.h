@@ -77,6 +77,8 @@ public:
 
     static SKuint64 toUint64(const skString& in, SKuint64 def = SK_NPOS, int base = 10);
 
+    static bool isNullOrEmpty(const char* in);
+
     static bool toBool(const char* in);
 
     static float toFloat(const char* in, const float& def = 0.f);

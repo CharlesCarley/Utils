@@ -172,6 +172,12 @@ SKuint64 skChar::toUint64(const skString& in, SKuint64 def, int base)
     return toUint64(in.c_str(), def, base);
 }
 
+bool skChar::isNullOrEmpty(const char* in)
+{
+    return !in || !*in;
+}
+
+
 bool skChar::toBool(const char* in)
 {
     if (in)

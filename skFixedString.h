@@ -119,7 +119,7 @@ public:
 
     void append(const char* str)
     {
-        const SKuint16 len = skClamp<SKuint16>(skChar::length(str), 0, SK_MAX16);
+        const SKuint16 len = skClamp<SKuint16>((SKuint16)skChar::length(str), 0, SK_MAX16);
         SKuint16       a   = 0;
         while (a < len)
             push_back(str[a++]);
