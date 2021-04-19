@@ -179,7 +179,7 @@ public:
     SK_INLINE ConstPointerType end(void) const
     {
         if (this->m_size > 0)
-            return &this->m_data[this->m_size-1];
+            return &this->m_data[this->m_size];
         return nullptr;
     } 
 
