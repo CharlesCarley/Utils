@@ -169,6 +169,21 @@ public:
         return this->m_data[this->m_size - 1];
     }
 
+    SK_INLINE ConstPointerType begin(void) const
+    {
+        if (this->m_size > 0)
+            return &this->m_data[0];
+        return nullptr;
+    } 
+
+    SK_INLINE ConstPointerType end(void) const
+    {
+        if (this->m_size > 0)
+            return &this->m_data[this->m_size-1];
+        return nullptr;
+    } 
+
+
     SK_INLINE Iterator iterator(void)
     {
         return this->m_data && this->m_size > 0 ? Iterator(this->m_data, this->m_size) : Iterator();
