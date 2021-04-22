@@ -263,18 +263,30 @@ void skString::split(skArray<skString>& dst, const char* op) const
 
 skString skString::format(const char* fmt, ...)
 {
-    skString dest;
-    char     buf[1025];
-    va_list  lst;
-    va_start(lst, fmt);
-    int size = skp_printf(buf, 1024, fmt, lst);
-    va_end(lst);
+    skString dst;
+    if (fmt)
+    {
+        va_list lst;
 
-    if (size < 0)
-        size = 1024;
+        int size = (int)dst.capacity();
+        if (size <= 0)
+        {
+            va_start(lst, fmt);
+            size = std::vsnprintf(nullptr, 0, fmt, lst);
+            va_end(lst);
 
-    buf[size] = 0;
-    return skString(buf, size);
+            dst.reserve((SKsize)size + 1);
+            dst.resize((SKsize)size);
+        }
+
+        if (size > 0)
+        {
+            va_start(lst, fmt);
+            std::vsnprintf(dst.ptr(), dst.capacity(), fmt, lst);
+            va_end(lst);
+        }
+    }
+    return dst;
 }
 
 void skString::format(skString& dst, const char* fmt, ...)
