@@ -116,7 +116,7 @@ TEST_FUNCTION(StringTest, FormatString1)
 {
     const skString a = skString::format("%s %s", "Hello", "World");
     EXPECT_EQ(11, a.size());
-    EXPECT_EQ(12, a.capacity());
+    EXPECT_EQ(13, a.capacity());
 
     skStringArray spl;
     a.split(spl, " ");
