@@ -85,12 +85,11 @@ void skString::reserve(SKsize nr)
     if (m_capacity < nr)
     {
         ValueType* ptr = new ValueType[nr + 2];
+        //skMemset(ptr, 0, nr + 2);
 
-        skMemset(ptr, 0, nr + 2);
         if (m_data)
         {
             skMemcpy(ptr, m_data, m_size);
-
             delete[] m_data;
         }
 
@@ -268,24 +267,20 @@ skString skString::format(const char* fmt, ...)
     {
         va_list lst;
 
-        int size = (int)dst.capacity();
-        if (size <= 0)
-        {
-            va_start(lst, fmt);
-            size = std::vsnprintf(nullptr, 0, fmt, lst);
-            va_end(lst);
-
-            dst.reserve((SKsize)size + 1);
-            dst.resize((SKsize)size);
-        }
+        va_start(lst, fmt);
+        const int size = std::vsnprintf(nullptr, 0, fmt, lst);
+        va_end(lst);
 
         if (size > 0)
         {
+            dst.resize((SKsize)size);
+
             va_start(lst, fmt);
-            std::vsnprintf(dst.ptr(), dst.capacity(), fmt, lst);
+            std::vsnprintf(dst.ptr(), (size_t)size + 1, fmt, lst);
             va_end(lst);
         }
     }
+
     return dst;
 }
 
@@ -295,21 +290,16 @@ void skString::format(skString& dst, const char* fmt, ...)
     {
         va_list lst;
 
-        int size = (int)dst.capacity();
-        if (size <= 0)
-        {
-            va_start(lst, fmt);
-            size = std::vsnprintf(nullptr, 0, fmt, lst);
-            va_end(lst);
-
-            dst.reserve((SKsize)size + 1);
-            dst.resize((SKsize)size);
-        }
+        va_start(lst, fmt);
+        const int size = std::vsnprintf(nullptr, 0, fmt, lst);
+        va_end(lst);
 
         if (size > 0)
         {
+            dst.resize((SKsize)size);
+
             va_start(lst, fmt);
-            std::vsnprintf(dst.ptr(), dst.capacity(), fmt, lst);
+            std::vsnprintf(dst.ptr(), (size_t)size + 1, fmt, lst);
             va_end(lst);
         }
     }
