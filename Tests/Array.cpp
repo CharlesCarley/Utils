@@ -37,9 +37,9 @@ typedef skArray<int, TinyAllocator>         IntArraySmall;
 TEST_CASE("Default Constructor")
 {
     IntArray ia;
-    REQUIRE(ia.size() == 0);
+    REQUIRE(ia.empty());
     REQUIRE(ia.capacity() == 0);
-    REQUIRE(ia.ptr() == 0);
+    REQUIRE(ia.ptr() == nullptr);
 }
 
 TEST_CASE("Expanding Capacity")
@@ -50,7 +50,7 @@ TEST_CASE("Expanding Capacity")
 
     REQUIRE(ia.size() == MaxSize);
     //REQUIRE(ia.capacity() == 128);
-    REQUIRE(ia.ptr() != 0);
+    REQUIRE(ia.ptr() != nullptr);
 }
 
 TEST_CASE("Controlled Capacity")
@@ -62,7 +62,7 @@ TEST_CASE("Controlled Capacity")
 
     REQUIRE(ia.size() == MaxSize);
     // REQUIRE(ia.capacity() == MaxSize);
-    REQUIRE(ia.ptr() != 0);
+    REQUIRE(ia.ptr() != nullptr);
 }
 
 TEST_CASE("Capacity Untouched")
@@ -73,9 +73,9 @@ TEST_CASE("Capacity Untouched")
         ia.push_back(i);
 
     ia.resize(0);
-    REQUIRE(ia.size() == 0);
+    REQUIRE(ia.empty());
     //REQUIRE(ia.capacity() == MaxSize);
-    REQUIRE(ia.ptr() != 0);
+    REQUIRE(ia.ptr() != nullptr);
 }
 
 TEST_CASE("Capacity And Data Reset")
@@ -87,9 +87,9 @@ TEST_CASE("Capacity And Data Reset")
 
     ia.clear();
 
-    REQUIRE(ia.size() == 0);
+    REQUIRE(ia.empty());
     REQUIRE(ia.capacity() == 0);
-    REQUIRE(ia.ptr() == 0);
+    REQUIRE(ia.ptr() == nullptr);
 }
 
 TEST_CASE("Array Copy Constructor")
@@ -101,14 +101,13 @@ TEST_CASE("Array Copy Constructor")
     for (i = 0; i < MaxSize; ++i)
         ia.push_back(i);
 
-    IntArray                   ib(ia);
-    IntArray::ConstPointerType p1, p2;
+    IntArray ib(ia);
 
-    p1 = ia.ptr();
-    p2 = ib.ptr();
+    IntArray::ConstPointerType p1 = ia.ptr();
+    IntArray::ConstPointerType p2 = ib.ptr();
 
     EXPECT_EQ(ia.size(), ib.size());
-    //EXPECT_EQ(ia.capacity(), ib.capacity());
+    EXPECT_EQ(ia.capacity() + 1, ib.capacity());
 
     for (i = 0; i < MaxSize; ++i)
     {
@@ -118,20 +117,19 @@ TEST_CASE("Array Copy Constructor")
 
 TEST_CASE("Array Assignment Operator")
 {
-    IntArray ia, ib;
+    IntArray ia;
     ia.reserve(MaxSize);
 
     int i;
     for (i = 0; i < MaxSize; ++i)
         ia.push_back(i);
 
-    ib = ia;
-    IntArray::ConstPointerType p1, p2;
-    p1 = ia.ptr();
-    p2 = ib.ptr();
+    IntArray                   ib = ia;
+    IntArray::ConstPointerType p1 = ia.ptr();
+    IntArray::ConstPointerType p2 = ib.ptr();
 
     EXPECT_EQ(ia.size(), ib.size());
-    //EXPECT_EQ(ia.capacity(), ib.capacity());
+    EXPECT_EQ(ia.capacity() + 1, ib.capacity());
 
     for (i = 0; i < MaxSize; ++i)
     {
@@ -139,7 +137,7 @@ TEST_CASE("Array Assignment Operator")
     }
 }
 
-TEST_CASE("Small Array Maxed ")
+TEST_CASE("Small Array Maxed")
 {
     IntArraySmall ia;
     ia.reserve(MaxSize);

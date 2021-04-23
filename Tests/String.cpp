@@ -134,7 +134,8 @@ TEST_FUNCTION(StringTest, FormatString2)
 {
     skString a;
     skString::format(a, "%s %s", "Hello", "World");
-    REQUIRE(a.size() == 11);
+    EXPECT_EQ(11, a.size());
+    EXPECT_EQ(12, a.capacity());
 
     skStringArray spl;
     a.split(spl, " ");
@@ -147,6 +148,29 @@ TEST_FUNCTION(StringTest, FormatString2)
     REQUIRE(s0eq == true);
     REQUIRE(s1eq == true);
 }
+
+TEST_FUNCTION(StringTest, FormatString3)
+{
+    skString a;
+    a.reserve(100);
+    skString::format(a, "%s %s", "Hello", "World");
+
+    EXPECT_EQ(11, a.size());
+    EXPECT_EQ(101, a.capacity());
+
+    skStringArray spl;
+    a.split(spl, " ");
+
+    REQUIRE(2 == spl.size());
+
+    bool s0eq = spl[0] == skString("Hello");
+    bool s1eq = spl[1] == skString("World");
+
+    REQUIRE(s0eq == true);
+    REQUIRE(s1eq == true);
+}
+
+
 
 int STR_Greater(char a, char b)
 {
