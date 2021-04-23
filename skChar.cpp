@@ -23,6 +23,9 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 1
+#endif
 #include "Utils/skChar.h"
 #include <cstdio>
 #include <cstdlib>
