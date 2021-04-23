@@ -33,11 +33,11 @@ endif()
 # Configure a config time generated *.h
 # that defines the absolute path to the test directory.
 # This will allow the files to be predictably loaded.
-set(TestDirectory ${Utils_SOURCE_DIR}/Tests)
-configure_file(${Utils_SOURCE_DIR}/CMake/TestConfig.h.in  
-               ${Utils_BINARY_DIR}/TestConfig.h)
+set(TestDirectory ${CMAKE_CURRENT_SOURCE_DIR})
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../CMake/TestConfig.h.in  
+               ${CMAKE_CURRENT_BINARY_DIR}/TestConfig.h)
 
-include_directories(. ${Utils_BINARY_DIR} ${Utils_INCLUDE})
+include_directories(. ${CMAKE_CURRENT_BINARY_DIR} ${Utils_INCLUDE})
 
 add_executable(${TargetName} catch/catch.hpp ${SRC} ${HDR} ${TST})
 target_link_libraries(${TargetName} ${Utils_LIBRARY})
