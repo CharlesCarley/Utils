@@ -169,6 +169,21 @@ public:
         return this->m_data[this->m_size - 1];
     }
 
+    SK_INLINE PointerType begin(void)
+    {
+        if (this->m_size > 0)
+            return &this->m_data[0];
+        return nullptr;
+    } 
+
+    SK_INLINE PointerType end(void)
+    {
+        if (this->m_size > 0)
+            return &this->m_data[this->m_size];
+        return nullptr;
+    } 
+
+
     SK_INLINE ConstPointerType begin(void) const
     {
         if (this->m_size > 0)
