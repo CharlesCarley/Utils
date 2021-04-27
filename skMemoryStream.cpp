@@ -276,6 +276,8 @@ SKsize skMemoryStream::seekString() const
             ++m_pos;
         bs = m_pos - os;
     }
+    if (m_pos > m_size)
+        return SK_NPOS;
     return bs;
 }
 
