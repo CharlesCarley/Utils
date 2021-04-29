@@ -108,6 +108,7 @@ public:
     void readString(SKbyte* dest, SKuint32 destLen) const;
 
 
+    /// <summary>
     /// This is for use with null terminated string arrays.
     /// Seeks the current position to the next location
     /// after the null terminator, or to the end of the stream,
