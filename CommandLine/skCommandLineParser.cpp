@@ -24,6 +24,8 @@
 -------------------------------------------------------------------------------
 */
 #include "skCommandLineParser.h"
+#include <direct.h>
+
 #include "Utils/skDebugger.h"
 #include "Utils/skLogger.h"
 
@@ -69,7 +71,6 @@ int Parser::parse(int           argc,
                   const Switch* switches,
                   SKuint32      count)
 {
-
     if (!m_program.empty())  // using as a check for multiple calls
         return 0;
 
@@ -222,7 +223,25 @@ skString Parser::getProgramDirectory() const
     return returnValue;
 }
 
-bool Parser::isPresent(const SKuint32& enumId)
+#ifdef _WIN32
+#define GET_CWD(x, y) _getcwd(x, y)
+#else
+#define GET_CWD(x, y) getcwd(x, y)
+
+#endif
+
+skString Parser::getCurrentWorkingDirectory()
+{
+    skString returnValue;
+    returnValue.reserve(270);
+    char* dp = returnValue.ptr(); 
+    char* sp = GET_CWD(dp, (int)returnValue.capacity() - 1);
+    if (sp && dp)
+        return skString(sp, skChar::length(sp));
+    return skString();
+}
+
+bool Parser::isPresent(const SKuint32& enumId) const
 {
     if (enumId < m_options.size())
         return m_options[enumId]->isPresent();

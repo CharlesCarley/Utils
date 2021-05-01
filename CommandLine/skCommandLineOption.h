@@ -75,7 +75,7 @@ namespace skCommandLine
         {
         }
 
-        ParseOption(const Switch& sw) :
+        explicit ParseOption(const Switch& sw) :
             m_switch(sw),
             m_isPresent(false)
         {

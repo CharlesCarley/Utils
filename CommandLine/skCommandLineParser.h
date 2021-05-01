@@ -101,13 +101,25 @@ namespace skCommandLine
         skString getBaseProgram() const;
 
         
+
+
+        /// <summary>
+        /// Extracts the directory from the supplied path to main.
+        /// </summary>
         /// <returns>The directory name of the program from argv[0]</returns>
         skString getProgramDirectory() const;
 
 
+        /// <summary>
+        /// Returns the current working directory for this process.
+        /// </summary>
+        /// <returns>The current working directory.</returns>
+        static skString getCurrentWorkingDirectory();
+
+
         /// <param name="enumId">The switch id</param>
         /// <returns>true if it is supplied on the command line false otherwise</returns>
-        bool isPresent(const SKuint32 &enumId);
+        bool isPresent(const SKuint32 &enumId) const;
 
         /// <param name="enumId">The switch id</param>
         /// <returns> the option at the enumId or null if the id is out of bounds</returns>
