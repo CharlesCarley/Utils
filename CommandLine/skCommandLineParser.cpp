@@ -24,7 +24,13 @@
 -------------------------------------------------------------------------------
 */
 #include "skCommandLineParser.h"
+
+#if SK_PLATFORM == SK_PLATFORM_WIN32
 #include <direct.h>
+#else
+#include <unistd.h>
+#endif
+
 
 #include "Utils/skDebugger.h"
 #include "Utils/skLogger.h"
