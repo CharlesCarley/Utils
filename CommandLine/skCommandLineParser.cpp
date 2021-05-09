@@ -205,10 +205,14 @@ int Parser::parse(int           argc,
 
 void Parser::logInput() const
 {
-    skLogf(LD_INFO,
-           "\n ==> %s %s\n\n",
-           getBaseProgram().c_str(),
-           m_scanner.getValue().c_str());
+    const skString& curInp  = m_scanner.getValue();
+    if (!curInp.empty())
+    {
+        skLogf(LD_INFO,
+               "\n ==> %s %s\n\n",
+               getBaseProgram().c_str(),
+               m_scanner.getValue().c_str());
+    }
 }
 
 skString Parser::getBaseProgram() const
@@ -301,11 +305,15 @@ const skString& Parser::getValueString(const SKuint32& enumId,
 
 void Parser::usage()
 {
-    skLogger& logger = skLogger::getSingleton();
+    skLogger* logger = skLogger::getSingletonPtr();
+    SKuint32         old = 0;
 
-    SKuint32 old = logger.getFlags();
-    logger.setFlags(LF_STDOUT);
-
+    if (logger)
+    {
+        old = logger->getFlags();
+        logger->setFlags(LF_STDOUT);
+    }
+    
     logInput();
 
     skLogf(LD_INFO, "Usage: %s <options>\n\n", getBaseProgram().c_str());
@@ -375,7 +383,8 @@ void Parser::usage()
 
     skLogd(LD_INFO, "\n");
 
-    logger.setFlags(old);
+    if (logger)
+        logger->setFlags(old);
 }
 
 bool Parser::initializeOption(ParseOption* opt, const Switch& sw)

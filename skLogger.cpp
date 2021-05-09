@@ -1,11 +1,7 @@
 /*
 -------------------------------------------------------------------------------
-
     Copyright (c) Charles Carley.
 
-    Contributor(s): none yet.
-
--------------------------------------------------------------------------------
   This software is provided 'as-is', without any express or implied
   warranty. In no event will the authors be held liable for any damages
   arising from the use of this software.
@@ -23,21 +19,22 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#include "Utils/skLogger.h"
 #include <cstdarg>
 #include <cstdio>
 #include "Utils/skDebugger.h"
 #include "Utils/skFileStream.h"
-#include "Utils/skLogger.h"
 #include "Utils/skPlatformHeaders.h"
 #include "Utils/skString.h"
 #include "Utils/skTimer.h"
 
 skLogger::skLogger() :
     m_stream(nullptr),
-    m_flags(LF_ALL),
+    m_flags(0),
     m_detail(LD_VERBOSE),
     m_listener(nullptr)
 {
+    setFlags(LF_STDOUT);
 }
 
 skLogger::skLogger(const int flags) :
@@ -82,34 +79,68 @@ void skLogger::writeDetail(SKint32 detail) const
     switch (detail)
     {
     case LD_ASSERT:
-        strcpy(ts, "00: ");
+        skChar::copyn(ts, "A : ", 5);
         break;
     case LD_ERROR:
-        strcpy(ts, "01: ");
+        skChar::copyn(ts, "E : ", 5);
         break;
     case LD_WARN:
-        strcpy(ts, "02: ");
+        skChar::copyn(ts, "W : ", 5);
         break;
     case LD_INFO:
-        strcpy(ts, "03: ");
+        skChar::copyn(ts, "I : ", 5);
         break;
     case LD_DEBUG:
-        strcpy(ts, "04: ");
+        skChar::copyn(ts, "D : ", 5);
         break;
     case LD_VERBOSE:
     default:
-        strcpy(ts, "05: ");
+        skChar::copyn(ts, "V : ", 5);
         break;
     }
     ts[4] = 0;
     writeMessage(ts, 4);
 }
 
+void skLogger::writeDetailColorOn(SKint32 detail)
+{
+    switch (detail)
+    {
+    case LD_ASSERT:
+        skDebugger::writeColor(CS_WHITE, CS_RED);
+        break;
+    case LD_ERROR:
+        skDebugger::writeColor(CS_RED, CS_BLACK);
+        break;
+    case LD_WARN:
+        skDebugger::writeColor(CS_YELLOW, CS_BLACK);
+        break;
+    case LD_INFO:
+        skDebugger::writeColor(CS_LIGHT_GREY, CS_BLACK);
+        break;
+    case LD_DEBUG:
+        skDebugger::writeColor(CS_DARKGREEN, CS_BLACK);
+        break;
+    default:
+    case LD_VERBOSE:
+        skDebugger::writeColor(CS_WHITE, CS_BLACK);
+        break;
+    }
+}
+
+void skLogger::resetColor()
+{
+    skDebugger::writeColor(CS_WHITE, CS_BLACK);
+}
+
 void skLogger::writeTimeStamp() const
 {
     char           ts[33];
-    const SKuint32 br = skMin<SKuint32>(skGetTimeString(ts, 32, "%m:%d:%C:%H:%M:%S:"), 32);
-    ts[br]            = 0;
+    const SKuint32 br = skMin<SKuint32>(
+        skGetTimeString(ts, 32, "%m/%d/%y @ %H:%M:%S :"), 32);
+    SK_ASSERT(br < 32);
+
+    ts[br] = 0;
     writeMessage(ts, br);
 }
 
@@ -149,22 +180,18 @@ void skLogger::logMessage(SKint32 detail, const char* msg, SKint32 len) const
 {
     if (msg && m_detail >= detail)
     {
-        if (m_flags & LF_TIMESTAMP)
-            writeTimeStamp();
-
-        if (detail == LD_WARN)
-            skDebugger::writeColor(CS_YELLOW);
-
-        if (detail <= LD_ERROR)
-            skDebugger::writeColor(CS_RED);
+        if (!(m_flags & LF_DISABLE_COLOR))
+            writeDetailColorOn(detail);
 
         if (m_flags & LF_DETAIL)
             writeDetail(detail);
 
+        if (m_flags & LF_TIMESTAMP)
+            writeTimeStamp();
+
         writeMessage(msg, len);
 
-        if (detail <= LD_WARN)
-            skDebugger::writeColor(CS_WHITE);
+        resetColor();
     }
 }
 
@@ -173,13 +200,10 @@ void skLogger::logStandard(SKint32 detail, const char* msg)
     if (!msg)
         return;
 
-    if (detail == LD_WARN)
-        skDebugger::writeColor(CS_YELLOW);
-    if (detail <= LD_ERROR)
-        skDebugger::writeColor(CS_RED);
+    writeDetailColorOn(detail);
 
     skDebugger::log(msg);
-    skDebugger::writeColor(CS_WHITE);
+    resetColor();
 }
 
 void skLogd(SKint32 detail, const char* msg)

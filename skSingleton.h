@@ -52,17 +52,17 @@ public:
     static cls& getSingleton(void); \
     static cls* getSingletonPtr(void);
 
-#define SK_IMPLEMENT_SINGLETON(cls)                 \
-    template <>                                     \
+#define SK_IMPLEMENT_SINGLETON(cls)                      \
+    template <>                                          \
     skSingleton<cls>* skSingleton<cls>::m_singleton = 0; \
-    cls&         cls::getSingleton(void)            \
-    {                                               \
-        SK_ASSERT(m_singleton);                     \
-        return *dynamic_cast<cls*>(m_singleton);    \
-    }                                               \
-    cls* cls::getSingletonPtr(void)                 \
-    {                                               \
-        return dynamic_cast<cls*>(m_singleton);     \
+    cls&              cls::getSingleton(void)            \
+    {                                                    \
+        SK_ASSERT(m_singleton);                          \
+        return *static_cast<cls*>(m_singleton);          \
+    }                                                    \
+    cls* cls::getSingletonPtr(void)                      \
+    {                                                    \
+        return static_cast<cls*>(m_singleton);           \
     }
 
 #endif  //_skSingleton_h_

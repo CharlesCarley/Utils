@@ -75,7 +75,7 @@ private:
 public:
     skLogger();
 
-    skLogger(const int flags);
+    skLogger(int flags);
 
     ~skLogger() override;
 
@@ -89,7 +89,7 @@ public:
         return m_detail;
     }
 
-    void setFlags(const int val);
+    void setFlags(int val);
 
     int getFlags() const
     {
@@ -116,6 +116,9 @@ public:
 
 private:
     void writeDetail(SKint32 detail) const;
+
+    static void writeDetailColorOn(SKint32 detail);
+    static void resetColor();
 
     void writeTimeStamp() const;
 
