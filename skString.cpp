@@ -27,6 +27,8 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
+
+#include "skFileStream.h"
 #include "skPlatformHeaders.h"
 #include "skStringConverter.h"
 
@@ -302,6 +304,31 @@ void skString::format(skString& dst, const char* fmt, ...)
             std::vsnprintf(dst.ptr(), (size_t)size + 1, fmt, lst);
             va_end(lst);
         }
+    }
+}
+
+
+skString skString::fromFile(const char* path)
+{
+    skString result;
+    fromFile(result, path);
+    return result;
+}
+
+void skString::fromFile(skString& dest, const char* path)
+{
+    skFileStream fs;
+    fs.open(path, skStream::READ_TEXT);
+    if (fs.isOpen())
+    {
+        const SKsize len = fs.size();
+        if (len > 0)
+        {
+            dest.resize(len+1);
+            const SKsize br = fs.read(dest.ptr(), len);
+            if (br <= len)
+                dest.ptr()[br] = 0;
+            }
     }
 }
 

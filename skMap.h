@@ -256,37 +256,37 @@ public:
 
     SK_INLINE Value& at(SKsize i)
     {
-        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        SK_ASSERT(m_bPtr && i < m_size);
         return m_bPtr[i].second;
     }
 
     SK_INLINE Value& operator[](SKsize i)
     {
-        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        SK_ASSERT(m_bPtr && i < m_size);
         return m_bPtr[i].second;
     }
 
     SK_INLINE const Value& at(SKsize i) const
     {
-        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        SK_ASSERT(m_bPtr && i < m_size);
         return m_bPtr[i].second;
     }
 
     SK_INLINE const Value& operator[](SKsize i) const
     {
-        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        SK_ASSERT(m_bPtr && i < m_size);
         return m_bPtr[i].second;
     }
 
     SK_INLINE Key& keyAt(SKsize i)
     {
-        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        SK_ASSERT(m_bPtr && i < m_size);
         return m_bPtr[i].first;
     }
 
     SK_INLINE const Key& keyAt(SKsize i) const
     {
-        SK_ASSERT(m_bPtr && i >= 0 && i < m_size);
+        SK_ASSERT(m_bPtr && i < m_size);
         return m_bPtr[i].first;
     }
 
@@ -584,25 +584,25 @@ public:
 
     SK_INLINE T& operator[](SKsize idx)
     {
-        SK_ASSERT(idx >= 0 && idx < size());
+        SK_ASSERT(idx < size());
         return m_table.at(idx);
     }
 
     SK_INLINE const T& operator[](SKsize idx) const
     {
-        SK_ASSERT(idx >= 0 && idx < size());
+        SK_ASSERT(idx < size());
         return m_table.at(idx);
     }
 
     SK_INLINE T& at(SKsize idx)
     {
-        SK_ASSERT(idx >= 0 && idx < size());
+        SK_ASSERT(idx < size());
         return m_table.at(idx);
     }
 
     SK_INLINE const T& at(SKsize idx) const
     {
-        SK_ASSERT(idx >= 0 && idx < size());
+        SK_ASSERT(idx < size());
         return m_table.at(idx);
     }
 

@@ -171,7 +171,18 @@ public:
     bool equals(const char* rhs) const;
 
     static skString format(const char* fmt, ...);
-    static void     format(skString& dst, const char* fmt, ...);
+
+    static void format(skString& dst, const char* fmt, ...);
+
+    /// <summary>
+    /// Loads the contents of the file into a string.
+    /// </summary>
+    static skString fromFile(const char* path);
+
+    /// <summary>
+    /// Loads the contents of the file into a string.
+    /// </summary>
+    static void fromFile(skString& dest, const char* path);
 
     skString& asHex()
     {
