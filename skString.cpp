@@ -27,7 +27,6 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
-
 #include "skFileStream.h"
 #include "skPlatformHeaders.h"
 #include "skStringConverter.h"
@@ -135,6 +134,22 @@ bool skString::equals(const skString& rhs) const
 bool skString::equals(const char* rhs) const
 {
     return !skChar::equalsn(m_data, rhs, m_size);
+}
+
+bool skString::endsWith(const char* str) const
+{
+    const SKsize len = skChar::length(str);
+    if (len > 0 && len < m_size)
+        return skChar::equalsn(m_data + (m_size-len), str, len) == 0;
+    return false;
+}
+
+bool skString::startsWith(const char* str) const
+{
+    const SKsize len = skChar::length(str);
+    if (len > 0 && len < m_size)
+        return skChar::equalsn(m_data, str, len) == 0;
+    return false;
 }
 
 void skString::alloc(const char* str, SKsize len)
@@ -307,7 +322,6 @@ void skString::format(skString& dst, const char* fmt, ...)
     }
 }
 
-
 skString skString::fromFile(const char* path)
 {
     skString result;
@@ -324,11 +338,11 @@ void skString::fromFile(skString& dest, const char* path)
         const SKsize len = fs.size();
         if (len > 0)
         {
-            dest.resize(len+1);
+            dest.resize(len + 1);
             const SKsize br = fs.read(dest.ptr(), len);
             if (br <= len)
                 dest.ptr()[br] = 0;
-            }
+        }
     }
 }
 

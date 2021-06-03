@@ -44,7 +44,6 @@ public:
     typedef const skPointerDecrementIterator<skString, SKsize> ConstReverseIterator;
 
     SK_IMPLEMENT_SORT(ValueType, skString, SKsize)
-
     static const SKsize npos;
 
     [[deprecated("Avoid at exit deconstruction calls.")]] static const skString Blank;
@@ -169,6 +168,10 @@ public:
     bool equals(const skString& rhs) const;
 
     bool equals(const char* rhs) const;
+
+    bool endsWith(const char* str) const;
+
+    bool startsWith(const char* str) const;
 
     static skString format(const char* fmt, ...);
 
